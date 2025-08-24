@@ -1,0 +1,26 @@
+CREATE TABLE `invitation` (
+	`id` text PRIMARY KEY NOT NULL,
+	`email` text NOT NULL,
+	`token_hash` blob NOT NULL,
+	`expires_at` integer NOT NULL,
+	`consumed_at` integer,
+	`created_by` text NOT NULL,
+	`created_at` integer NOT NULL,
+	FOREIGN KEY (`created_by`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `session` (
+	`id` text PRIMARY KEY NOT NULL,
+	`user_id` text NOT NULL,
+	`expires_at` integer NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `user` (
+	`id` text PRIMARY KEY NOT NULL,
+	`email` text NOT NULL,
+	`role` text DEFAULT 'candidate' NOT NULL,
+	`created_at` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);
