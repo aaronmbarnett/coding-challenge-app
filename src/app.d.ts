@@ -4,7 +4,8 @@ declare global {
   namespace App {
     interface Locals {
       db: typeof import('$lib/server/db').db;
-      user: import('$lib/server/auth').SessionValidationResult['user'];
+      user: { id: string; role: 'admin' | 'candidate' } | null;
+      // user: import('$lib/server/auth').SessionValidationResult['user'];
       session: import('$lib/server/auth').SessionValidationResult['session'];
     }
   } // interface Error {}
