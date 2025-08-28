@@ -15,6 +15,13 @@
       "when": 1756079700640,
       "tag": "0001_glamorous_impossible_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1756359990926,
+      "tag": "0002_polite_nocturne",
+      "breakpoints": true
     }
   ]
 }

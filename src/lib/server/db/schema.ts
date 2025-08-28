@@ -88,7 +88,9 @@ export const attempts = sqliteTable('attempts', {
   submittedAt: integer('submitted_at', { mode: 'timestamp_ms' }),
   status: text('status', { enum: ['locked', 'in_progress', 'submitted'] })
     .notNull()
-    .default('locked')
+    .default('locked'),
+  testRunCount: integer('test_run_count').notNull().default(0),
+  lastTestRunAt: integer('last_test_run_at', { mode: 'timestamp_ms' })
 });
 
 export const submissions = sqliteTable('submissions', {
