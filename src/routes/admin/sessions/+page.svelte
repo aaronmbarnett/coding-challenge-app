@@ -1,4 +1,5 @@
 <script lang="ts">
+  import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
   export let data;
 
   function formatDuration(seconds: number) {
@@ -10,20 +11,6 @@
   function formatDateTime(timestamp: number | Date) {
     const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
     return date.toLocaleString();
-  }
-  function getStatusColor(status: string) {
-    switch (status) {
-      case 'pending':
-        return 'bg-gray-100 text-gray-800';
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'submitted':
-        return 'bg-blue-100 text-blue-800';
-      case 'expired':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
   }
 </script>
 
@@ -84,13 +71,7 @@
                 {formatDuration(session.totalDurationSec)}
               </td>
               <td class="px-6 py-4">
-                <span
-                  class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {getStatusColor(
-                    session.status
-                  )}"
-                >
-                  {session.status}
-                </span>
+                <StatusBadge status={session.status} type="session" />
               </td>
               <td class="px-6 py-4 text-sm text-gray-500">
                 {#if session.startedAt}

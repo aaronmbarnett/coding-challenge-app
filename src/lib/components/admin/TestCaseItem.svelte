@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
   export let testCase: any;
   export let index: number;
   export let challengeId: string;
@@ -13,12 +14,7 @@
   <div class="mb-3 flex items-start justify-between">
     <div class="flex items-center space-x-3">
       <span class="font-medium">Test Case #{index + 1}</span>
-      <span
-        class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
-          {testCase.kind === 'io' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}"
-      >
-        {testCase.kind.toUpperCase()}
-      </span>
+      <StatusBadge status={testCase.kind} type="testcase" />
       <span class="text-sm text-gray-500">Weight: {testCase.weight}</span>
       {#if testCase.hidden}
         <span

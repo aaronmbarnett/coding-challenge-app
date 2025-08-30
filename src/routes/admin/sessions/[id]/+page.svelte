@@ -2,6 +2,7 @@
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+  import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
   let { data, form } = $props();
 
   function formatDuration(seconds: number) {
@@ -14,34 +15,6 @@
     if (!timestamp) return 'Not set';
     const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
     return date.toLocaleString();
-  }
-
-  function getStatusColor(status: string) {
-    switch (status) {
-      case 'pending':
-        return 'bg-gray-100 text-gray-800';
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'submitted':
-        return 'bg-blue-100 text-blue-800';
-      case 'expired':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  }
-
-  function getAttemptStatusColor(status: string) {
-    switch (status) {
-      case 'locked':
-        return 'bg-gray-100 text-gray-800';
-      case 'in_progress':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'submitted':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
   }
 
   function getRemainingTime(session: typeof data.session) {
@@ -69,13 +42,7 @@
     </div>
 
     <div class="flex items-center space-x-3">
-      <span
-        class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium {getStatusColor(
-          data.session.status
-        )}"
-      >
-        {data.session.status.toUpperCase()}
-      </span>
+      <StatusBadge status={data.session.status} type="session" />
 
       {#if data.session.status === 'pending'}
         <form
@@ -191,13 +158,7 @@
               </div>
 
               <div class="flex items-center space-x-3">
-                <span
-                  class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {getAttemptStatusColor(
-                    attempt.status
-                  )}"
-                >
-                  {attempt.status.replace('_', ' ')}
-                </span>
+                <StatusBadge status={attempt.status} type="attempt" />
 
                 <a
                   href="/admin/challenges/{challenge?.id}"
