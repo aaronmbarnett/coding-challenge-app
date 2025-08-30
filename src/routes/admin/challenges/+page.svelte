@@ -22,7 +22,7 @@
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Lanugage</th
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Language</th
             >
             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -35,7 +35,7 @@
                 <div class="font-medium text-gray-900">{challenge.title}</div>
               </td>
               <td class="px-6 py-4 text-sm text-gray-500">{challenge.languagesCsv}</td>
-              <td class="text-sm-text-gray-500 px-6 py-4">
+              <td class="text-sm text-gray-500 px-6 py-4">
                 {new Date(challenge.createdAt).toLocaleDateString()}
               </td>
               <td class="space-x-2 px-6 py-4 text-sm">

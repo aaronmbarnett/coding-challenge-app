@@ -60,7 +60,7 @@
   <!-- sessions list -->
   <div class="overflow-hidden rounded-lg bg-white shadow">
     {#if data.sessions.length === 0}
-      <div class="py12 text-center">
+      <div class="py-12 text-center">
         <p class="mb-4 text-gray-500">No exam sessions yet.</p>
         <a href="/admin/sessions/new" class="text-blue-600 hover:text-blue-500">
           Create your first session

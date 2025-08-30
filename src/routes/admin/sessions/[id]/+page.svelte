@@ -109,7 +109,7 @@
             };
           }}
         >
-          <button class="hover:bg-green700 rounded bg-red-600 px-4 py-2 text-white">
+          <button class="hover:bg-red-700 rounded bg-red-600 px-4 py-2 text-white">
             Stop Session
           </button>
         </form>
