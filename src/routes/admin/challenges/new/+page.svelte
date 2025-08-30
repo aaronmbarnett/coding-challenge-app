@@ -2,7 +2,7 @@
   import { enhance } from '$app/forms';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   import FormField from '$lib/components/ui/FormField.svelte';
-  export let form;
+  let { form } = $props();
   function handleSubmit() {
     console.log('Form submit triggered');
   }

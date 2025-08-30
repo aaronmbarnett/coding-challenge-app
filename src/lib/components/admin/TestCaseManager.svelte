@@ -3,11 +3,17 @@
   import TestCaseForm from './TestCaseForm.svelte';
   import TestCaseList from './TestCaseList.svelte';
 
-  export let challenge;
-  export let testCases: any[];
-  export let form: any = null;
+  let { 
+    challenge, 
+    testCases, 
+    form = null 
+  }: { 
+    challenge: any; 
+    testCases: any[]; 
+    form?: any; 
+  } = $props();
 
-  let showForm = false;
+  let showForm = $state(false);
 
   function toggleForm() {
     showForm = !showForm;

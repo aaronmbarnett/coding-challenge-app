@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let challenge: any;
+  let { challenge }: { challenge: any } = $props();
   function handleDelete() {
     if (confirm('Are you sure you want to delete this challenge?')) {
       alert('Delete functionality coming soon!');

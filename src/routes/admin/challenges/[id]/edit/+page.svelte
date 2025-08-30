@@ -2,10 +2,9 @@
   import { enhance } from '$app/forms';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   import FormField from '$lib/components/ui/FormField.svelte';
-  export let data;
-  export let form;
+  let { data, form } = $props();
 
-  let showDeleteConfirm = false;
+  let showDeleteConfirm = $state(false);
 </script>
 
 <div class="mx-auto max-w-2xl space-y-6">

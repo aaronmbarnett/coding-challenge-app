@@ -1,9 +1,15 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
-  export let testCase: any;
-  export let index: number;
-  export let challengeId: string;
+  let { 
+    testCase, 
+    index, 
+    challengeId 
+  }: { 
+    testCase: any; 
+    index: number; 
+    challengeId: string; 
+  } = $props();
 
   function confirmDelete() {
     return confirm('Delete this test case?');

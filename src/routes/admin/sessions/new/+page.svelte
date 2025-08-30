@@ -3,10 +3,9 @@
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   import FormField from '$lib/components/ui/FormField.svelte';
 
-  export let data;
-  export let form;
+  let { data, form } = $props();
 
-  let selectedChallenges: string[] = [];
+  let selectedChallenges = $state<string[]>([]);
 
   function formatDuration(seconds: number) {
     const hours = Math.floor(seconds / 3600);

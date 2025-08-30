@@ -1,6 +1,11 @@
 <script lang="ts">
-  export let testCases: any[];
-  export let challengeId: string;
+  let { 
+    testCases, 
+    challengeId 
+  }: { 
+    testCases: any[]; 
+    challengeId: string; 
+  } = $props();
 </script>
 
 {#if testCases.length === 0}

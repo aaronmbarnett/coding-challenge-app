@@ -1,8 +1,15 @@
 <script lang="ts">
-  export let challengeTitle: string;
-  export let challengeId: string;
-  export let showForm: boolean;
-  export let onToggleForm: () => void;
+  let { 
+    challengeTitle, 
+    challengeId, 
+    showForm, 
+    onToggleForm 
+  }: { 
+    challengeTitle: string; 
+    challengeId: string; 
+    showForm: boolean; 
+    onToggleForm: () => void; 
+  } = $props();
 </script>
 
 <div class="flex items-center justify-between">

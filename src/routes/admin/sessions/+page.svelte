@@ -1,7 +1,7 @@
 <script lang="ts">
   import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
   import StatCard from '$lib/components/ui/StatCard.svelte';
-  export let data;
+  let { data } = $props();
 
   function formatDuration(seconds: number) {
     const hours = Math.floor(seconds / 3600);

@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let challenge: any;
+  let { challenge }: { challenge: any } = $props();
 </script>
 
 <div class="space-y-6 lg:col-span-2">

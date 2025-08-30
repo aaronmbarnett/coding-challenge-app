@@ -3,10 +3,17 @@
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   import FormField from '$lib/components/ui/FormField.svelte';
 
-  export let challengeId: string;
-  export let form: any = null;
-  export let onCancel: () => void;
-  let testKind: 'io' | 'harness' = 'io';
+  let { 
+    challengeId, 
+    form = null, 
+    onCancel 
+  }: { 
+    challengeId: string; 
+    form?: any; 
+    onCancel: () => void; 
+  } = $props();
+
+  let testKind = $state<'io' | 'harness'>('io');
 </script>
 
 <div class="rounded-lg bg-white p-6 shadow">

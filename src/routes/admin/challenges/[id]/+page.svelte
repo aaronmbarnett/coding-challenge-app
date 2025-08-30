@@ -4,7 +4,7 @@
   import ChallengeSidebar from '$lib/components/admin/ChallengeSidebar.svelte';
   import TestCasesPreview from '$lib/components/admin/TestCasesPreview.svelte';
 
-  export let data;
+  let { data } = $props();
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6">

@@ -1,8 +1,13 @@
 <script lang="ts">
   import TestCaseItem from './TestCaseItem.svelte';
 
-  export let testCases: any[];
-  export let challengeId: string;
+  let { 
+    testCases, 
+    challengeId 
+  }: { 
+    testCases: any[]; 
+    challengeId: string; 
+  } = $props();
 </script>
 
 <div class="rounded-lg bg-white shadow">
