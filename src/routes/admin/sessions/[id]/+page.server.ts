@@ -2,6 +2,7 @@ import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 import { error, fail } from '@sveltejs/kit';
+import { startSession, stopSession } from '$lib/server/sessions';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   const sessionId = params.id;
@@ -45,54 +46,42 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 export const actions: Actions = {
   startSession: async ({ params, locals }) => {
     const sessionId = params.id;
-    const now = new Date();
 
     try {
-      const [session] = await locals.db
-        .select()
-        .from(table.sessions)
-        .where(eq(table.sessions.id, sessionId));
-      if (!session) {
-        return fail(404, { message: 'Session not found' });
-      }
-      if (session.status !== 'pending') {
-        return fail(400, { message: 'Session cannot be started' });
-      }
-      const endsAt = new Date(now.getTime() + session.totalDurationSec * 1000);
-      await locals.db
-        .update(table.sessions)
-        .set({ status: 'active', startedAt: now, endsAt: endsAt });
-
+      await startSession(locals.db, sessionId);
       return { success: true };
-    } catch (dbError: unknown) {
-      console.error('Database error:', dbError);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message === 'Session not found') {
+          return fail(404, { message: error.message });
+        }
+        if (error.message === 'Session cannot be started') {
+          return fail(400, { message: error.message });
+        }
+        return fail(400, { message: error.message });
+      }
+      console.error('Database error:', error);
       return fail(500, { message: 'Failed to start session' });
     }
   },
 
   stopSession: async ({ params, locals }) => {
     const sessionId = params.id;
-    const now = new Date();
 
     try {
-      const [session] = await locals.db
-        .select()
-        .from(table.sessions)
-        .where(eq(table.sessions.id, sessionId));
-      if (!session) {
-        return fail(404, { message: 'Session not found' });
-      }
-      if (session.status !== 'active') {
-        return fail(400, { message: 'Session cannot be stopped' });
-      }
-      await locals.db
-        .update(table.sessions)
-        .set({ status: 'submitted', endsAt: now })
-        .where(eq(table.sessions.id, sessionId));
-
+      await stopSession(locals.db, sessionId);
       return { success: true };
-    } catch (dbError: unknown) {
-      console.error('Database error:', dbError);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message === 'Session not found') {
+          return fail(404, { message: error.message });
+        }
+        if (error.message === 'Session cannot be stopped') {
+          return fail(400, { message: error.message });
+        }
+        return fail(400, { message: error.message });
+      }
+      console.error('Database error:', error);
       return fail(500, { message: 'Failed to stop session' });
     }
   }

@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
+import { createSession, parseSessionFormData } from '$lib/server/sessions';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const candidates = await locals.db
@@ -27,26 +28,16 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
-    const formData = await request.formData();
-    const data = Object.fromEntries(formData) as Record<string, string>;
-    const { candidateId, totalDurationSec } = data;
-    const selectedChallenges = formData.getAll('challengeIds') as string[];
-
-    if (!candidateId || !totalDurationSec) {
-      return fail(400, { message: 'Candidate and duration are required', data });
-    }
-
-    if (selectedChallenges.length === 0) {
-      return fail(400, { message: 'At least one challenge must be selected', data });
-    }
-
     try {
-      const [session] = await locals.db
-        .insert(table.sessions)
-        .values({ candidateId, totalDurationSec: parseInt(totalDurationSec), status: 'pending' })
-        .returning();
-    } catch (dbError) {
-      console.error('Database error:', dbError);
+      const formData = await request.formData();
+      const sessionData = parseSessionFormData(formData);
+
+      await createSession(locals.db, sessionData);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return fail(400, { message: error.message });
+      }
+      console.error('Database error:', error);
       return fail(500, { message: 'Failed to create session' });
     }
     throw redirect(302, '/admin/sessions');

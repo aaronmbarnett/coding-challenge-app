@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  createChallenge,
-  updateChallenge,
-  deleteChallenge,
-  parseFormDataToChallenge
-} from './challenges';
+import { createChallenge, parseFormDataToChallenge, type CreateChallengeData } from './challenges';
 import * as table from './db/schema';
 
 const mockDb = {
@@ -87,7 +82,7 @@ describe('challenge functions', () => {
       formData.set('starterCode', 'code');
       formData.set('timeLimit', '1800');
 
-      const result = parseFormDataToChallenge(formData);
+      const result: CreateChallengeData = parseFormDataToChallenge(formData);
 
       expect(result).toEqual({
         title: 'Test',
