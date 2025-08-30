@@ -4,7 +4,12 @@
 
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">Challenges</h1>
+    <div>
+      <nav class="mb-4">
+        <a href="/admin" class="text-blue-600 hover:text-blue-500">← Back to Dashboard</a>
+      </nav>
+      <h1 class="text-2xl font-bold">Challenges</h1>
+    </div>
     <a
       href="/admin/challenges/new"
       class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
