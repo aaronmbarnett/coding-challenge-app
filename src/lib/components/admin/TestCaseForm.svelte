@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
 
   export let challengeId: string;
   export let form: any = null;
@@ -90,11 +91,7 @@
       </div>
     </div>
 
-    {#if form?.message}
-      <div class="rounded-md border border-red-200 bg-red-50 p-3">
-        <p class="text-red-700">{form.message}</p>
-      </div>
-    {/if}
+    <ErrorMessage message={form?.message} />
 
     <div class="flex space-x-4">
       <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">

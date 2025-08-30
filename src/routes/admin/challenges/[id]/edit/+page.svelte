@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   export let data;
   export let form;
 
@@ -85,11 +86,7 @@
       />
     </div>
 
-    {#if form?.message}
-      <div class="rounded-md border border-red-200 bg-red-50 p-3">
-        <p class="text-red-700">{form.message}</p>
-      </div>
-    {/if}
+    <ErrorMessage message={form?.message} />
 
     <div class="flex justify-between">
       <div class="flex space-x-4">

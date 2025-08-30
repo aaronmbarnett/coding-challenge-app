@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
+  import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   let { data, form } = $props();
 
   function formatDuration(seconds: number) {
@@ -118,11 +119,7 @@
   </div>
 
   <!-- error messages -->
-  {#if form?.message}
-    <div class="rounded-md bg-red-50 p-4">
-      <p class="text-sm text-red-800">{form.message}</p>
-    </div>
-  {/if}
+  <ErrorMessage message={form?.message} />
 
   <!-- session info -->
   <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
