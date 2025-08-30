@@ -1,5 +1,6 @@
 <script lang="ts">
   import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
+  import StatCard from '$lib/components/ui/StatCard.svelte';
   export let data;
 
   function formatDuration(seconds: number) {
@@ -28,20 +29,9 @@
 
   <!-- stats -->
   <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-    <div class="rounded-lg bg-white p-6 shadow">
-      <h3 class="text-sm font-medium text-gray-500">Total Sessions</h3>
-      <p class="text-2xl font-bold text-gray-900">{data.sessions.length}</p>
-    </div>
-
-    <div class="rounded-lg bg-white p-6 shadow">
-      <h3 class="text-sm font-medium text-gray-500">Available Challenges</h3>
-      <p class="text-2xl font-bold text-gray-900">{data.stats.totalChallenges}</p>
-    </div>
-
-    <div class="rounded-lg bg-white p-6 shadow">
-      <h3 class="text-sm font-medium text-gray-500">Total Sessions</h3>
-      <p class="text-2xl font-bold text-gray-900">{data.stats.totalCandidates}</p>
-    </div>
+    <StatCard title="Total Sessions" value={data.sessions.length} />
+    <StatCard title="Available Challenges" value={data.stats.totalChallenges} />
+    <StatCard title="Total Candidates" value={data.stats.totalCandidates} />
   </div>
 
   <!-- sessions list -->

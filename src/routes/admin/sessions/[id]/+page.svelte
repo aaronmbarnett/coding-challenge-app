@@ -3,6 +3,7 @@
   import { invalidateAll } from '$app/navigation';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
+  import StatCard from '$lib/components/ui/StatCard.svelte';
   let { data, form } = $props();
 
   function formatDuration(seconds: number) {
@@ -90,36 +91,20 @@
 
   <!-- session info -->
   <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-    <div class="rounded-lg bg-white p-6 shadow">
-      <h3 class="text-sm font-medium text-gray-500">Total Duration</h3>
-      <p class="text-2xl font-bold text-gray-900">
-        {formatDuration(data.session.totalDurationSec)}
-      </p>
-    </div>
-
-    <div class="rounded-lg bg-white p-6 shadow">
-      <h3 class="text-sm font-medium text-gray-500">Started At</h3>
-      <p class="text-2xl font-bold text-gray-900">
-        {formatDateTime(data.session.startedAt)}
-      </p>
-    </div>
-
-    <div class="rounded-lg bg-white p-6 shadow">
-      <h3 class="text-sm font-medium text-gray-500">
-        {#if remainingSeconds !== null}
-          Time Remaining
-        {:else}
-          Ends At
-        {/if}
-      </h3>
-      <p class="text-2xl font-bold text-gray-900">
-        {#if remainingSeconds !== null}
-          {formatDuration(remainingSeconds)}
-        {:else}
-          {formatDateTime(data.session.endsAt)}
-        {/if}
-      </p>
-    </div>
+    <StatCard 
+      title="Total Duration" 
+      value={formatDuration(data.session.totalDurationSec)} 
+    />
+    
+    <StatCard 
+      title="Started At" 
+      value={formatDateTime(data.session.startedAt)} 
+    />
+    
+    <StatCard 
+      title={remainingSeconds !== null ? 'Time Remaining' : 'Ends At'}
+      value={remainingSeconds !== null ? formatDuration(remainingSeconds) : formatDateTime(data.session.endsAt)}
+    />
   </div>
 
   <!-- challenges/attempts -->
