@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+  import FormField from '$lib/components/ui/FormField.svelte';
 
   export let challengeId: string;
   export let form: any = null;
@@ -28,60 +29,42 @@
 
     {#if testKind === 'io'}
       <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label for="input" class="mb-1 block text-sm font-medium text-gray-700"> Input </label>
-          <textarea
-            id="input"
-            name="input"
-            rows="4"
-            required
-            class="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="[1, 2, 3]"
-          ></textarea>
-        </div>
+        <FormField
+          label="Input"
+          name="input"
+          type="textarea"
+          rows={4}
+          placeholder="[1, 2, 3]"
+          required
+        />
 
-        <div>
-          <label for="expectedOutput" class="mb-1 block text-sm font-medium text-gray-700">
-            Expected Output
-          </label>
-          <textarea
-            id="expectedOutput"
-            name="expectedOutput"
-            rows="4"
-            required
-            class="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="6"
-          ></textarea>
-        </div>
+        <FormField
+          label="Expected Output"
+          name="expectedOutput"
+          type="textarea"
+          rows={4}
+          placeholder="6"
+          required
+        />
       </div>
     {:else}
-      <div>
-        <label for="harnessCode" class="mb-1 block text-sm font-medium text-gray-700">
-          Test Harness Code
-        </label>
-        <textarea
-          id="harnessCode"
-          name="harnessCode"
-          rows="6"
-          required
-          class="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500"
-          placeholder="assert solution([1,2,3]) == 6"
-        ></textarea>
-      </div>
+      <FormField
+        label="Test Harness Code"
+        name="harnessCode"
+        type="textarea"
+        rows={6}
+        placeholder="assert solution([1,2,3]) == 6"
+        required
+      />
     {/if}
 
     <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label for="weight" class="mb-1 block text-sm font-medium text-gray-700"> Weight </label>
-        <input
-          type="number"
-          id="weight"
-          name="weight"
-          min="1"
-          value="1"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <FormField
+        label="Weight"
+        name="weight"
+        type="number"
+        value="1"
+      />
 
       <div class="flex items-center">
         <input type="checkbox" id="hidden" name="hidden" class="mr-2" />

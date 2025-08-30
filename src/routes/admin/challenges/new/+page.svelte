@@ -1,6 +1,7 @@
 <script>
   import { enhance } from '$app/forms';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+  import FormField from '$lib/components/ui/FormField.svelte';
   export let form;
   function handleSubmit() {
     console.log('Form submit triggered');
@@ -14,77 +15,43 @@
   </div>
 
   <form method="POST" use:enhance class="space-y-6" on:submit={handleSubmit}>
-    <div>
-      <label for="title" class="mb-1 block text-sm font-medium text-gray-700">
-        Challenge Title
-      </label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        placeholder="e.g., Two Sum Problem"
-      />
-    </div>
+    <FormField
+      label="Challenge Title"
+      name="title"
+      placeholder="e.g., Two Sum Problem"
+      required
+    />
 
-    <div>
-      <label for="description" class="mb-1 block text-sm font-medium text-gray-700">
-        Description (Markdown)
-      </label>
-      <textarea
-        id="description"
-        name="description"
-        rows="10"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        placeholder="## Problem Description
+    <FormField
+      label="Description (Markdown)"
+      name="description"
+      type="textarea"
+      rows={10}
+      placeholder="## Problem Description&#10;&#10;Write a function that..."
+      required
+    />
 
-  Write a function that..."
-      ></textarea>
-    </div>
+    <FormField
+      label="Supported Languages (comma-separated)"
+      name="languages"
+      placeholder="javascript,python,java"
+      required
+    />
 
-    <div>
-      <label for="languages" class="mb-1 block text-sm font-medium text-gray-700">
-        Supported Languages (comma-separated)
-      </label>
-      <input
-        type="text"
-        id="languages"
-        name="languages"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        placeholder="javascript,python,java"
-      />
-    </div>
+    <FormField
+      label="Starter Code (optional)"
+      name="starterCode"
+      type="textarea"
+      rows={6}
+      placeholder="TODO: REPLACE THIS PLACE HOLDER"
+    />
 
-    <div>
-      <label for="starterCode" class="mb-1 block text-sm font-medium text-gray-700">
-        Starter Code (optional)
-      </label>
-      <textarea
-        id="starterCode"
-        name="starterCode"
-        rows="6"
-        class="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        placeholder="TODO: REPLACE THIS PLACE HOLDER"
-      ></textarea>
-    </div>
-
-    <div>
-      <label for="timeLimit" class="mb-1 block text-sm font-medium text-gray-700">
-        Time Limit (seconds, optional)
-      </label>
-      <input
-        type="number"
-        id="timeLimit"
-        name="timeLimit"
-        min="60"
-        max="7200"
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        placeholder="1800"
-      />
-    </div>
+    <FormField
+      label="Time Limit (seconds, optional)"
+      name="timeLimit"
+      type="number"
+      placeholder="1800"
+    />
 
     <ErrorMessage message={form?.message} />
 

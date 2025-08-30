@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+  import FormField from '$lib/components/ui/FormField.svelte';
   export let data;
   export let form;
 
@@ -16,75 +17,43 @@
   </div>
 
   <form method="POST" action="?/update" use:enhance class="space-y-6">
-    <div>
-      <label for="title" class="mb-1 block text-sm font-medium text-gray-700">
-        Challenge Title
-      </label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        required
-        value={data.challenge.title}
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      />
-    </div>
+    <FormField
+      label="Challenge Title"
+      name="title"
+      value={data.challenge.title}
+      required
+    />
 
-    <div>
-      <label for="description" class="mb-1 block text-sm font-medium text-gray-700">
-        Description (Markdown)
-      </label>
-      <textarea
-        id="description"
-        name="description"
-        rows="10"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        >{data.challenge.descriptionMd}</textarea
-      >
-    </div>
+    <FormField
+      label="Description (Markdown)"
+      name="description"
+      type="textarea"
+      rows={10}
+      value={data.challenge.descriptionMd}
+      required
+    />
 
-    <div>
-      <label for="languages" class="mb-1 block text-sm font-medium text-gray-700">
-        Supported Languages (comma-separated)
-      </label>
-      <input
-        type="text"
-        id="languages"
-        name="languages"
-        required
-        value={data.challenge.languagesCsv}
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      />
-    </div>
+    <FormField
+      label="Supported Languages (comma-separated)"
+      name="languages"
+      value={data.challenge.languagesCsv}
+      required
+    />
 
-    <div>
-      <label for="starterCode" class="mb-1 block text-sm font-medium text-gray-700">
-        Starter Code (optional)
-      </label>
-      <textarea
-        id="starterCode"
-        name="starterCode"
-        rows="6"
-        class="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        >{data.challenge.starterCode || ''}</textarea
-      >
-    </div>
+    <FormField
+      label="Starter Code (optional)"
+      name="starterCode"
+      type="textarea"
+      rows={6}
+      value={data.challenge.starterCode || ''}
+    />
 
-    <div>
-      <label for="timeLimit" class="mb-1 block text-sm font-medium text-gray-700">
-        Time Limit (seconds, optional)
-      </label>
-      <input
-        type="number"
-        id="timeLimit"
-        name="timeLimit"
-        min="60"
-        max="7200"
-        value={data.challenge.timeLimitSec || ''}
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      />
-    </div>
+    <FormField
+      label="Time Limit (seconds, optional)"
+      name="timeLimit"
+      type="number"
+      value={data.challenge.timeLimitSec || ''}
+    />
 
     <ErrorMessage message={form?.message} />
 

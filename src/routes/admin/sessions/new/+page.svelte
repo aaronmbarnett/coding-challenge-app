@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+  import FormField from '$lib/components/ui/FormField.svelte';
 
   export let data;
   export let form;
@@ -30,42 +31,32 @@
 
   <form method="POST" use:enhance class="space-y-6">
     <!-- Candidate Selection -->
-    <div>
-      <label for="candidateId" class="mb-1 block text-sm font-medium text-gray-700">
-        Select Candidate
-      </label>
-      <select
-        id="candidateId"
-        name="candidateId"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      >
-        <option value="">Choose a candidate...</option>
-        {#each data.candidates as candidate}
-          <option value={candidate.id}>{candidate.email}</option>
-        {/each}
-      </select>
-    </div>
+    <FormField
+      label="Select Candidate"
+      name="candidateId"
+      type="select"
+      options={[
+        { value: '', label: 'Choose a candidate...' },
+        ...data.candidates.map(c => ({ value: c.id, label: c.email }))
+      ]}
+      required
+    />
 
     <!-- Session Duration -->
-    <div>
-      <label for="totalDurationSec" class="mb-1 block text-sm font-medium text-gray-700">
-        Total Session Duration
-      </label>
-      <select
-        id="totalDurationSec"
-        name="totalDurationSec"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      >
-        <option value="">Select duration...</option>
-        <option value="1800">30 minutes</option>
-        <option value="3600">1 hour</option>
-        <option value="5400">1.5 hours</option>
-        <option value="7200">2 hours</option>
-        <option value="10800">3 hours</option>
-      </select>
-    </div>
+    <FormField
+      label="Total Session Duration"
+      name="totalDurationSec"
+      type="select"
+      options={[
+        { value: '', label: 'Select duration...' },
+        { value: '1800', label: '30 minutes' },
+        { value: '3600', label: '1 hour' },
+        { value: '5400', label: '1.5 hours' },
+        { value: '7200', label: '2 hours' },
+        { value: '10800', label: '3 hours' }
+      ]}
+      required
+    />
 
     <!-- Challenge Selection -->
     <div>
