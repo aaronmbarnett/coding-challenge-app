@@ -2,6 +2,19 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 import * as table from '$lib/server/db/schema';
 
+// Type for the expected return value
+interface SessionNewLoadResult {
+  candidates: Array<{
+    id: string;
+    email: string;
+  }>;
+  challenges: Array<{
+    id: string;
+    title: string;
+    timeLimitSec: number | null;
+  }>;
+}
+
 // Create mock db for form data loading
 const createMockDbForNewSession = (mockCandidates: any, mockChallenges: any) => {
   return {
@@ -55,7 +68,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
       const locals = { db: mockDb };
       
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result).toEqual({
         candidates: mockCandidates,
@@ -79,7 +92,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
       const locals = { db: mockDb };
       
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result).toEqual({
         candidates: [],
@@ -99,7 +112,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
       const locals = { db: mockDb };
       
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result).toEqual({
         candidates: mockCandidates,
@@ -149,7 +162,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const mockDb = createMockDbForNewSession([], mockChallenges);
       const locals = { db: mockDb };
       
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result.challenges).toEqual(mockChallenges);
       expect(result.challenges[0].timeLimitSec).toBe(600);
@@ -173,7 +186,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
       const locals = { db: mockDb };
       
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionNewLoadResult;
 
       // Verify ordering is preserved as returned by database
       expect(result.candidates[0].email).toBe('alice@example.com');

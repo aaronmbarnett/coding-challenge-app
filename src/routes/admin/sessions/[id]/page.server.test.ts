@@ -1,7 +1,37 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 import { error } from '@sveltejs/kit';
-import * as table from '$lib/server/db/schema';
+
+// Type for the expected return value
+interface SessionDetailLoadResult {
+  session: {
+    id: string;
+    candidateId: string;
+    status: string;
+    totalDurationSec: number;
+    startedAt: Date | null;
+    endsAt: Date | null;
+  };
+  candidate: {
+    id: string;
+    email: string;
+  } | null;
+  attempts: Array<{
+    attempt: {
+      id: string;
+      sessionId: string;
+      challengeId: string;
+      status: string;
+      startedAt: Date | null;
+      submittedAt: Date | null;
+    };
+    challenge: {
+      id: string;
+      title: string;
+      timeLimitSec: number;
+    } | null;
+  }>;
+}
 
 // Mock SvelteKit error function
 vi.mock('@sveltejs/kit', async () => {
@@ -19,7 +49,8 @@ vi.mock('@sveltejs/kit', async () => {
 // Create mock db for session detail loading
 const createMockDbForSessionDetail = (mockSessionData: any, mockAttempts: any) => {
   return {
-    select: vi.fn()
+    select: vi
+      .fn()
       .mockReturnValueOnce({
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -79,7 +110,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
         },
         {
           attempt: {
-            id: 'attempt-2', 
+            id: 'attempt-2',
             sessionId: 'session-1',
             challengeId: 'challenge-2',
             status: 'in_progress',
@@ -97,8 +128,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const mockDb = createMockDbForSessionDetail(mockSessionData, mockAttempts);
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
-      
-      const result = await load({ params, locals } as any);
+
+      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
 
       expect(result).toEqual({
         session: mockSessionData.session,
@@ -135,8 +166,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const mockDb = createMockDbForSessionDetail(mockSessionData, mockAttempts);
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
-      
-      const result = await load({ params, locals } as any);
+
+      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
 
       expect(result.candidate).toBeNull();
       expect(result.session).toEqual(mockSessionData.session);
@@ -162,8 +193,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const mockDb = createMockDbForSessionDetail(mockSessionData, mockAttempts);
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
-      
-      const result = await load({ params, locals } as any);
+
+      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
 
       expect(result.attempts).toEqual([]);
       expect(result.session).toEqual(mockSessionData.session);
@@ -191,11 +222,12 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const mockDb = createMockDbForSessionDetail(mockSessionData, mockAttempts);
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
-      
-      const result = await load({ params, locals } as any);
+
+      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
 
       expect(result.attempts[0].challenge).toBeNull();
       expect(result.attempts[0].attempt).toEqual(mockAttempts[0].attempt);
     });
   });
 });
+

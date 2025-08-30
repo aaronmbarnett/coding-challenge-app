@@ -2,6 +2,28 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 import * as table from '$lib/server/db/schema';
 
+// Type for the expected return value
+interface SessionsLoadResult {
+  sessions: Array<{
+    session: {
+      id: string;
+      candidateId: string;
+      status: string;
+      totalDurationSec: number;
+      startedAt: Date | null;
+      endsAt: Date | null;
+    };
+    candidate: {
+      id: string;
+      email: string;
+    } | null;
+  }>;
+  stats: {
+    totalChallenges: number;
+    totalCandidates: number;
+  };
+}
+
 // Create mock db functions for different query patterns
 const createMockDbForSessions = (mockSessions: any, challengeCount: number, candidateCount: number) => {
   return {
@@ -51,7 +73,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions(mockSessions, 5, 3);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionsLoadResult;
 
       expect(result).toEqual({
         sessions: mockSessions,
@@ -71,7 +93,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions(mockSessions, 0, 0);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionsLoadResult;
 
       expect(result).toEqual({
         sessions: [],
@@ -100,7 +122,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions(mockSessions, 1, 2);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionsLoadResult;
 
       expect(result.sessions).toEqual(mockSessions);
       expect(result.sessions[0].candidate).toBeNull();
@@ -110,7 +132,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions([], 42, 17);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any);
+      const result = await load({ locals } as any) as SessionsLoadResult;
 
       expect(result.stats).toEqual({
         totalChallenges: 42,

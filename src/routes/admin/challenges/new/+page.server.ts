@@ -1,5 +1,5 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit';
-import * as table from '$lib/server/db/schema';
+
 import {
   createChallenge,
   parseFormDataToChallenge,
