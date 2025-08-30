@@ -33,12 +33,11 @@ export const actions: Actions = {
           timeLimitSec: timeLimit ? parseInt(timeLimit) : null
         })
         .returning();
-
-      console.log('Challenge created successfully:', challenge);
-      throw redirect(302, `/admin/challenges`);
     } catch (error) {
       console.error('Database error:', error);
       return fail(500, { message: 'Failed to create challenge: ' + error.message });
     }
+
+    throw redirect(302, `/admin/challenges`);
   }
 };
