@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 import * as table from '$lib/server/db/schema';
+import { createMockLoadEvent } from '$lib/test-utils/sveltekit-mocks';
 
 // Type for the expected return value
 interface SessionsLoadResult {
@@ -73,7 +74,8 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions(mockSessions, 5, 3);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as SessionsLoadResult;
+      const event = createMockLoadEvent({ locals });
+      const result = await load(event) as SessionsLoadResult;
 
       expect(result).toEqual({
         sessions: mockSessions,
@@ -93,7 +95,8 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions(mockSessions, 0, 0);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as SessionsLoadResult;
+      const event = createMockLoadEvent({ locals });
+      const result = await load(event) as SessionsLoadResult;
 
       expect(result).toEqual({
         sessions: [],
@@ -122,7 +125,8 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions(mockSessions, 1, 2);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as SessionsLoadResult;
+      const event = createMockLoadEvent({ locals });
+      const result = await load(event) as SessionsLoadResult;
 
       expect(result.sessions).toEqual(mockSessions);
       expect(result.sessions[0].candidate).toBeNull();
@@ -132,7 +136,8 @@ describe('/admin/sessions +page.server.ts', () => {
       const mockDb = createMockDbForSessions([], 42, 17);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as SessionsLoadResult;
+      const event = createMockLoadEvent({ locals });
+      const result = await load(event) as SessionsLoadResult;
 
       expect(result.stats).toEqual({
         totalChallenges: 42,

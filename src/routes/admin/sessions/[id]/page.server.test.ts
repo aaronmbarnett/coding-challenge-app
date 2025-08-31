@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 import { error } from '@sveltejs/kit';
+import { createMockLoadEvent } from '$lib/test-utils/sveltekit-mocks';
 
 // Type for the expected return value
 interface SessionDetailLoadResult {
@@ -39,7 +40,7 @@ vi.mock('@sveltejs/kit', async () => {
   return {
     ...actual,
     error: vi.fn((status: number, message: string) => {
-      const err = new Error(message) as any;
+      const err = new Error(message) as Error & { status: number };
       err.status = status;
       throw err;
     })
@@ -129,7 +130,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
 
-      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
+      const event = createMockLoadEvent({ params, locals });
+      const result = await load(event) as SessionDetailLoadResult;
 
       expect(result).toEqual({
         session: mockSessionData.session,
@@ -146,7 +148,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const params = { id: 'nonexistent-session' };
       const locals = { db: mockDb };
 
-      await expect(load({ params, locals } as any)).rejects.toThrow();
+      const event = createMockLoadEvent({ params, locals });
+      await expect(load(event)).rejects.toThrow();
       expect(error).toHaveBeenCalledWith(404, 'Session not found');
     });
 
@@ -167,7 +170,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
 
-      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
+      const event = createMockLoadEvent({ params, locals });
+      const result = await load(event) as SessionDetailLoadResult;
 
       expect(result.candidate).toBeNull();
       expect(result.session).toEqual(mockSessionData.session);
@@ -194,7 +198,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
 
-      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
+      const event = createMockLoadEvent({ params, locals });
+      const result = await load(event) as SessionDetailLoadResult;
 
       expect(result.attempts).toEqual([]);
       expect(result.session).toEqual(mockSessionData.session);
@@ -223,7 +228,8 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const params = { id: 'session-1' };
       const locals = { db: mockDb };
 
-      const result = await load({ params, locals } as any) as SessionDetailLoadResult;
+      const event = createMockLoadEvent({ params, locals });
+      const result = await load(event) as SessionDetailLoadResult;
 
       expect(result.attempts[0].challenge).toBeNull();
       expect(result.attempts[0].attempt).toEqual(mockAttempts[0].attempt);

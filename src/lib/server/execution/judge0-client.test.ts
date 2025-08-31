@@ -327,16 +327,16 @@ describe('Judge0 Client', () => {
       // Mock continuous failures
       vi.mocked(fetch).mockRejectedValue(new Error('Persistent network error'));
 
-      // Wrap both the submission and timer running in the expect
-      const testPromise = (async () => {
-        const submitPromise = client.submitExecution(mockSubmission);
-        await vi.runAllTimersAsync();
-        return submitPromise;
-      })();
+      // Use Promise.allSettled to ensure all promises are handled
+      const [submitResult] = await Promise.allSettled([
+        client.submitExecution(mockSubmission),
+        vi.runAllTimersAsync()
+      ]);
 
-      await expect(testPromise).rejects.toThrow(
-        'Judge0 service unavailable after 3 retries'
-      );
+      expect(submitResult.status).toBe('rejected');
+      if (submitResult.status === 'rejected') {
+        expect(submitResult.reason.message).toContain('Judge0 service unavailable after 3 retries');
+      }
       
       expect(fetch).toHaveBeenCalledTimes(3);
     });

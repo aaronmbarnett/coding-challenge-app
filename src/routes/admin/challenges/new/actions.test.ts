@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { actions } from './+page.server';
 import { fail, redirect } from '@sveltejs/kit';
 import * as challengesModule from '$lib/server/challenges';
+import { createMockActionEvent } from '$lib/test-utils/sveltekit-mocks';
 
 // Mock SvelteKit functions
 vi.mock('@sveltejs/kit', async () => {
@@ -61,7 +62,8 @@ describe('/admin/challenges/new form actions', () => {
 
       const locals = { db: mockDb };
 
-      await expect(actions.default({ request: mockRequest, locals } as any)).rejects.toThrow(
+      const event = createMockActionEvent({ request: mockRequest, locals });
+      await expect(actions.default(event)).rejects.toThrow(
         'Redirect to /admin/challenges'
       );
 
@@ -82,7 +84,8 @@ describe('/admin/challenges/new form actions', () => {
 
       const locals = { db: mockDb };
 
-      const result = await actions.default({ request: mockRequest, locals } as any);
+      const event = createMockActionEvent({ request: mockRequest, locals });
+      const result = await actions.default(event);
 
       expect(result).toEqual({
         status: 400,
@@ -113,7 +116,8 @@ describe('/admin/challenges/new form actions', () => {
 
       const locals = { db: mockDb };
 
-      const result = await actions.default({ request: mockRequest, locals } as any);
+      const event = createMockActionEvent({ request: mockRequest, locals });
+      const result = await actions.default(event);
 
       expect(result).toEqual({
         status: 400,
@@ -134,7 +138,8 @@ describe('/admin/challenges/new form actions', () => {
 
       const locals = { db: mockDb };
 
-      const result = await actions.default({ request: mockRequest, locals } as any);
+      const event = createMockActionEvent({ request: mockRequest, locals });
+      const result = await actions.default(event);
 
       expect(result).toEqual({
         status: 500,

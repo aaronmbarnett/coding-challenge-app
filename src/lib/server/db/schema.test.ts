@@ -1,19 +1,22 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { db } from './index';
+import { setupTestDb, testFactories } from './test-utils';
 import * as table from './schema';
 import { eq } from 'drizzle-orm';
 
 describe('Database Schema and Relationships', () => {
-  // Clean up test data after each test
-  afterEach(async () => {
-    await db.delete(table.submissions);
-    await db.delete(table.attempts);
-    await db.delete(table.sessions);
-    await db.delete(table.challengeTests);
-    await db.delete(table.challenges);
-    await db.delete(table.invitation);
-    await db.delete(table.session);
-    await db.delete(table.user);
+  let db: ReturnType<typeof setupTestDb>['db'];
+  let cleanup: ReturnType<typeof setupTestDb>['cleanup'];
+
+  beforeEach(() => {
+    // Each test gets a fresh in-memory database
+    const testDb = setupTestDb();
+    db = testDb.db;
+    cleanup = testDb.cleanup;
+  });
+
+  afterEach(() => {
+    // Clean up the database
+    cleanup();
   });
 
   describe('User table', () => {
