@@ -1,97 +1,150 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
 import { executeChallenge, type CodeSubmission, type ExecutionResult } from './challenge-executor';
 import { db } from '../db';
 import * as table from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
+
+// Helper function for database cleanup - simple and reliable
+async function cleanupTestData() {
+  // Clean up in correct dependency order - simple approach
+  try {
+    await db.delete(table.submissions);
+    await db.delete(table.attempts);
+    await db.delete(table.challengeTests);
+    await db.delete(table.sessions);
+    await db.delete(table.challenges);
+    await db.delete(table.invitation);
+    await db.delete(table.session);
+    await db.delete(table.user);
+  } catch (error) {
+    // Ignore cleanup errors - they're usually harmless
+  }
+}
 
 describe('Challenge Execution Service', () => {
   let challengeId: string;
   let attemptId: string;
   let testCaseIds: string[] = [];
 
-  beforeEach(async () => {
-    // Clean up test data
-    await db.delete(table.submissions);
-    await db.delete(table.challengeTests);
-    await db.delete(table.attempts);
-    await db.delete(table.sessions);
-    await db.delete(table.challenges);
-    await db.delete(table.user);
-
+  // Helper to create consistent test data for each test
+  async function createTestData() {
     // Create test challenge with test cases
-    const [challenge] = await db
-      .insert(table.challenges)
-      .values({
-        title: 'Array Sum',
-        descriptionMd: '# Calculate sum of array elements',
-        languagesCsv: 'javascript,python'
-      })
-      .returning();
-    challengeId = challenge.id;
+    try {
+      const challengeResult = await db
+        .insert(table.challenges)
+        .values({
+          title: 'Array Sum',
+          descriptionMd: '# Calculate sum of array elements',
+          languagesCsv: 'javascript,python'
+        })
+        .returning();
+      
+      if (!challengeResult.length) {
+        throw new Error('Failed to create challenge');
+      }
+      challengeId = challengeResult[0].id;
+    } catch (error) {
+      console.error('Failed to create challenge:', error);
+      throw error;
+    }
 
     // Create test cases for the challenge
-    const [testCase1] = await db
-      .insert(table.challengeTests)
-      .values({
-        challengeId,
-        kind: 'io',
-        input: '[1, 2, 3]',
-        expectedOutput: '6',
-        weight: 1,
-        hidden: 0
-      })
-      .returning();
+    try {
+      const testCase1Result = await db
+        .insert(table.challengeTests)
+        .values({
+          challengeId,
+          kind: 'io',
+          input: '[1, 2, 3]',
+          expectedOutput: '6',
+          weight: 1,
+          hidden: 0
+        })
+        .returning();
 
-    const [testCase2] = await db
-      .insert(table.challengeTests)
-      .values({
-        challengeId,
-        kind: 'io',
-        input: '[5, 10, -3]',
-        expectedOutput: '12',
-        weight: 2,
-        hidden: 1
-      })
-      .returning();
+      const testCase2Result = await db
+        .insert(table.challengeTests)
+        .values({
+          challengeId,
+          kind: 'io',
+          input: '[5, 10, -3]',
+          expectedOutput: '12',
+          weight: 2,
+          hidden: 1
+        })
+        .returning();
 
-    testCaseIds = [testCase1.id, testCase2.id];
+      testCaseIds = [testCase1Result[0].id, testCase2Result[0].id];
+    } catch (error) {
+      console.error('Failed to create test cases:', error);
+      throw error;
+    }
 
     // Create user, session, and attempt for testing
-    const [user] = await db
-      .insert(table.user)
-      .values({
-        email: 'candidate@test.com',
-        role: 'candidate'
-      })
-      .returning();
+    try {
+      const userResult = await db
+        .insert(table.user)
+        .values({
+          email: 'candidate@test.com',
+          role: 'candidate'
+        })
+        .returning();
+        
+      if (!userResult.length) {
+        throw new Error('Failed to create user');
+      }
 
-    const [session] = await db
-      .insert(table.sessions)
-      .values({
-        candidateId: user.id,
-        totalDurationSec: 3600
-      })
-      .returning();
+      const sessionResult = await db
+        .insert(table.sessions)
+        .values({
+          candidateId: userResult[0].id,
+          totalDurationSec: 3600
+        })
+        .returning();
+        
+      if (!sessionResult.length) {
+        throw new Error('Failed to create session');
+      }
 
-    const [attempt] = await db
-      .insert(table.attempts)
-      .values({
-        sessionId: session.id,
-        challengeId: challenge.id,
-        status: 'in_progress'
-      })
-      .returning();
-    attemptId = attempt.id;
+      const attemptResult = await db
+        .insert(table.attempts)
+        .values({
+          sessionId: sessionResult[0].id,
+          challengeId: challengeId,
+          status: 'in_progress'
+        })
+        .returning();
+        
+      if (!attemptResult.length) {
+        throw new Error('Failed to create attempt');
+      }
+      attemptId = attemptResult[0].id;
+    } catch (error) {
+      console.error('Failed to create user/session/attempt:', error);
+      throw error;
+    }
+  }
+
+  // Clean up any leftover data from previous test runs
+  beforeAll(async () => {
+    await cleanupTestData();
+  });
+
+  beforeEach(async () => {
+    // Always clean up before setting up new test data
+    await cleanupTestData();
+    
+    // Reset the variables
+    challengeId = '';
+    attemptId = '';
+    testCaseIds = [];
+
+    // Always recreate test data for each test to ensure isolation
+    await createTestData();
   });
 
   afterEach(async () => {
-    // Clean up test data
-    await db.delete(table.submissions);
-    await db.delete(table.challengeTests);
-    await db.delete(table.attempts);
-    await db.delete(table.sessions);
-    await db.delete(table.challenges);
-    await db.delete(table.user);
+    await cleanupTestData();
   });
 
   describe('executeChallenge', () => {

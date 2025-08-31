@@ -11,6 +11,7 @@ describe('Judge0 Client', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers();
     
     mockConfig = {
       baseUrl: 'http://localhost:2358',
@@ -22,6 +23,10 @@ describe('Judge0 Client', () => {
     };
     
     client = new Judge0Client(mockConfig);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('Configuration-driven setup', () => {
@@ -104,7 +109,12 @@ describe('Judge0 Client', () => {
         )
       );
 
-      const isHealthy = await client.checkHealth();
+      const healthPromise = client.checkHealth();
+      
+      // Run all pending timers
+      await vi.runAllTimersAsync();
+      
+      const isHealthy = await healthPromise;
       
       expect(isHealthy).toBe(false);
     });
@@ -214,7 +224,12 @@ describe('Judge0 Client', () => {
           json: () => Promise.resolve(mockResult)
         } as Response);
 
-      const result = await client.getExecutionResult(mockToken);
+      const resultPromise = client.getExecutionResult(mockToken);
+      
+      // Run all pending timers
+      await vi.runAllTimersAsync();
+      
+      const result = await resultPromise;
       
       expect(result).toEqual(mockResult);
       expect(fetch).toHaveBeenCalledTimes(2);
@@ -287,7 +302,12 @@ describe('Judge0 Client', () => {
           json: () => Promise.resolve({ token: 'retry-success-token' })
         } as Response);
 
-      const token = await client.submitExecution(mockSubmission);
+      const tokenPromise = client.submitExecution(mockSubmission);
+      
+      // Run all pending timers
+      await vi.runAllTimersAsync();
+      
+      const token = await tokenPromise;
       
       expect(token).toBe('retry-success-token');
       expect(fetch).toHaveBeenCalledTimes(3);
@@ -307,7 +327,14 @@ describe('Judge0 Client', () => {
       // Mock continuous failures
       vi.mocked(fetch).mockRejectedValue(new Error('Persistent network error'));
 
-      await expect(client.submitExecution(mockSubmission)).rejects.toThrow(
+      // Wrap both the submission and timer running in the expect
+      const testPromise = (async () => {
+        const submitPromise = client.submitExecution(mockSubmission);
+        await vi.runAllTimersAsync();
+        return submitPromise;
+      })();
+
+      await expect(testPromise).rejects.toThrow(
         'Judge0 service unavailable after 3 retries'
       );
       
