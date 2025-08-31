@@ -36,6 +36,9 @@ export interface TestCaseResult {
   
   /** Error message if execution failed */
   error?: string;
+  
+  /** Judge0 token for this execution (if using real execution) */
+  judge0Token?: string;
 }
 
 /**
@@ -136,4 +139,69 @@ export interface ExecutionStats {
   averageExecutionTime: number;
   timeouts: number;
   errors: number;
+}
+
+/**
+ * Judge0 client configuration for Docker-ready setup
+ */
+export interface Judge0Config {
+  /** Base URL for Judge0 API (e.g., http://localhost:2358 or http://judge0:2358) */
+  baseUrl: string;
+  
+  /** Authentication token (optional for self-hosted, required for cloud) */
+  authToken?: string;
+  
+  /** Request timeout in milliseconds */
+  timeout: number;
+  
+  /** Maximum retry attempts for failed requests */
+  maxRetries: number;
+  
+  /** Whether to enable result polling */
+  enablePolling: boolean;
+  
+  /** Polling interval in milliseconds */
+  pollingInterval: number;
+}
+
+/**
+ * Judge0 execution submission request
+ */
+export interface Judge0ExecutionRequest {
+  sourceCode: string;
+  languageId: number;
+  stdin: string;
+  expectedOutput: string;
+  cpuTimeLimit: number;
+  memoryLimit: number;
+  wallTimeLimit: number;
+}
+
+/**
+ * Judge0 language information
+ */
+export interface Judge0Language {
+  id: number;
+  name: string;
+}
+
+/**
+ * Judge0 client statistics for monitoring
+ */
+export interface Judge0Stats {
+  totalRequests: number;
+  successfulRequests: number;
+  failedRequests: number;
+  averageResponseTime: number;
+  retryCount: number;
+}
+
+/**
+ * Health check information for containerization
+ */
+export interface HealthCheckInfo {
+  endpoint: string;
+  method: string;
+  expectedStatus: number;
+  timeout: number;
 }

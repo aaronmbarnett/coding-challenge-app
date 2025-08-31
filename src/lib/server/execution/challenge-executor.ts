@@ -2,9 +2,32 @@ import { db } from '../db';
 import * as table from '../db/schema';
 import { eq } from 'drizzle-orm';
 import type { CodeSubmission, ExecutionResult, TestCaseResult } from './types';
+import { Judge0Client } from './judge0-client';
+import { createAutoConfig, getLanguageId } from './config';
 
 // Track concurrent executions per attempt
 const executionLocks = new Map<string, Promise<ExecutionResult>>();
+
+// Judge0 client instance (lazy initialization for better testing)
+let judge0Client: Judge0Client | null = null;
+
+// Flag to control execution mode (useful for testing and development)
+const USE_REAL_EXECUTION = process.env.JUDGE0_URL !== undefined && process.env.NODE_ENV !== 'test';
+
+/**
+ * Get or create Judge0 client instance
+ */
+function getJudge0Client(): Judge0Client {
+  if (!judge0Client) {
+    try {
+      const config = createAutoConfig();
+      judge0Client = new Judge0Client(config);
+    } catch (error) {
+      throw new Error(`Failed to initialize Judge0 client: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  return judge0Client;
+}
 
 /**
  * Main function to execute code against challenge test cases
@@ -185,11 +208,123 @@ async function executeTestCase(
   language: string,
   testCase: typeof table.challengeTests.$inferSelect
 ): Promise<TestCaseResult> {
-  // For now, implement a simple mock that simulates execution
-  // This will make our basic tests pass (GREEN phase)
-  
   const startTime = Date.now();
-  
+
+  // Use real Judge0 execution if configured, otherwise fall back to mock
+  if (USE_REAL_EXECUTION) {
+    return executeWithJudge0(code, language, testCase, startTime);
+  } else {
+    return executeMockTestCase(code, language, testCase, startTime);
+  }
+}
+
+/**
+ * Execute test case using Judge0 API
+ */
+async function executeWithJudge0(
+  code: string,
+  language: string,
+  testCase: typeof table.challengeTests.$inferSelect,
+  startTime: number
+): Promise<TestCaseResult> {
+  try {
+    const client = getJudge0Client();
+    
+    // Get Judge0 language ID
+    const languageId = getLanguageId(language);
+    if (!languageId) {
+      throw new Error(`Unsupported language: ${language}`);
+    }
+
+    // Submit code for execution
+    const token = await client.submitExecution({
+      sourceCode: code,
+      languageId,
+      stdin: testCase.input || '',
+      expectedOutput: testCase.expectedOutput || '',
+      cpuTimeLimit: 2, // 2 seconds CPU limit
+      memoryLimit: 128000, // 128MB memory limit
+      wallTimeLimit: 5 // 5 seconds wall time limit
+    });
+
+    // Get execution result
+    const result = await client.getExecutionResult(token);
+    
+    const executionTime = Date.now() - startTime;
+    
+    // Process Judge0 result
+    const actualOutput = (result.stdout || '').trim();
+    const expectedOutput = (testCase.expectedOutput || '').trim();
+    const passed = actualOutput === expectedOutput && result.status.id === 3; // Status 3 = Accepted
+    
+    let error: string | undefined;
+    
+    // Handle different execution statuses
+    switch (result.status.id) {
+      case 3: // Accepted
+        break;
+      case 4: // Wrong Answer
+        break; // No error, just didn't pass
+      case 5: // Time Limit Exceeded
+        error = 'Execution timeout after 2 seconds';
+        break;
+      case 6: // Compilation Error
+        error = result.compile_output || 'Compilation failed';
+        break;
+      case 7: // Runtime Error (SIGSEGV)
+      case 8: // Runtime Error (SIGXFSZ)
+      case 9: // Runtime Error (SIGFPE)
+      case 10: // Runtime Error (SIGABRT)
+      case 11: // Runtime Error (NZEC)
+      case 12: // Runtime Error (Other)
+        error = result.stderr || result.message || 'Runtime error occurred';
+        break;
+      case 13: // Internal Error
+        error = 'Judge0 internal error';
+        break;
+      case 14: // Exec Format Error
+        error = 'Execution format error';
+        break;
+      default:
+        if (result.status.id > 14) {
+          error = `Unknown execution status: ${result.status.description}`;
+        }
+    }
+    
+    return {
+      testCaseId: testCase.id,
+      passed,
+      expectedOutput,
+      actualOutput,
+      executionTime,
+      weight: testCase.weight,
+      error,
+      judge0Token: token
+    };
+  } catch (error) {
+    const executionTime = Date.now() - startTime;
+    
+    return {
+      testCaseId: testCase.id,
+      passed: false,
+      expectedOutput: testCase.expectedOutput || '',
+      actualOutput: '',
+      executionTime,
+      weight: testCase.weight,
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
+/**
+ * Mock test case execution (for testing and development)
+ */
+async function executeMockTestCase(
+  code: string,
+  language: string,
+  testCase: typeof table.challengeTests.$inferSelect,
+  startTime: number
+): Promise<TestCaseResult> {
   // Simple mock logic for the sum function tests
   let actualOutput: string;
   let passed: boolean;
@@ -275,22 +410,69 @@ async function createSubmissionRecord(
   submission: CodeSubmission,
   result: ExecutionResult
 ): Promise<string> {
+  // Extract Judge0 information from test results if available
+  const judge0Info = result.testResults[0]?.judge0Token || null;
+  const stdout = result.testResults.map(r => r.actualOutput).join('\n') || null;
+  const stderr = result.testResults.find(r => r.error)?.error || null;
+
   const [createdSubmission] = await db
     .insert(table.submissions)
     .values({
       attemptId: submission.attemptId,
       code: submission.code,
       language: submission.language,
-      judge0Id: null, // Will be set later when we implement Judge0
+      judge0Id: judge0Info,
       passed: result.passedTests,
       total: result.totalTests,
-      stdout: null, // Will be populated from execution
-      stderr: null,
+      stdout,
+      stderr,
       timeMs: Math.round(result.totalExecutionTime)
     })
     .returning({ id: table.submissions.id });
 
   return createdSubmission.id;
+}
+
+/**
+ * Check if Judge0 execution service is available
+ * Useful for Docker health checks and service monitoring
+ */
+export async function checkExecutionServiceHealth(): Promise<boolean> {
+  if (!USE_REAL_EXECUTION) {
+    return true; // Mock execution is always available
+  }
+
+  try {
+    const client = getJudge0Client();
+    return await client.checkHealth();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get execution service information for monitoring
+ */
+export function getExecutionServiceInfo(): {
+  mode: 'real' | 'mock';
+  judge0Url?: string;
+  healthCheckEndpoint?: string;
+} {
+  if (USE_REAL_EXECUTION) {
+    try {
+      const client = getJudge0Client();
+      const healthInfo = client.getHealthCheckInfo();
+      return {
+        mode: 'real',
+        judge0Url: process.env.JUDGE0_URL,
+        healthCheckEndpoint: healthInfo.endpoint
+      };
+    } catch {
+      return { mode: 'mock' };
+    }
+  }
+  
+  return { mode: 'mock' };
 }
 
 // Re-export types for convenience
