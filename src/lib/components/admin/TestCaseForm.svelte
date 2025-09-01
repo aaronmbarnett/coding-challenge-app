@@ -9,7 +9,7 @@
     onCancel 
   }: { 
     challengeId: string; 
-    form?: any; 
+    form?: { message?: string } | null; 
     onCancel: () => void; 
   } = $props();
 

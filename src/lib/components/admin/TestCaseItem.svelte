@@ -1,12 +1,14 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
+  import type { TestCase } from '$lib/server/db/schema';
+  
   let { 
     testCase, 
     index, 
     challengeId 
   }: { 
-    testCase: any; 
+    testCase: TestCase; 
     index: number; 
     challengeId: string; 
   } = $props();

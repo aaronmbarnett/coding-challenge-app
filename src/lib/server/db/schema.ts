@@ -111,6 +111,17 @@ export const submissions = sqliteTable('submissions', {
     .$defaultFn(() => new Date())
 });
 
-export type Session = typeof session.$inferSelect;
+// Inferred types from schema - automatically stay in sync
 export type User = typeof user.$inferSelect;
 export type Invitation = typeof invitation.$inferSelect;
+export type Session = typeof session.$inferSelect;
+export type Challenge = typeof challenges.$inferSelect;
+export type TestCase = typeof challengeTests.$inferSelect;
+export type ExamSession = typeof sessions.$inferSelect;
+export type Attempt = typeof attempts.$inferSelect;
+export type Submission = typeof submissions.$inferSelect;
+
+// Insert types for forms
+export type UserInsert = typeof user.$inferInsert;
+export type ChallengeInsert = typeof challenges.$inferInsert;
+export type TestCaseInsert = typeof challengeTests.$inferInsert;

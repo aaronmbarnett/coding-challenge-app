@@ -1,11 +1,12 @@
 <script lang="ts">
   import TestCaseItem from './TestCaseItem.svelte';
+  import type { TestCase } from '$lib/server/db/schema';
 
   let { 
     testCases, 
     challengeId 
   }: { 
-    testCases: any[]; 
+    testCases: TestCase[]; 
     challengeId: string; 
   } = $props();
 </script>

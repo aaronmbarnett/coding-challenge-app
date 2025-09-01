@@ -1,5 +1,7 @@
 <script lang="ts">
-  let { challenge }: { challenge: any } = $props();
+  import type { Challenge } from '$lib/server/db/schema';
+  
+  let { challenge }: { challenge: Challenge } = $props();
   function handleDelete() {
     if (confirm('Are you sure you want to delete this challenge?')) {
       alert('Delete functionality coming soon!');

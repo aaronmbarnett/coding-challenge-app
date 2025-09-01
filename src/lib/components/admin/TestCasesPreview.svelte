@@ -1,9 +1,11 @@
 <script lang="ts">
+  import type { TestCase } from '$lib/server/db/schema';
+  
   let { 
     testCases, 
     challengeId 
   }: { 
-    testCases: any[]; 
+    testCases: TestCase[]; 
     challengeId: string; 
   } = $props();
 </script>

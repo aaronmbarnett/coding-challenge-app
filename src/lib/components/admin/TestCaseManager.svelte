@@ -2,15 +2,16 @@
   import TestCaseHeader from './TestCaseHeader.svelte';
   import TestCaseForm from './TestCaseForm.svelte';
   import TestCaseList from './TestCaseList.svelte';
+  import type { Challenge, TestCase } from '$lib/server/db/schema';
 
   let { 
     challenge, 
     testCases, 
     form = null 
   }: { 
-    challenge: any; 
-    testCases: any[]; 
-    form?: any; 
+    challenge: Challenge; 
+    testCases: TestCase[]; 
+    form?: { message?: string } | null; 
   } = $props();
 
   let showForm = $state(false);

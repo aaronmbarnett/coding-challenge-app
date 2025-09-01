@@ -1,5 +1,7 @@
 <script lang="ts">
-  let { challenge }: { challenge: any } = $props();
+  import type { Challenge } from '$lib/server/db/schema';
+  
+  let { challenge }: { challenge: Challenge } = $props();
 </script>
 
 <div class="space-y-6 lg:col-span-2">
