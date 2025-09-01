@@ -46,7 +46,7 @@ export const LANGUAGE_MAPPINGS = {
  * Create Judge0 configuration from environment variables
  * Supports both Docker and cloud deployments
  */
-export function createConfigFromEnvironment(env: Judge0Environment = process.env): Judge0Config {
+export function createConfigFromEnvironment(env: Judge0Environment = process.env as Judge0Environment): Judge0Config {
   // Validate required environment variables
   if (!env.JUDGE0_URL) {
     throw new Error('JUDGE0_URL environment variable is required');
@@ -113,7 +113,7 @@ export function createCloudConfig(authToken: string): Judge0Config {
 /**
  * Detect deployment environment and create appropriate configuration
  */
-export function createAutoConfig(env: Judge0Environment = process.env): Judge0Config {
+export function createAutoConfig(env: Judge0Environment = process.env as Judge0Environment): Judge0Config {
   // If explicit URL provided, use environment config
   if (env.JUDGE0_URL) {
     return createConfigFromEnvironment(env);

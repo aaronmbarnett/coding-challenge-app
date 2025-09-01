@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { actions } from './+page.server';
 import { fail, redirect } from '@sveltejs/kit';
 import * as challengesModule from '$lib/server/challenges';
-import { createMockActionEvent } from '$lib/test-utils/sveltekit-mocks';
+import { createMockActionEvent, createMockRequest } from '$lib/test-utils/sveltekit-mocks';
 
 // Mock SvelteKit functions
 vi.mock('@sveltejs/kit', async () => {
@@ -56,9 +56,7 @@ describe('/admin/challenges/new form actions', () => {
         createdAt: new Date()
       });
 
-      const mockRequest = {
-        formData: vi.fn().mockResolvedValue(mockFormData)
-      };
+      const mockRequest = createMockRequest(mockFormData);
 
       const locals = { db: mockDb };
 
@@ -74,9 +72,7 @@ describe('/admin/challenges/new form actions', () => {
 
     it('should return validation error for invalid data', async () => {
       const mockFormData = new FormData();
-      const mockRequest = {
-        formData: vi.fn().mockResolvedValue(mockFormData)
-      };
+      const mockRequest = createMockRequest(mockFormData);
 
       vi.mocked(challengesModule.parseFormDataToChallenge).mockImplementation(() => {
         throw new Error('Title, description, and languages are required');
@@ -105,9 +101,7 @@ describe('/admin/challenges/new form actions', () => {
       };
 
       const mockFormData = new FormData();
-      const mockRequest = {
-        formData: vi.fn().mockResolvedValue(mockFormData)
-      };
+      const mockRequest = createMockRequest(mockFormData);
 
       vi.mocked(challengesModule.parseFormDataToChallenge).mockReturnValue(mockChallengeData);
       vi.mocked(challengesModule.createChallenge).mockRejectedValue(
@@ -128,9 +122,7 @@ describe('/admin/challenges/new form actions', () => {
 
     it('should return generic error for unknown errors', async () => {
       const mockFormData = new FormData();
-      const mockRequest = {
-        formData: vi.fn().mockResolvedValue(mockFormData)
-      };
+      const mockRequest = createMockRequest(mockFormData);
 
       vi.mocked(challengesModule.parseFormDataToChallenge).mockImplementation(() => {
         throw 'Unknown error'; // Non-Error object

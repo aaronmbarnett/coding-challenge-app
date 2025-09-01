@@ -24,7 +24,7 @@
     </a>
     <button
       class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-      on:click={handleDelete}
+      onclick={handleDelete}
     >
       Delete
     </button>

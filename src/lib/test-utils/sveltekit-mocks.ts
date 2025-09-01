@@ -7,16 +7,35 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 /**
  * Create a minimal but type-safe event object for testing load functions
+ * Returns a partial mock that matches what load functions actually need
  */
 export function createMockLoadEvent(overrides: {
   params?: Record<string, string>;
-  locals?: { db?: any; user?: any };
+  locals?: { db?: any; user?: any; session?: any };
   url?: URL;
-}): Pick<RequestEvent, 'params' | 'locals' | 'url'> {
+}): any {
   return {
     params: overrides.params || {},
-    locals: overrides.locals || { db: {}, user: null },
-    url: overrides.url || new URL('http://localhost')
+    locals: overrides.locals || { db: {}, user: null, session: null },
+    url: overrides.url || new URL('http://localhost'),
+    route: { id: null },
+    parent: () => Promise.resolve({}),
+    depends: () => {},
+    untrack: (fn: () => any) => fn(),
+    tracing: {},
+    platform: undefined,
+    cookies: {
+      get: () => undefined,
+      set: () => {},
+      delete: () => {},
+      serialize: () => ''
+    } as any,
+    fetch: global.fetch,
+    getClientAddress: () => '127.0.0.1',
+    isDataRequest: false,
+    isSubRequest: false,
+    request: new Request('http://localhost'),
+    setHeaders: () => {}
   };
 }
 
@@ -25,9 +44,9 @@ export function createMockLoadEvent(overrides: {
  */
 export function createMockActionEvent(overrides: {
   params?: Record<string, string>;
-  locals?: { db?: any; user?: any };
+  locals?: { db?: any; user?: any; session?: any };
   request?: Request;
-}): Pick<RequestEvent, 'params' | 'locals' | 'request'> {
+}): any {
   const mockRequest = overrides.request || new Request('http://localhost', {
     method: 'POST',
     body: new FormData()
@@ -35,8 +54,22 @@ export function createMockActionEvent(overrides: {
 
   return {
     params: overrides.params || {},
-    locals: overrides.locals || { db: {}, user: null },
-    request: mockRequest
+    locals: overrides.locals || { db: {}, user: null, session: null },
+    request: mockRequest,
+    url: new URL('http://localhost'),
+    route: { id: null },
+    cookies: {
+      get: () => undefined,
+      set: () => {},
+      delete: () => {},
+      serialize: () => ''
+    } as any,
+    fetch: global.fetch,
+    getClientAddress: () => '127.0.0.1',
+    isDataRequest: false,
+    isSubRequest: false,
+    setHeaders: () => {},
+    platform: undefined
   };
 }
 
@@ -47,11 +80,18 @@ export function createMockRequest(formData: FormData, options?: {
   method?: string;
   url?: string;
 }): Request {
-  return {
-    formData: () => Promise.resolve(formData),
+  const baseRequest = new Request(options?.url || 'http://localhost', {
     method: options?.method || 'POST',
-    url: options?.url || 'http://localhost'
-  } as Request;
+    body: formData
+  });
+  
+  // Override formData method to return our mock data
+  Object.defineProperty(baseRequest, 'formData', {
+    value: () => Promise.resolve(formData),
+    writable: false
+  });
+  
+  return baseRequest;
 }
 
 /**

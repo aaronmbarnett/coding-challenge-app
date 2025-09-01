@@ -39,7 +39,7 @@
       <button
         type="submit"
         class="text-sm text-red-600 hover:text-red-800"
-        on:click={confirmDelete}
+        onclick={confirmDelete}
       >
         Delete
       </button>

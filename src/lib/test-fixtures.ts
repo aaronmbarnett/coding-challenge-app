@@ -1,4 +1,4 @@
-import type { Challenge, TestCase, User, Session } from '$lib/server/db/schema';
+import type { Challenge, TestCase, User, ExamSession } from '$lib/server/db/schema';
 
 export const mockChallenge: Challenge = {
   id: 'challenge-123',
@@ -40,20 +40,16 @@ export const mockUser: User = {
   id: 'user-123',
   email: 'admin@example.com',
   role: 'admin',
-  name: 'Admin User',
   createdAt: new Date('2024-01-01T00:00:00Z')
 };
 
-export const mockSession: Session = {
+export const mockSession: ExamSession = {
   id: 'session-123',
-  candidateEmail: 'candidate@example.com',
-  candidateName: 'John Doe',
-  challengeIds: 'challenge-123,challenge-456',
-  status: 'pending',
-  startsAt: new Date('2024-01-15T10:00:00Z'),
-  endsAt: null,
-  createdAt: new Date('2024-01-14T10:00:00Z'),
-  createdBy: 'user-123'
+  candidateId: 'candidate-123',
+  totalDurationSec: 3600,
+  startedAt: new Date('2024-01-15T10:00:00Z'),
+  endsAt: new Date('2024-01-15T11:00:00Z'),
+  status: 'pending'
 };
 
 // Factory functions for creating variations
@@ -69,6 +65,6 @@ export function createMockUser(overrides: Partial<User> = {}): User {
   return { ...mockUser, ...overrides };
 }
 
-export function createMockSession(overrides: Partial<Session> = {}): Session {
+export function createMockSession(overrides: Partial<ExamSession> = {}): ExamSession {
   return { ...mockSession, ...overrides };
 }

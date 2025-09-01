@@ -1,7 +1,14 @@
 <script lang="ts">
   import type { Challenge } from '$lib/server/db/schema';
+  import type { Snippet } from 'svelte';
   
-  let { challenge }: { challenge: Challenge } = $props();
+  let { 
+    challenge,
+    testCasesContent
+  }: { 
+    challenge: Challenge;
+    testCasesContent?: Snippet;
+  } = $props();
 </script>
 
 <div class="space-y-6 lg:col-span-2">
@@ -34,6 +41,8 @@
       </a>
     </div>
 
-    <slot name="testCases" />
+    {#if testCasesContent}
+      {@render testCasesContent()}
+    {/if}
   </div>
 </div>

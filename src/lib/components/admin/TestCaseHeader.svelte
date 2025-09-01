@@ -21,7 +21,7 @@
   </div>
 
   <button
-    on:click={onToggleForm}
+    onclick={onToggleForm}
     class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
   >
     {showForm ? 'Cancel' : '+ Add Test Case'}

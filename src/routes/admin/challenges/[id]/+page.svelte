@@ -12,11 +12,11 @@
 
   <!-- Main Content Grid -->
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-    <ChallengeContent challenge={data.challenge}>
-      <div slot="testCases">
-        <TestCasesPreview testCases={data.testCases} challengeId={data.challenge.id} />
-      </div>
-    </ChallengeContent>
+    {#snippet testCasesSlot()}
+      <TestCasesPreview testCases={data.testCases} challengeId={data.challenge.id} />
+    {/snippet}
+    
+    <ChallengeContent challenge={data.challenge} testCasesContent={testCasesSlot}></ChallengeContent>
 
     <ChallengeSidebar challenge={data.challenge} />
   </div>

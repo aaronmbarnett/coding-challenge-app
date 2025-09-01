@@ -19,7 +19,7 @@
     backText="← Back to Challenges" 
   />
 
-  <form method="POST" use:enhance class="space-y-6" on:submit={handleSubmit}>
+  <form method="POST" use:enhance class="space-y-6" onsubmit={handleSubmit}>
     <FormField
       label="Challenge Title"
       name="title"

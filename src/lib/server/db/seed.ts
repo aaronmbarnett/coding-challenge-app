@@ -209,7 +209,7 @@ Output: [1,3,2]
       {
         candidateId: candidates[0].id,
         totalDurationSec: 7200, // 2 hours
-        status: 'completed' as const,
+        status: 'submitted' as const,
         startedAt: new Date(Date.now() - 3600000 * 25), // Started 25 hours ago
         endsAt: new Date(Date.now() - 3600000 * 23) // Ended 23 hours ago
       },

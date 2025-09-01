@@ -77,7 +77,7 @@
         {#if !showDeleteConfirm}
           <button
             type="button"
-            on:click={() => (showDeleteConfirm = true)}
+            onclick={() => (showDeleteConfirm = true)}
             class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
           >
             Delete Challenge
@@ -95,7 +95,7 @@
             </form>
             <button
               type="button"
-              on:click={() => (showDeleteConfirm = false)}
+              onclick={() => (showDeleteConfirm = false)}
               class="rounded bg-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-400"
             >
               Cancel
