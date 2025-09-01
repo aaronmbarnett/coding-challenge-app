@@ -1,64 +1,54 @@
 <script lang="ts">
+  import PageHeader from '$lib/components/ui/PageHeader.svelte';
+  import DataTable from '$lib/components/ui/DataTable.svelte';
+  import { formatDate } from '$lib/utils/datetime';
+  
   let { data } = $props();
+
+  const tableColumns = [
+    { key: 'title', label: 'Title' },
+    { key: 'language', label: 'Language' },
+    { key: 'created', label: 'Created' },
+    { key: 'actions', label: 'Actions' }
+  ];
 </script>
 
 <div class="space-y-6">
-  <div class="flex items-center justify-between">
-    <div>
-      <nav class="mb-4">
-        <a href="/admin" class="text-blue-600 hover:text-blue-500">← Back to Dashboard</a>
-      </nav>
-      <h1 class="text-2xl font-bold">Challenges</h1>
-    </div>
-    <a
-      href="/admin/challenges/new"
-      class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-      >Create Challenge
-    </a>
-  </div>
+  <PageHeader 
+    title="Challenges" 
+    backHref="/admin" 
+    backText="← Back to Dashboard"
+    actionHref="/admin/challenges/new" 
+    actionText="Create Challenge" 
+  />
 
-  {#if data.challenges.length === 0}
-    <div class="py-12 text-center">
-      <p class="text-gray-500">No challenges yet. Create your first one!</p>
-    </div>
-  {:else}
-    <div class="overflow-hidden rounded-lg bg-white shadow">
-      <table class="min-w-full">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Language</th
-            >
-            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          {#each data.challenges as challenge}
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4">
-                <div class="font-medium text-gray-900">{challenge.title}</div>
-              </td>
-              <td class="px-6 py-4 text-sm text-gray-500">{challenge.languagesCsv}</td>
-              <td class="text-sm text-gray-500 px-6 py-4">
-                {new Date(challenge.createdAt).toLocaleDateString()}
-              </td>
-              <td class="space-x-2 px-6 py-4 text-sm">
-                <a
-                  href="/admin/challenges/{challenge.id}"
-                  class="text-blue-600 hover:text-blue-500"
-                >
-                  View
-                </a>
-                <a
-                  href="/admin/challenges/{challenge.id}/edit"
-                  class="text-green-600 hover:text-green-500">Edit</a
-                >
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-    </div>
-  {/if}
+  <DataTable 
+    columns={tableColumns} 
+    data={data.challenges}
+    emptyMessage="No challenges yet. Create your first one!"
+  >
+    {#each data.challenges as challenge}
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="font-medium text-gray-900">{challenge.title}</div>
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-500">{challenge.languagesCsv}</td>
+        <td class="text-sm text-gray-500 px-6 py-4">
+          {formatDate(challenge.createdAt)}
+        </td>
+        <td class="space-x-2 px-6 py-4 text-sm">
+          <a
+            href="/admin/challenges/{challenge.id}"
+            class="text-blue-600 hover:text-blue-500"
+          >
+            View
+          </a>
+          <a
+            href="/admin/challenges/{challenge.id}/edit"
+            class="text-green-600 hover:text-green-500">Edit</a
+          >
+        </td>
+      </tr>
+    {/each}
+  </DataTable>
 </div>
