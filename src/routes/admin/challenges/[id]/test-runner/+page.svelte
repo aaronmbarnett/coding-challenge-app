@@ -3,6 +3,9 @@
   import { page } from '$app/stores';
   import ChallengeHeader from '$lib/components/admin/ChallengeHeader.svelte';
   import TestCasesPreview from '$lib/components/admin/TestCasesPreview.svelte';
+  import CodeEditor from '$lib/components/admin/CodeEditor.svelte';
+  import ErrorDisplay from '$lib/components/admin/ErrorDisplay.svelte';
+  import TestResultsSummary from '$lib/components/admin/TestResultsSummary.svelte';
   
   let { data, form } = $props();
   
@@ -10,27 +13,39 @@
   let selectedLanguage = $state('javascript');
   let code = $state('');
   
-  // Set default starter code based on language
-  $effect(() => {
-    if (selectedLanguage === 'javascript') {
-      code = data.challenge.starterCode || '// Write your solution here\nfunction solution() {\n  \n}';
-    } else if (selectedLanguage === 'python') {
-      code = '# Write your solution here\ndef solution():\n    pass';
-    }
-  });
-  
   const supportedLanguages = data.challenge.languagesCsv.split(',').map(lang => lang.trim());
   
-  function formatExecutionTime(ms: number): string {
-    return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(2)}s`;
+  // Set default starter code based on language
+  function getDefaultCode(language: string): string {
+    if (language === 'javascript') {
+      return data.challenge.starterCode || '// Write your solution here\nfunction solution() {\n  \n}';
+    } else if (language === 'python') {
+      return '# Write your solution here\ndef solution():\n    pass';
+    }
+    return '// Write your solution here';
   }
   
+  function handleLanguageChange(language: string) {
+    selectedLanguage = language;
+    code = getDefaultCode(language);
+  }
+  
+  // Initialize with default code
+  $effect(() => {
+    code = getDefaultCode(selectedLanguage);
+  });
+  
+  // Helper functions for remaining inline code
   function getStatusIcon(passed: boolean): string {
     return passed ? '✅' : '❌';
   }
   
   function getStatusBadge(passed: boolean): string {
     return passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  }
+  
+  function formatExecutionTime(ms: number): string {
+    return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(2)}s`;
   }
 </script>
 
@@ -66,71 +81,14 @@
 
     <!-- Code Editor & Test Runner -->
     <div class="space-y-6">
-      <div class="rounded-lg bg-white p-6 shadow">
-        <h2 class="mb-6 text-xl font-semibold">Test Your Solution</h2>
-          
-          <form 
-            method="post" 
-            action="?/runTest"
-            use:enhance={() => {
-              submitting = true;
-              return async ({ update }) => {
-                submitting = false;
-                await update();
-              };
-            }}
-          >
-            <!-- Language Selection -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2" for="language">
-                Language
-              </label>
-              <select 
-                id="language"
-                name="language" 
-                bind:value={selectedLanguage}
-                class="w-full max-w-xs rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                required
-              >
-                {#each supportedLanguages as lang}
-                  <option value={lang}>{lang.charAt(0).toUpperCase() + lang.slice(1)}</option>
-                {/each}
-              </select>
-            </div>
-
-            <!-- Code Editor -->
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2" for="code">
-                Your Code
-              </label>
-              <textarea 
-                id="code"
-                name="code" 
-                bind:value={code}
-                class="w-full h-64 font-mono text-sm rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Write your solution here..."
-                required
-              ></textarea>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="flex justify-end">
-              <button 
-                type="submit" 
-                class="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={submitting}
-              >
-                {#if submitting}
-                  <span class="inline-block animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
-                  Running Tests...
-                {:else}
-                  🏃 Run Tests
-                {/if}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <CodeEditor
+        {supportedLanguages}
+        defaultCode={code}
+        bind:selectedLanguage={selectedLanguage}
+        bind:submitting={submitting}
+        onLanguageChange={handleLanguageChange}
+      />
+    </div>
 
       <!-- Test Results -->
       {#if form}
@@ -141,68 +99,19 @@
               {@const result = form.executionResult}
               
               <!-- Overall Results -->
-              <div class="grid grid-cols-3 gap-4 mb-6 bg-gray-50 rounded-lg p-4">
-                <div class="text-center">
-                  <div class="text-sm text-gray-600">Tests Passed</div>
-                  <div class="text-2xl font-bold text-gray-900">{result.passedTests}/{result.totalTests}</div>
-                </div>
-                <div class="text-center">
-                  <div class="text-sm text-gray-600">Score</div>
-                  <div class="text-2xl font-bold text-gray-900">{result.score}/{result.maxScore}</div>
-                </div>
-                <div class="text-center">
-                  <div class="text-sm text-gray-600">Total Time</div>
-                  <div class="text-lg font-bold text-gray-900">{formatExecutionTime(result.totalExecutionTime)}</div>
-                </div>
-              </div>
+              <TestResultsSummary executionResult={result} />
 
-              <!-- Compilation/Service Errors -->
+              <!-- Error Messages -->
               {#if result.compilationError}
-                <div class="mb-4 border-l-4 border-red-400 bg-red-50 p-4">
-                  <div class="flex">
-                    <div class="flex-shrink-0">
-                      <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                      </svg>
-                    </div>
-                    <div class="ml-3">
-                      <h3 class="text-sm font-medium text-red-800">Compilation Error</h3>
-                      <div class="mt-2 text-xs font-mono text-red-700">{result.compilationError}</div>
-                    </div>
-                  </div>
-                </div>
+                <ErrorDisplay type="compilation" error={result.compilationError} />
               {/if}
 
               {#if result.serviceError}
-                <div class="mb-4 border-l-4 border-yellow-400 bg-yellow-50 p-4">
-                  <div class="flex">
-                    <div class="flex-shrink-0">
-                      <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                      </svg>
-                    </div>
-                    <div class="ml-3">
-                      <h3 class="text-sm font-medium text-yellow-800">Service Issue</h3>
-                      <div class="mt-2 text-xs text-yellow-700">{result.serviceError}</div>
-                    </div>
-                  </div>
-                </div>
+                <ErrorDisplay type="service" error={result.serviceError} />
               {/if}
 
               {#if result.executionTimeout}
-                <div class="mb-4 border-l-4 border-yellow-400 bg-yellow-50 p-4">
-                  <div class="flex">
-                    <div class="flex-shrink-0">
-                      <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-                      </svg>
-                    </div>
-                    <div class="ml-3">
-                      <h3 class="text-sm font-medium text-yellow-800">Execution Timeout</h3>
-                      <div class="mt-2 text-xs text-yellow-700">Your code took too long to execute</div>
-                    </div>
-                  </div>
-                </div>
+                <ErrorDisplay type="timeout" error="" />
               {/if}
 
               <!-- Individual Test Results -->
