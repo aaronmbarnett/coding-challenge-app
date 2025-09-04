@@ -72,37 +72,39 @@
         </a>
       </div>
 
-      <!-- Delete Section -->
-      <div>
-        {#if !showDeleteConfirm}
-          <button
-            type="button"
-            onclick={() => (showDeleteConfirm = true)}
-            class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-          >
-            Delete Challenge
-          </button>
-        {:else}
-          <div class="flex space-x-2">
-            <span class="py-2 text-sm text-red-600">Are you sure?</span>
-            <form method="POST" action="?/delete" use:enhance class="inline">
-              <button
-                type="submit"
-                class="rounded bg-red-700 px-3 py-1 text-sm text-white hover:bg-red-800"
-              >
-                Yes, Delete
-              </button>
-            </form>
-            <button
-              type="button"
-              onclick={() => (showDeleteConfirm = false)}
-              class="rounded bg-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-          </div>
-        {/if}
-      </div>
     </div>
   </form>
+
+  <!-- Delete Section (separate from main form) -->
+  <div class="rounded-lg bg-white p-6 shadow border-l-4 border-red-400">
+    <h3 class="text-lg font-semibold text-red-800 mb-4">Danger Zone</h3>
+    {#if !showDeleteConfirm}
+      <button
+        type="button"
+        onclick={() => (showDeleteConfirm = true)}
+        class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+      >
+        Delete Challenge
+      </button>
+    {:else}
+      <div class="flex space-x-2">
+        <span class="py-2 text-sm text-red-600">Are you sure?</span>
+        <form method="POST" action="?/delete" use:enhance class="inline">
+          <button
+            type="submit"
+            class="rounded bg-red-700 px-3 py-1 text-sm text-white hover:bg-red-800"
+          >
+            Yes, Delete
+          </button>
+        </form>
+        <button
+          type="button"
+          onclick={() => (showDeleteConfirm = false)}
+          class="rounded bg-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+      </div>
+    {/if}
+  </div>
 </div>

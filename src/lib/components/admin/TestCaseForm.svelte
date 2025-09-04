@@ -20,8 +20,8 @@
   <h2 class="mb-4 text-xl font-semibold">Add New Test Case</h2>
 
   <form method="POST" action="?/create" use:enhance class="space-y-4">
-    <div>
-      <label class="mb-2 block text-sm font-medium text-gray-700">Test Type</label>
+    <fieldset>
+      <legend class="mb-2 block text-sm font-medium text-gray-700">Test Type</legend>
       <div class="flex space-x-4">
         <label class="flex items-center">
           <input type="radio" bind:group={testKind} value="io" name="kind" class="mr-2" />
@@ -32,7 +32,7 @@
           Test Harness
         </label>
       </div>
-    </div>
+    </fieldset>
 
     {#if testKind === 'io'}
       <div class="grid grid-cols-2 gap-4">

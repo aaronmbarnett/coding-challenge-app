@@ -43,7 +43,6 @@
         await update();
       };
     }}
-    onsubmit={onSubmit}
   >
     <!-- Language Selection -->
     <div class="mb-4">
