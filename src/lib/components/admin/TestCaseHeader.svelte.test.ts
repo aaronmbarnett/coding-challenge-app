@@ -110,7 +110,7 @@ describe('TestCaseHeader', () => {
 
       const heading = page.getByRole('heading');
       await expect.element(heading).toBeVisible();
-      await expect.element(heading).toHaveTextContent('Test Cases: ');
+      await expect.element(heading).toHaveTextContent('Test Cases:');
     });
 
     it('should handle special characters in challenge title', async () => {

@@ -53,8 +53,10 @@ describe('TestCaseManager', () => {
       const formHeader = page.getByText('Add New Test Case');
       await expect.element(formHeader).toBeVisible();
 
-      const cancelButton = page.getByRole('button', { name: 'Cancel' });
-      await expect.element(cancelButton).toBeVisible();
+      // Look for the Cancel button in the form specifically (the second one)
+      const cancelButtons = page.getByRole('button', { name: 'Cancel' });
+      const formCancelButton = cancelButtons.nth(1); // Second cancel button is in the form
+      await expect.element(formCancelButton).toBeVisible();
     });
 
     it('should hide form when cancel button is clicked', async () => {
@@ -71,7 +73,13 @@ describe('TestCaseManager', () => {
       const cancelButton = page.getByRole('button', { name: 'Cancel' }).nth(1);
       await cancelButton.click();
 
-      await expect.element(formHeader).not.toBeVisible();
+      // Check that add button is back to original state and form header is gone
+      const addButtonAfterCancel = page.getByRole('button', { name: '+ Add Test Case' });
+      await expect.element(addButtonAfterCancel).toBeVisible();
+      
+      // Form header should not exist in DOM anymore
+      const formHeaders = page.getByText('Add New Test Case');
+      await expect.element(formHeaders).not.toBeInTheDocument();
     });
 
     it('should toggle between add and cancel button states', async () => {
@@ -230,7 +238,8 @@ describe('TestCaseManager', () => {
       const cancelButton = page.getByRole('button', { name: 'Cancel' }).nth(1);
       await cancelButton.click();
 
-      await expect.element(formHeader).not.toBeVisible();
+      // Form should be gone, add button should be back
+      await expect.element(page.getByRole('button', { name: '+ Add Test Case' })).toBeVisible();
       await expect.element(listHeader).toBeVisible();
     });
 

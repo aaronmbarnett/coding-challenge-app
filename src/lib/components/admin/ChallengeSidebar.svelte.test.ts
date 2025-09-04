@@ -73,9 +73,9 @@ describe('ChallengeSidebar', () => {
       await expect.element(languagesLabel).toBeVisible();
 
       // Check individual language badges - they are trimmed from CSV
-      const javascriptBadge = page.getByText('javascript');
-      const pythonBadge = page.getByText('python');
-      const javaBadge = page.getByText('java');
+      const javascriptBadge = page.getByText('javascript', { exact: true });
+      const pythonBadge = page.getByText('python', { exact: true });
+      const javaBadge = page.getByText('java', { exact: true });
 
       await expect.element(javascriptBadge).toBeVisible();
       await expect.element(pythonBadge).toBeVisible();
@@ -149,7 +149,7 @@ describe('ChallengeSidebar', () => {
     });
 
     it('should display placeholder statistics', async () => {
-      render(ChallengeSidebar, { props: { challenge: mockChallenge } });
+      const { container } = render(ChallengeSidebar, { props: { challenge: mockChallenge } });
 
       // Check for statistics labels
       const totalAttemptsLabel = page.getByText('Total Attempts');
@@ -160,12 +160,13 @@ describe('ChallengeSidebar', () => {
       await expect.element(successRateLabel).toBeVisible();
       await expect.element(avgTimeLabel).toBeVisible();
 
-      // Check for placeholder values - they're in dd elements
-      const zeroAttempts = page.getByText('0');
-      const naValue = page.getByText('N/A');
-
-      await expect.element(zeroAttempts).toBeVisible();
-      await expect.element(naValue).toBeVisible();
+      // Check for specific statistic values by using DOM structure
+      // Statistics are in the third section with dd elements containing font-medium class
+      const statsValues = container.querySelectorAll('.font-medium');
+      const statsText = Array.from(statsValues).map(el => el.textContent?.trim());
+      
+      expect(statsText).toContain('0'); // Total Attempts
+      expect(statsText).toContain('N/A'); // Success Rate and Avg Time
     });
 
     it('should have proper layout for statistics', async () => {

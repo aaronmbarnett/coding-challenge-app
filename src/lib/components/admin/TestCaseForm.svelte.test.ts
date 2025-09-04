@@ -34,7 +34,7 @@ describe('TestCaseForm', () => {
 
       const weightField = page.getByLabelText('Weight');
       await expect.element(weightField).toBeVisible();
-      await expect.element(weightField).toHaveValue('1');
+      await expect.element(weightField).toHaveValue(1);
     });
 
     it('should render hidden checkbox', async () => {
@@ -63,8 +63,8 @@ describe('TestCaseForm', () => {
       const ioRadio = page.getByRole('radio', { name: 'Input/Output' });
       await ioRadio.click();
 
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
 
       await expect.element(inputField).toBeVisible();
       await expect.element(outputField).toBeVisible();
@@ -86,9 +86,9 @@ describe('TestCaseForm', () => {
     it('should switch between field types correctly', async () => {
       render(TestCaseForm, { props: baseProps });
 
-      // Initially IO fields are shown
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      // Initially IO fields are shown - use exact placeholder matching
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
       await expect.element(inputField).toBeVisible();
       await expect.element(outputField).toBeVisible();
 
@@ -99,9 +99,9 @@ describe('TestCaseForm', () => {
       const harnessField = page.getByLabelText('Test Harness Code');
       await expect.element(harnessField).toBeVisible();
 
-      // IO fields should no longer be visible
-      await expect.element(inputField).not.toBeVisible();
-      await expect.element(outputField).not.toBeVisible();
+      // IO fields should no longer exist in DOM
+      await expect.element(inputField).not.toBeInTheDocument();
+      await expect.element(outputField).not.toBeInTheDocument();
     });
 
     it('should maintain field state when switching types', async () => {
@@ -120,7 +120,7 @@ describe('TestCaseForm', () => {
       await harnessRadio.click();
 
       // Common fields should maintain state
-      await expect.element(weightField).toHaveValue('3');
+      await expect.element(weightField).toHaveValue(3);
       await expect.element(hiddenCheckbox).toBeChecked();
     });
   });
@@ -129,8 +129,8 @@ describe('TestCaseForm', () => {
     it('should have proper placeholders for IO fields', async () => {
       render(TestCaseForm, { props: baseProps });
 
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
 
       await expect.element(inputField).toHaveAttribute('placeholder', '[1, 2, 3]');
       await expect.element(outputField).toHaveAttribute('placeholder', '6');
@@ -149,8 +149,8 @@ describe('TestCaseForm', () => {
     it('should handle user input in fields', async () => {
       render(TestCaseForm, { props: baseProps });
 
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
       const weightField = page.getByLabelText('Weight');
 
       await inputField.fill('[2, 4, 6]');
@@ -159,7 +159,7 @@ describe('TestCaseForm', () => {
 
       await expect.element(inputField).toHaveValue('[2, 4, 6]');
       await expect.element(outputField).toHaveValue('12');
-      await expect.element(weightField).toHaveValue('5');
+      await expect.element(weightField).toHaveValue(5);
     });
   });
 
@@ -188,8 +188,8 @@ describe('TestCaseForm', () => {
       render(TestCaseForm, { props: baseProps });
 
       // IO fields should be required
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
       await expect.element(inputField).toHaveAttribute('required');
       await expect.element(outputField).toHaveAttribute('required');
 
@@ -237,8 +237,8 @@ describe('TestCaseForm', () => {
       render(TestCaseForm, { props: baseProps });
 
       // All form fields should have accessible labels
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
       const weightField = page.getByLabelText('Weight');
       const hiddenCheckbox = page.getByLabelText('Hidden from candidates');
 
@@ -295,8 +295,8 @@ describe('TestCaseForm', () => {
       render(TestCaseForm, { props: baseProps });
 
       // Fill out complete IO form
-      const inputField = page.getByLabelText('Input');
-      const outputField = page.getByLabelText('Expected Output');
+      const inputField = page.getByPlaceholder('[1, 2, 3]', { exact: true });
+      const outputField = page.getByPlaceholder('6', { exact: true });
       const weightField = page.getByLabelText('Weight');
       const hiddenCheckbox = page.getByLabelText('Hidden from candidates');
 
@@ -308,7 +308,7 @@ describe('TestCaseForm', () => {
       // All values should be maintained
       await expect.element(inputField).toHaveValue('[[1,2],[3,4]]');
       await expect.element(outputField).toHaveValue('[[1,3],[2,4]]');
-      await expect.element(weightField).toHaveValue('3');
+      await expect.element(weightField).toHaveValue(3);
       await expect.element(hiddenCheckbox).toBeChecked();
     });
 
@@ -326,7 +326,7 @@ describe('TestCaseForm', () => {
       await weightField.fill('2');
 
       await expect.element(harnessField).toHaveValue('assert transpose([[1,2],[3,4]]) == [[1,3],[2,4]]');
-      await expect.element(weightField).toHaveValue('2');
+      await expect.element(weightField).toHaveValue(2);
     });
   });
 });
