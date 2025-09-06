@@ -2,6 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { parseFormDataToChallenge } from './challenges';
 import { parseSessionFormData } from './sessions';
 
+// Semantic time constants for form validation tests
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+const TWO_HOURS_SECONDS = 2 * 60 * 60; // 7200
+
 describe('Form validation and parsing', () => {
   describe('parseFormDataToChallenge', () => {
     it('should parse complete form data correctly', () => {
@@ -10,7 +15,7 @@ describe('Form validation and parsing', () => {
       formData.set('description', '# Calculate the sum of an array\n\nImplement a function that calculates the sum.');
       formData.set('languages', 'javascript,python,go');
       formData.set('starterCode', 'function sum(arr) {\n  // Your code here\n}');
-      formData.set('timeLimit', '1800');
+      formData.set('timeLimit', THIRTY_MINUTES_SECONDS.toString());
 
       const result = parseFormDataToChallenge(formData);
 
@@ -19,7 +24,7 @@ describe('Form validation and parsing', () => {
         description: '# Calculate the sum of an array\n\nImplement a function that calculates the sum.',
         languages: 'javascript,python,go',
         starterCode: 'function sum(arr) {\n  // Your code here\n}',
-        timeLimitSec: 1800
+        timeLimitSec: THIRTY_MINUTES_SECONDS
       });
     });
 
@@ -65,11 +70,11 @@ describe('Form validation and parsing', () => {
       formData.set('title', 'Timed Challenge');
       formData.set('description', '# Solve quickly');
       formData.set('languages', 'python');
-      formData.set('timeLimit', '3600');
+      formData.set('timeLimit', ONE_HOUR_SECONDS.toString());
 
       const result = parseFormDataToChallenge(formData);
 
-      expect(result.timeLimitSec).toBe(3600);
+      expect(result.timeLimitSec).toBe(ONE_HOUR_SECONDS);
     });
 
     it('should handle zero time limit', () => {
@@ -113,7 +118,7 @@ describe('Form validation and parsing', () => {
     it('should parse session form data with multiple challenges', () => {
       const formData = new FormData();
       formData.set('candidateId', 'candidate-123');
-      formData.set('totalDurationSec', '7200');
+      formData.set('totalDurationSec', TWO_HOURS_SECONDS.toString());
       formData.append('challengeIds', 'challenge-1');
       formData.append('challengeIds', 'challenge-2');
       formData.append('challengeIds', 'challenge-3');
@@ -122,7 +127,7 @@ describe('Form validation and parsing', () => {
 
       expect(result).toEqual({
         candidateId: 'candidate-123',
-        totalDurationSec: 7200,
+        totalDurationSec: TWO_HOURS_SECONDS,
         challengeIds: ['challenge-1', 'challenge-2', 'challenge-3']
       });
     });
@@ -130,14 +135,14 @@ describe('Form validation and parsing', () => {
     it('should parse session form data with single challenge', () => {
       const formData = new FormData();
       formData.set('candidateId', 'candidate-456');
-      formData.set('totalDurationSec', '3600');
+      formData.set('totalDurationSec', ONE_HOUR_SECONDS.toString());
       formData.append('challengeIds', 'challenge-abc');
 
       const result = parseSessionFormData(formData);
 
       expect(result).toEqual({
         candidateId: 'candidate-456',
-        totalDurationSec: 3600,
+        totalDurationSec: ONE_HOUR_SECONDS,
         challengeIds: ['challenge-abc']
       });
     });
@@ -145,14 +150,14 @@ describe('Form validation and parsing', () => {
     it('should handle form with no challenges selected', () => {
       const formData = new FormData();
       formData.set('candidateId', 'candidate-789');
-      formData.set('totalDurationSec', '1800');
+      formData.set('totalDurationSec', THIRTY_MINUTES_SECONDS.toString());
       // No challengeIds appended
 
       const result = parseSessionFormData(formData);
 
       expect(result).toEqual({
         candidateId: 'candidate-789',
-        totalDurationSec: 1800,
+        totalDurationSec: THIRTY_MINUTES_SECONDS,
         challengeIds: []
       });
     });

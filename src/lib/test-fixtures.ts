@@ -1,12 +1,16 @@
 import type { Challenge, TestCase, User, ExamSession } from '$lib/server/db/schema';
 
+// Semantic time constants for test fixtures
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 export const mockChallenge: Challenge = {
   id: 'challenge-123',
   title: 'Two Sum Problem',
   descriptionMd: '# Find two numbers that add up to target',
   languagesCsv: 'javascript,python,java',
   starterCode: 'function twoSum() {}',
-  timeLimitSec: 1800,
+  timeLimitSec: THIRTY_MINUTES_SECONDS,
   createdAt: new Date('2024-01-15T10:00:00Z')
 };
 
@@ -46,7 +50,7 @@ export const mockUser: User = {
 export const mockSession: ExamSession = {
   id: 'session-123',
   candidateId: 'candidate-123',
-  totalDurationSec: 3600,
+  totalDurationSec: ONE_HOUR_SECONDS,
   startedAt: new Date('2024-01-15T10:00:00Z'),
   endsAt: new Date('2024-01-15T11:00:00Z'),
   status: 'pending'

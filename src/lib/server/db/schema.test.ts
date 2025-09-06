@@ -3,6 +3,11 @@ import { setupTestDb, testFactories } from './test-utils';
 import * as table from './schema';
 import { eq } from 'drizzle-orm';
 
+// Semantic time constants for database schema tests
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+const TWO_HOURS_SECONDS = 2 * 60 * 60; // 7200
+
 describe('Database Schema and Relationships', () => {
   let db: ReturnType<typeof setupTestDb>['db'];
   let cleanup: ReturnType<typeof setupTestDb>['cleanup'];
@@ -234,12 +239,12 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
         .returning();
 
       expect(session.candidateId).toBe(candidate.id);
-      expect(session.totalDurationSec).toBe(3600);
+      expect(session.totalDurationSec).toBe(ONE_HOUR_SECONDS);
       expect(session.status).toBe('pending'); // Default status
       expect(session.startedAt).toBeNull();
       expect(session.endsAt).toBeNull();
@@ -249,7 +254,7 @@ describe('Database Schema and Relationships', () => {
       await expect(
         db.insert(table.sessions).values({
           candidateId: 'nonexistent-user',
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
       ).rejects.toThrow();
     });
@@ -271,7 +276,7 @@ describe('Database Schema and Relationships', () => {
           .insert(table.sessions)
           .values({
             candidateId: candidate.id,
-            totalDurationSec: 1800,
+            totalDurationSec: THIRTY_MINUTES_SECONDS,
             status
           })
           .returning();
@@ -305,7 +310,7 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
         .returning();
 
@@ -339,7 +344,7 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
         .returning();
 
@@ -427,7 +432,7 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
         .returning();
 
@@ -492,7 +497,7 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
         .returning();
 
@@ -681,7 +686,7 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 7200
+          totalDurationSec: TWO_HOURS_SECONDS
         })
         .returning();
 
@@ -736,7 +741,7 @@ describe('Database Schema and Relationships', () => {
         .insert(table.sessions)
         .values({
           candidateId: candidate.id,
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         })
         .returning();
 

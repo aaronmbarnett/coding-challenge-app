@@ -4,6 +4,9 @@ import { setupTestDb, testFactories } from '../db/test-utils';
 import * as table from '../db/schema';
 import { eq } from 'drizzle-orm';
 
+// Semantic time constants for execution tests
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 // We'll mock the database module to use our test database
 let mockDb: any;
 vi.mock('../db', () => ({
@@ -51,7 +54,7 @@ describe('Challenge Execution Service', () => {
     });
 
     const session = await testFactories.createSession(db, user.id, {
-      totalDurationSec: 3600
+      totalDurationSec: ONE_HOUR_SECONDS
     });
 
     const attempt = await testFactories.createAttempt(db, session.id, challengeId, {

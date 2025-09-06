@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 
+// Semantic time constants for challenges page tests
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 // Type for the expected return value
 interface LoadResult {
   challenges: Array<{
@@ -35,7 +39,7 @@ describe('/admin/challenges page server load', () => {
           descriptionMd: '# Calculate sum of array',
           languagesCsv: 'javascript,python',
           starterCode: 'function sum(arr) {}',
-          timeLimitSec: 1800,
+          timeLimitSec: THIRTY_MINUTES_SECONDS,
           createdAt: new Date('2024-01-01T10:00:00Z')
         },
         {
@@ -82,7 +86,7 @@ describe('/admin/challenges page server load', () => {
           descriptionMd: '# Description',
           languagesCsv: 'javascript',
           starterCode: 'console.log("start");',
-          timeLimitSec: 3600,
+          timeLimitSec: ONE_HOUR_SECONDS,
           createdAt: new Date('2024-01-01T10:00:00Z')
         },
         {
@@ -104,7 +108,7 @@ describe('/admin/challenges page server load', () => {
       expect(result.challenges).toHaveLength(2);
       expect(result.challenges[0].starterCode).toBe('console.log("start");');
       expect(result.challenges[1].starterCode).toBeNull();
-      expect(result.challenges[0].timeLimitSec).toBe(3600);
+      expect(result.challenges[0].timeLimitSec).toBe(ONE_HOUR_SECONDS);
       expect(result.challenges[1].timeLimitSec).toBeNull();
     });
 
@@ -133,7 +137,7 @@ describe('/admin/challenges page server load', () => {
           descriptionMd: '# Test',
           languagesCsv: 'javascript',
           starterCode: null,
-          timeLimitSec: 1800,
+          timeLimitSec: THIRTY_MINUTES_SECONDS,
           createdAt: new Date()
         }
       ];

@@ -3,10 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import ChallengeSelector from './ChallengeSelector.svelte';
 
+// Semantic time constants for challenge time limits
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 describe('ChallengeSelector', () => {
   const mockChallenges = [
-    { id: 'challenge-1', title: 'Two Sum Problem', timeLimitSec: 1800 },
-    { id: 'challenge-2', title: 'Binary Tree Traversal', timeLimitSec: 3600 },
+    { id: 'challenge-1', title: 'Two Sum Problem', timeLimitSec: THIRTY_MINUTES_SECONDS },
+    { id: 'challenge-2', title: 'Binary Tree Traversal', timeLimitSec: ONE_HOUR_SECONDS },
     { id: 'challenge-3', title: 'Quick Sort Implementation', timeLimitSec: null }
   ];
 
@@ -221,7 +225,7 @@ describe('ChallengeSelector', () => {
     it('should format hours and minutes correctly', async () => {
       const challengesWithHours = [
         { id: 'test-1', title: 'Test 1', timeLimitSec: 5400 }, // 1h 30m
-        { id: 'test-2', title: 'Test 2', timeLimitSec: 7200 }  // 2h 0m
+        { id: 'test-2', title: 'Test 2', timeLimitSec: 2 * ONE_HOUR_SECONDS }  // 2h 0m
       ];
 
       render(ChallengeSelector, {
@@ -242,9 +246,9 @@ describe('ChallengeSelector', () => {
   describe('layout and styling', () => {
     it('should have proper scrollable container for many challenges', async () => {
       const manyChallenges = [
-        { id: 'c1', title: 'Algorithm Challenge A', timeLimitSec: 1800 },
-        { id: 'c2', title: 'Data Structure Challenge B', timeLimitSec: 1800 },
-        { id: 'c3', title: 'System Design Challenge C', timeLimitSec: 1800 }
+        { id: 'c1', title: 'Algorithm Challenge A', timeLimitSec: THIRTY_MINUTES_SECONDS },
+        { id: 'c2', title: 'Data Structure Challenge B', timeLimitSec: THIRTY_MINUTES_SECONDS },
+        { id: 'c3', title: 'System Design Challenge C', timeLimitSec: THIRTY_MINUTES_SECONDS }
       ];
 
       render(ChallengeSelector, {
@@ -312,7 +316,7 @@ describe('ChallengeSelector', () => {
           challenges: [{
             id: 'long-title',
             title: 'This is a very long challenge title that might wrap to multiple lines and should be handled gracefully',
-            timeLimitSec: 1800
+            timeLimitSec: THIRTY_MINUTES_SECONDS
           }],
           selectedChallengeIds: []
         }
@@ -429,9 +433,9 @@ describe('ChallengeSelector', () => {
 
     it('should handle duplicate IDs in challenges array', async () => {
       const duplicateIds = [
-        { id: 'duplicate', title: 'First Duplicate', timeLimitSec: 1800 },
-        { id: 'duplicate', title: 'Second Duplicate', timeLimitSec: 3600 },
-        { id: 'unique', title: 'Unique Challenge', timeLimitSec: 1200 }
+        { id: 'duplicate', title: 'First Duplicate', timeLimitSec: THIRTY_MINUTES_SECONDS },
+        { id: 'duplicate', title: 'Second Duplicate', timeLimitSec: ONE_HOUR_SECONDS },
+        { id: 'unique', title: 'Unique Challenge', timeLimitSec: 20 * 60 } // 20 minutes
       ];
 
       render(ChallengeSelector, {
@@ -542,7 +546,7 @@ describe('ChallengeSelector', () => {
             challenges: Array.from({ length: 50 }, (_, j) => ({
               id: `c-${i}-${j}`,
               title: `Challenge ${i}-${j}`,
-              timeLimitSec: 1800
+              timeLimitSec: THIRTY_MINUTES_SECONDS
             })),
             selectedChallengeIds: []
           }
@@ -550,8 +554,9 @@ describe('ChallengeSelector', () => {
         // Svelte 5 handles cleanup automatically
       }
 
-      // Test passes if no memory issues occur
-      expect(true).toBe(true);
+      // Test passes if no memory issues occur - verify final component instance is functional
+      const selector = page.getByText('Select Challenges').first();
+      await expect.element(selector).toBeInTheDocument();
     });
 
     it('should optimize time formatting calculations', async () => {
@@ -600,8 +605,9 @@ describe('ChallengeSelector', () => {
         await expect.element(count).toBeVisible();
       }
       
-      // Test passes if all selection states render correctly
-      expect(true).toBe(true);
+      // Verify the component successfully rendered all test cases without errors
+      const selector = page.getByText('Select Challenges').first();
+      await expect.element(selector).toBeInTheDocument();
     });
   });
 

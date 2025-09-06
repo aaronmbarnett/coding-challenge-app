@@ -463,8 +463,9 @@ describe('FormField', () => {
         // Svelte 5 handles cleanup automatically
       }
       
-      // Test passes if no memory issues occur
-      expect(true).toBe(true);
+      // Test passes if no memory issues occur - component renders and cleanup succeeds
+      const formField = page.getByRole('textbox').or(page.getByRole('combobox')).first();
+      await expect.element(formField).toBeInTheDocument();
     });
 
     it('should handle type switching efficiently', async () => {

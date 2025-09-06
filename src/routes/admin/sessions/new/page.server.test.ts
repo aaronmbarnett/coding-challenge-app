@@ -2,6 +2,13 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
 import * as table from '$lib/server/db/schema';
 
+// Semantic time constants for challenge time limits
+const TEN_MINUTES_SECONDS = 10 * 60; // 600
+const FIFTEEN_MINUTES_SECONDS = 15 * 60; // 900
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+const TWO_HOURS_SECONDS = 2 * 60 * 60; // 7200
+
 // Type for the expected return value
 interface SessionNewLoadResult {
   candidates: Array<{
@@ -56,12 +63,12 @@ describe('/admin/sessions/new +page.server.ts', () => {
         {
           id: 'challenge-1',
           title: 'Array Sum',
-          timeLimitSec: 1800
+          timeLimitSec: THIRTY_MINUTES_SECONDS
         },
         {
           id: 'challenge-2',
           title: 'String Reverse',
-          timeLimitSec: 900
+          timeLimitSec: FIFTEEN_MINUTES_SECONDS
         }
       ];
 
@@ -85,7 +92,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
         {
           id: 'challenge-1',
           title: 'Some Challenge',
-          timeLimitSec: 1800
+          timeLimitSec: THIRTY_MINUTES_SECONDS
         }
       ];
 
@@ -145,12 +152,12 @@ describe('/admin/sessions/new +page.server.ts', () => {
         {
           id: 'challenge-1',
           title: 'Quick Challenge',
-          timeLimitSec: 600 // 10 minutes
+          timeLimitSec: TEN_MINUTES_SECONDS
         },
         {
           id: 'challenge-2',
           title: 'Long Challenge',
-          timeLimitSec: 7200 // 2 hours
+          timeLimitSec: TWO_HOURS_SECONDS
         },
         {
           id: 'challenge-3',
@@ -165,8 +172,8 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result.challenges).toEqual(mockChallenges);
-      expect(result.challenges[0].timeLimitSec).toBe(600);
-      expect(result.challenges[1].timeLimitSec).toBe(7200);
+      expect(result.challenges[0].timeLimitSec).toBe(TEN_MINUTES_SECONDS);
+      expect(result.challenges[1].timeLimitSec).toBe(TWO_HOURS_SECONDS);
       expect(result.challenges[2].timeLimitSec).toBeNull();
     });
 
@@ -180,7 +187,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
       const mockChallenges = [
         { id: 'challenge-1', title: 'A Challenge', timeLimitSec: 1800 },
         { id: 'challenge-2', title: 'B Challenge', timeLimitSec: 900 },
-        { id: 'challenge-3', title: 'C Challenge', timeLimitSec: 3600 }
+        { id: 'challenge-3', title: 'C Challenge', timeLimitSec: ONE_HOUR_SECONDS }
       ];
 
       const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);

@@ -3,6 +3,9 @@ import { load } from './+page.server';
 import * as table from '$lib/server/db/schema';
 import { createMockLoadEvent } from '$lib/test-utils/sveltekit-mocks';
 
+// Semantic time constants for sessions page tests
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 // Type for the expected return value
 interface SessionsLoadResult {
   sessions: Array<{
@@ -60,7 +63,7 @@ describe('/admin/sessions +page.server.ts', () => {
             id: 'session-1',
             candidateId: 'candidate-1',
             status: 'pending',
-            totalDurationSec: 3600,
+            totalDurationSec: ONE_HOUR_SECONDS,
             startedAt: new Date('2024-01-01T10:00:00Z'),
             endsAt: null
           },
@@ -85,7 +88,7 @@ describe('/admin/sessions +page.server.ts', () => {
         }
       });
 
-      // Verify database was called
+      // Verify all necessary database queries were executed
       expect(mockDb.select).toHaveBeenCalledTimes(3);
     });
 
@@ -114,7 +117,7 @@ describe('/admin/sessions +page.server.ts', () => {
             id: 'session-1',
             candidateId: 'nonexistent',
             status: 'pending',
-            totalDurationSec: 3600,
+            totalDurationSec: ONE_HOUR_SECONDS,
             startedAt: new Date(),
             endsAt: null
           },

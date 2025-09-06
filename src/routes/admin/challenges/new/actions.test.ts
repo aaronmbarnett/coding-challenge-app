@@ -4,6 +4,9 @@ import { fail, redirect } from '@sveltejs/kit';
 import * as challengesModule from '$lib/server/challenges';
 import { createMockActionEvent, createMockRequest } from '$lib/test-utils/sveltekit-mocks';
 
+// Semantic time constants for challenge creation tests
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+
 // Mock SvelteKit functions
 vi.mock('@sveltejs/kit', async () => {
   const actual = await vi.importActual('@sveltejs/kit');
@@ -39,7 +42,7 @@ describe('/admin/challenges/new form actions', () => {
         description: '# Calculate sum of array',
         languages: 'javascript,python',
         starterCode: 'function sum(arr) {}',
-        timeLimitSec: 1800
+        timeLimitSec: THIRTY_MINUTES_SECONDS
       };
 
       const mockFormData = new FormData();
@@ -52,7 +55,7 @@ describe('/admin/challenges/new form actions', () => {
         descriptionMd: '# Calculate sum of array',
         languagesCsv: 'javascript,python',
         starterCode: 'function sum(arr) {}',
-        timeLimitSec: 1800,
+        timeLimitSec: THIRTY_MINUTES_SECONDS,
         createdAt: new Date()
       });
 

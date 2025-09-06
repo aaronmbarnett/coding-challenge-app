@@ -3,6 +3,10 @@ import { actions } from './+page.server';
 import { fail, redirect } from '@sveltejs/kit';
 import * as sessionsModule from '$lib/server/sessions';
 
+// Semantic time constants for session duration tests
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+const TWO_HOURS_SECONDS = 2 * 60 * 60; // 7200
+
 // Mock SvelteKit functions
 vi.mock('@sveltejs/kit', async () => {
   const actual = await vi.importActual('@sveltejs/kit');
@@ -36,7 +40,7 @@ describe('/admin/sessions/new form actions', () => {
       const mockSessionData = {
         candidateId: 'candidate-1',
         challengeIds: ['challenge-1', 'challenge-2'],
-        totalDurationSec: 7200
+        totalDurationSec: TWO_HOURS_SECONDS
       };
 
       const mockFormData = new FormData();
@@ -48,7 +52,7 @@ describe('/admin/sessions/new form actions', () => {
       vi.mocked(sessionsModule.createSession).mockResolvedValue({ 
         id: 'session-1', 
         candidateId: 'candidate-1',
-        totalDurationSec: 7200,
+        totalDurationSec: TWO_HOURS_SECONDS,
         status: 'pending' as const,
         startedAt: null,
         endsAt: null
@@ -119,7 +123,7 @@ describe('/admin/sessions/new form actions', () => {
       const mockSessionData = {
         candidateId: 'candidate-1',
         challengeIds: ['challenge-1'],
-        totalDurationSec: 3600
+        totalDurationSec: ONE_HOUR_SECONDS
       };
 
       const mockFormData = new FormData();

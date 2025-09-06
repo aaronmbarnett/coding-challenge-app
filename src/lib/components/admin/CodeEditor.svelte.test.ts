@@ -480,8 +480,9 @@ describe('CodeEditor', () => {
         // In Svelte 5, cleanup happens automatically
       }
       
-      // Test passes if no memory issues occur
-      expect(true).toBe(true);
+      // Test passes if no memory issues occur - verify final component instance is functional
+      const codeEditor = page.getByRole('textbox').first();
+      await expect.element(codeEditor).toBeInTheDocument();
     });
 
     it('should handle large language lists efficiently', async () => {

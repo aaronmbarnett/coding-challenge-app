@@ -233,8 +233,8 @@ describe('DataTable', () => {
 
       // With empty columns but data present, table structure should still exist
       // We should see the table but with no column headers (expected behavior)
-      // Just verify the component renders without error
-      expect(true).toBe(true);
+      const table = page.getByRole('table');
+      await expect.element(table).toBeInTheDocument();
     });
 
     it('should transition from empty to populated', async () => {

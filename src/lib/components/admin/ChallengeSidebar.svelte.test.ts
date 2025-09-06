@@ -4,11 +4,14 @@ import { render } from 'vitest-browser-svelte';
 import ChallengeSidebar from './ChallengeSidebar.svelte';
 import { createMockChallenge } from '$lib/test-fixtures';
 
+// Semantic time constants for challenge time limits
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 describe('ChallengeSidebar', () => {
   const mockChallenge = createMockChallenge({
     id: 'challenge-123',
     languagesCsv: 'javascript,python,java',
-    timeLimitSec: 3600, // 1 hour
+    timeLimitSec: ONE_HOUR_SECONDS,
     createdAt: new Date('2024-01-15T10:00:00Z')
   });
 
@@ -88,7 +91,7 @@ describe('ChallengeSidebar', () => {
       const timeLimitLabel = page.getByText('Time Limit');
       await expect.element(timeLimitLabel).toBeVisible();
 
-      const timeLimitValue = page.getByText('3600 seconds');
+      const timeLimitValue = page.getByText(`${ONE_HOUR_SECONDS} seconds`);
       await expect.element(timeLimitValue).toBeVisible();
     });
 

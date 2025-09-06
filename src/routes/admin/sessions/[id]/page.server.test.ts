@@ -3,6 +3,10 @@ import { load } from './+page.server';
 import { error } from '@sveltejs/kit';
 import { createMockLoadEvent } from '$lib/test-utils/sveltekit-mocks';
 
+// Semantic time constants for session duration tests
+const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
+const ONE_HOUR_SECONDS = 60 * 60; // 3600
+
 // Type for the expected return value
 interface SessionDetailLoadResult {
   session: {
@@ -83,7 +87,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
           id: 'session-1',
           candidateId: 'candidate-1',
           status: 'active',
-          totalDurationSec: 3600,
+          totalDurationSec: ONE_HOUR_SECONDS,
           startedAt: new Date('2024-01-01T10:00:00Z'),
           endsAt: new Date('2024-01-01T11:00:00Z')
         },
@@ -106,7 +110,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
           challenge: {
             id: 'challenge-1',
             title: 'Array Sum',
-            timeLimitSec: 1800
+            timeLimitSec: THIRTY_MINUTES_SECONDS
           }
         },
         {
@@ -159,7 +163,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
           id: 'session-1',
           candidateId: 'nonexistent-candidate',
           status: 'pending',
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         },
         candidate: null // No candidate found
       };
@@ -184,7 +188,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
           id: 'session-1',
           candidateId: 'candidate-1',
           status: 'pending',
-          totalDurationSec: 3600
+          totalDurationSec: ONE_HOUR_SECONDS
         },
         candidate: {
           id: 'candidate-1',
