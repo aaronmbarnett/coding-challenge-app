@@ -47,7 +47,7 @@ describe('CodeEditor', () => {
       // Check for all language options - options in select are not visible until clicked
       const { container } = render(CodeEditor, { props: mockProps });
       const options = container.querySelectorAll('option');
-      
+
       expect(options).toHaveLength(3);
       expect(options[0].textContent).toBe('Javascript');
       expect(options[1].textContent).toBe('Python');
@@ -68,7 +68,7 @@ describe('CodeEditor', () => {
       });
 
       // onLanguageChange should be called during initial render (effect runs)
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
       expect(onLanguageChange).toHaveBeenCalledWith('javascript');
     });
 
@@ -112,12 +112,16 @@ describe('CodeEditor', () => {
 
     it('should update code when defaultCode prop changes', async () => {
       // Test that the component uses the provided defaultCode
-      const { container } = render(CodeEditor, { props: { ...mockProps, defaultCode: 'initial code' } });
+      const { container } = render(CodeEditor, {
+        props: { ...mockProps, defaultCode: 'initial code' }
+      });
       const textarea = container.querySelector('textarea');
       expect(textarea?.value).toBe('initial code');
 
       // Test with different default code
-      const { container: container2 } = render(CodeEditor, { props: { ...mockProps, defaultCode: 'def solution():\n    pass' } });
+      const { container: container2 } = render(CodeEditor, {
+        props: { ...mockProps, defaultCode: 'def solution():\n    pass' }
+      });
       const textarea2 = container2.querySelector('textarea');
       expect(textarea2?.value).toBe('def solution():\n    pass');
     });
@@ -126,7 +130,9 @@ describe('CodeEditor', () => {
       render(CodeEditor, { props: mockProps });
 
       const codeTextarea = page.getByLabelText('Your Code');
-      await expect.element(codeTextarea).toHaveAttribute('placeholder', 'Write your solution here...');
+      await expect
+        .element(codeTextarea)
+        .toHaveAttribute('placeholder', 'Write your solution here...');
     });
 
     it('should allow user to type code', async () => {
@@ -134,7 +140,7 @@ describe('CodeEditor', () => {
 
       const codeTextarea = page.getByLabelText('Your Code');
       await codeTextarea.fill('console.log("Hello World");');
-      
+
       await expect.element(codeTextarea).toHaveValue('console.log("Hello World");');
     });
   });
@@ -201,7 +207,7 @@ describe('CodeEditor', () => {
 
       const languageInput = page.getByLabelText('Language');
       const codeInput = page.getByLabelText('Your Code');
-      
+
       await expect.element(languageInput).toHaveAttribute('name', 'language');
       await expect.element(codeInput).toHaveAttribute('name', 'code');
     });
@@ -216,11 +222,11 @@ describe('CodeEditor', () => {
 
       await expect.element(languageLabel).toBeVisible();
       await expect.element(codeLabel).toBeVisible();
-      
+
       // Labels should be associated with form controls
       const languageSelect = page.getByLabelText('Language');
       const codeTextarea = page.getByLabelText('Your Code');
-      
+
       await expect.element(languageSelect).toBeVisible();
       await expect.element(codeTextarea).toBeVisible();
     });
@@ -241,9 +247,9 @@ describe('CodeEditor', () => {
 
       // All controls should be accessible (focus testing is complex in browser mode)
       await expect.element(languageSelect).toBeVisible();
-      await expect.element(codeTextarea).toBeVisible();  
+      await expect.element(codeTextarea).toBeVisible();
       await expect.element(submitButton).toBeVisible();
-      
+
       // Verify they're not disabled
       await expect.element(languageSelect).not.toBeDisabled();
       await expect.element(codeTextarea).not.toBeDisabled();
@@ -254,11 +260,11 @@ describe('CodeEditor', () => {
   describe('props and state management', () => {
     it('should handle bindable selectedLanguage prop', async () => {
       let selectedLanguage = 'javascript';
-      
+
       render(CodeEditor, {
-        props: { 
-          ...mockProps, 
-          selectedLanguage: selectedLanguage 
+        props: {
+          ...mockProps,
+          selectedLanguage: selectedLanguage
         }
       });
 
@@ -296,7 +302,7 @@ describe('CodeEditor', () => {
 
       const languageSelect = page.getByLabelText('Language');
       await expect.element(languageSelect).toBeVisible();
-      
+
       const options = container.querySelectorAll('option');
       expect(options).toHaveLength(0);
     });
@@ -348,7 +354,7 @@ describe('CodeEditor', () => {
 
     it('should handle very large code inputs without performance issues', async () => {
       const largeCode = 'function test() {\n'.repeat(1000) + '}\n'.repeat(1000);
-      
+
       render(CodeEditor, {
         props: { ...mockProps, defaultCode: largeCode }
       });
@@ -359,8 +365,9 @@ describe('CodeEditor', () => {
     });
 
     it('should handle special characters in code without breaking', async () => {
-      const specialCode = 'const test = "💻🚀"; // Unicode\nconst regex = /[^\x00-\x7F]/g;\nconst xml = `<tag attr="value">content</tag>`;';
-      
+      const specialCode =
+        'const test = "💻🚀"; // Unicode\nconst regex = /[^\x00-\x7F]/g;\nconst xml = `<tag attr="value">content</tag>`;';
+
       render(CodeEditor, {
         props: { ...mockProps, defaultCode: specialCode }
       });
@@ -371,9 +378,9 @@ describe('CodeEditor', () => {
 
     it('should handle invalid selectedLanguage prop', async () => {
       render(CodeEditor, {
-        props: { 
-          ...mockProps, 
-          selectedLanguage: 'nonexistent-language' 
+        props: {
+          ...mockProps,
+          selectedLanguage: 'nonexistent-language'
         }
       });
 
@@ -385,17 +392,17 @@ describe('CodeEditor', () => {
     it('should handle onLanguageChange callback errors gracefully', async () => {
       // Test that component renders without callback - don't test callback throwing since it causes test failure
       const mockCallback = vi.fn();
-      
+
       render(CodeEditor, {
         props: { ...mockProps, onLanguageChange: mockCallback }
       });
 
       const heading = page.getByRole('heading', { name: 'Test Your Solution' });
       await expect.element(heading).toBeVisible();
-      
+
       const languageSelect = page.getByLabelText('Language');
       await expect.element(languageSelect).toBeVisible();
-      
+
       // Component should handle callback gracefully - callback is called once during initial effect
       expect(mockCallback).toHaveBeenCalledTimes(1);
       expect(mockCallback).toHaveBeenCalledWith('javascript');
@@ -408,10 +415,10 @@ describe('CodeEditor', () => {
 
       const submitButton = page.getByRole('button');
       await expect.element(submitButton).toBeDisabled();
-      
+
       // Attempting to click disabled button should not cause issues
       await submitButton.click({ force: true }); // Force click on disabled element
-      
+
       // Should remain disabled and not cause errors
       await expect.element(submitButton).toBeDisabled();
     });
@@ -432,8 +439,8 @@ describe('CodeEditor', () => {
 
     it('should maintain accessibility during error states', async () => {
       render(CodeEditor, {
-        props: { 
-          ...mockProps, 
+        props: {
+          ...mockProps,
           submitting: true,
           supportedLanguages: [] // Error scenario
         }
@@ -451,7 +458,7 @@ describe('CodeEditor', () => {
 
     it('should handle concurrent form interactions', async () => {
       const onLanguageChange = vi.fn();
-      
+
       render(CodeEditor, {
         props: { ...mockProps, onLanguageChange }
       });
@@ -462,11 +469,11 @@ describe('CodeEditor', () => {
       // Test that form elements are available and can be interacted with
       await expect.element(languageSelect).toBeVisible();
       await expect.element(codeTextarea).toBeVisible();
-      
+
       // Fill textarea to test basic interaction
       await codeTextarea.fill('new code');
       await expect.element(codeTextarea).toHaveValue('new code');
-      
+
       // Component should remain stable during interactions
       await expect.element(languageSelect).toBeVisible();
     });
@@ -479,7 +486,7 @@ describe('CodeEditor', () => {
         render(CodeEditor, { props: mockProps });
         // In Svelte 5, cleanup happens automatically
       }
-      
+
       // Test passes if no memory issues occur - verify final component instance is functional
       const codeEditor = page.getByRole('textbox').first();
       await expect.element(codeEditor).toBeInTheDocument();
@@ -487,13 +494,13 @@ describe('CodeEditor', () => {
 
     it('should handle large language lists efficiently', async () => {
       const largeLanguageList = Array.from({ length: 100 }, (_, i) => `language${i}`);
-      
+
       const startTime = performance.now();
-      
+
       render(CodeEditor, {
-        props: { 
-          ...mockProps, 
-          supportedLanguages: largeLanguageList 
+        props: {
+          ...mockProps,
+          supportedLanguages: largeLanguageList
         }
       });
 
@@ -502,20 +509,20 @@ describe('CodeEditor', () => {
 
       // Should render within reasonable time (adjust threshold as needed)
       expect(renderTime).toBeLessThan(500); // 500ms threshold
-      
+
       const languageSelect = page.getByLabelText('Language');
       await expect.element(languageSelect).toBeVisible();
     });
 
     it('should handle effect updates efficiently', async () => {
       const onLanguageChange = vi.fn();
-      
+
       render(CodeEditor, {
         props: { ...mockProps, onLanguageChange }
       });
 
       // Wait for initial effects to settle
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Callback should have been called during initial render
       expect(onLanguageChange).toHaveBeenCalled();

@@ -24,16 +24,13 @@
   }
 </script>
 
-<div 
-  role="alert" 
-  class="rounded-md border p-4 {getAlertClasses(type)}"
->
+<div role="alert" class="rounded-md border p-4 {getAlertClasses(type)}">
   {#if title}
-    <div class="font-medium text-sm mb-2">
+    <div class="mb-2 text-sm font-medium">
       {title}
     </div>
   {/if}
-  
+
   <div class="text-sm">
     {message || '\u00A0'}
   </div>

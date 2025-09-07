@@ -58,8 +58,8 @@ describe('/admin/invitations form actions', () => {
       const formData = createMockFormData({ email: 'candidate@example.com' });
       const mockRequest = createMockRequest(formData, 'http://localhost:5173/admin/invitations');
 
-      const locals = { 
-        db: mockDb, 
+      const locals = {
+        db: mockDb,
         user: mockAdmin
       };
 
@@ -89,9 +89,9 @@ describe('/admin/invitations form actions', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
@@ -113,9 +113,9 @@ describe('/admin/invitations form actions', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
@@ -162,9 +162,9 @@ describe('/admin/invitations form actions', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
@@ -191,9 +191,9 @@ describe('/admin/invitations form actions', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
@@ -213,9 +213,9 @@ describe('/admin/invitations form actions', () => {
         formData: vi.fn().mockRejectedValue(new Error('Invalid multipart data'))
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
@@ -237,7 +237,7 @@ describe('/admin/invitations form actions', () => {
         { email: '@domain.com', valid: false },
         { email: 'user@', valid: false },
         { email: '', valid: false },
-        { email: ' test@example.com ', valid: true }, // Should trim whitespace
+        { email: ' test@example.com ', valid: true } // Should trim whitespace
       ];
 
       for (const { email, valid } of testCases) {
@@ -250,9 +250,9 @@ describe('/admin/invitations form actions', () => {
           formData: vi.fn().mockResolvedValue(mockFormData)
         };
 
-        const locals = { 
-          db: mockDb, 
-          user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+        const locals = {
+          db: mockDb,
+          user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
         };
 
         if (valid) {
@@ -275,11 +275,19 @@ describe('/admin/invitations form actions', () => {
           });
 
           const mockUrl = new URL('http://localhost:5173/admin/invitations');
-          const result = await actions.default({ request: mockRequest, locals, url: mockUrl } as any);
+          const result = await actions.default({
+            request: mockRequest,
+            locals,
+            url: mockUrl
+          } as any);
           expect(result.success).toBe(true);
         } else {
           const mockUrl = new URL('http://localhost:5173/admin/invitations');
-          const result = await actions.default({ request: mockRequest, locals, url: mockUrl } as any);
+          const result = await actions.default({
+            request: mockRequest,
+            locals,
+            url: mockUrl
+          } as any);
           expect(result.status).toBe(400);
           expect(result.data.message).toMatch(/required|Invalid email format/);
         }

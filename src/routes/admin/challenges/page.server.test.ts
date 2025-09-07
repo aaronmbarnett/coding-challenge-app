@@ -100,7 +100,7 @@ describe('/admin/challenges page server load', () => {
       const mockDb = createMockDb(mockChallenges);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as LoadResult;
+      const result = (await load({ locals } as any)) as LoadResult;
 
       expect(result.challenges).toHaveLength(2);
       expect(result.challenges[0].starterCode).toBe('console.log("start");');
@@ -121,7 +121,7 @@ describe('/admin/challenges page server load', () => {
       const mockDb = createMockDb(mockChallenges);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as LoadResult;
+      const result = (await load({ locals } as any)) as LoadResult;
 
       expect(result.challenges[0].languagesCsv).toBe('javascript,python,go,rust,typescript');
     });
@@ -142,7 +142,7 @@ describe('/admin/challenges page server load', () => {
       const mockDb = createMockDb(mockChallenges);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as LoadResult;
+      const result = (await load({ locals } as any)) as LoadResult;
 
       expect(result).toHaveProperty('challenges');
       expect(Array.isArray(result.challenges)).toBe(true);
@@ -152,4 +152,3 @@ describe('/admin/challenges page server load', () => {
     });
   });
 });
-

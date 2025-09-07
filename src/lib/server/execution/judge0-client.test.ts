@@ -12,7 +12,7 @@ describe('Judge0 Client', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
-    
+
     mockConfig = {
       baseUrl: 'http://localhost:2358',
       authToken: 'test-auth-token',
@@ -21,7 +21,7 @@ describe('Judge0 Client', () => {
       enablePolling: true,
       pollingInterval: 1000
     };
-    
+
     client = new Judge0Client(mockConfig);
   });
 
@@ -38,7 +38,7 @@ describe('Judge0 Client', () => {
         enablePolling: true,
         pollingInterval: 1000
       };
-      
+
       const localClient = new Judge0Client(localConfig);
       expect(localClient).toBeInstanceOf(Judge0Client);
     });
@@ -52,7 +52,7 @@ describe('Judge0 Client', () => {
         enablePolling: true,
         pollingInterval: 2000
       };
-      
+
       const cloudClient = new Judge0Client(cloudConfig);
       expect(cloudClient).toBeInstanceOf(Judge0Client);
     });
@@ -65,7 +65,7 @@ describe('Judge0 Client', () => {
         enablePolling: true,
         pollingInterval: 1000
       };
-      
+
       const minimalClient = new Judge0Client(minimalConfig);
       expect(minimalClient).toBeInstanceOf(Judge0Client);
     });
@@ -81,7 +81,7 @@ describe('Judge0 Client', () => {
       } as Response);
 
       const isHealthy = await client.checkHealth();
-      
+
       expect(isHealthy).toBe(true);
       expect(fetch).toHaveBeenCalledWith(
         'http://localhost:2358/system_info',
@@ -97,25 +97,23 @@ describe('Judge0 Client', () => {
       vi.mocked(fetch).mockRejectedValue(new Error('ECONNREFUSED'));
 
       const isHealthy = await client.checkHealth();
-      
+
       expect(isHealthy).toBe(false);
     });
 
     it('should handle timeout during health check', async () => {
       // Mock timeout
-      vi.mocked(fetch).mockImplementation(() => 
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('timeout')), 100)
-        )
+      vi.mocked(fetch).mockImplementation(
+        () => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 100))
       );
 
       const healthPromise = client.checkHealth();
-      
+
       // Run all pending timers
       await vi.runAllTimersAsync();
-      
+
       const isHealthy = await healthPromise;
-      
+
       expect(isHealthy).toBe(false);
     });
   });
@@ -134,14 +132,14 @@ describe('Judge0 Client', () => {
       } as Response);
 
       const languages = await client.getSupportedLanguages();
-      
+
       expect(languages).toEqual(mockLanguages);
       expect(fetch).toHaveBeenCalledWith(
         'http://localhost:2358/languages',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
-            'Authorization': 'Bearer test-auth-token'
+            Authorization: 'Bearer test-auth-token'
           })
         })
       );
@@ -158,7 +156,7 @@ describe('Judge0 Client', () => {
   describe('Code execution', () => {
     it('should submit code for execution', async () => {
       const mockToken = createId();
-      
+
       // Mock submission response
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
@@ -174,7 +172,7 @@ describe('Judge0 Client', () => {
         memoryLimit: 128000,
         wallTimeLimit: 5
       });
-      
+
       expect(token).toBe(mockToken);
       expect(fetch).toHaveBeenCalledWith(
         'http://localhost:2358/submissions?base64_encoded=false&wait=false',
@@ -182,7 +180,7 @@ describe('Judge0 Client', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer test-auth-token'
+            Authorization: 'Bearer test-auth-token'
           }),
           body: JSON.stringify({
             source_code: 'console.log("Hello World");',
@@ -214,10 +212,11 @@ describe('Judge0 Client', () => {
       vi.mocked(fetch)
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            ...mockResult,
-            status: { id: 2, description: 'Processing' }
-          })
+          json: () =>
+            Promise.resolve({
+              ...mockResult,
+              status: { id: 2, description: 'Processing' }
+            })
         } as Response)
         .mockResolvedValueOnce({
           ok: true,
@@ -225,57 +224,59 @@ describe('Judge0 Client', () => {
         } as Response);
 
       const resultPromise = client.getExecutionResult(mockToken);
-      
+
       // Run all pending timers
       await vi.runAllTimersAsync();
-      
+
       const result = await resultPromise;
-      
+
       expect(result).toEqual(mockResult);
       expect(fetch).toHaveBeenCalledTimes(2);
     });
 
     it('should handle execution timeout', async () => {
       const mockToken = 'timeout-test-token';
-      
+
       // Mock timeout response
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          token: mockToken,
-          status: { id: 5, description: 'Time Limit Exceeded' },
-          stdout: null,
-          stderr: null,
-          time: '2.0',
-          memory: 0
-        })
+        json: () =>
+          Promise.resolve({
+            token: mockToken,
+            status: { id: 5, description: 'Time Limit Exceeded' },
+            stdout: null,
+            stderr: null,
+            time: '2.0',
+            memory: 0
+          })
       } as Response);
 
       const result = await client.getExecutionResult(mockToken);
-      
+
       expect(result.status.description).toBe('Time Limit Exceeded');
     });
 
     it('should handle compilation errors', async () => {
       const mockToken = 'compile-error-token';
-      
+
       // Mock compilation error response
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          token: mockToken,
-          status: { id: 6, description: 'Compilation Error' },
-          stdout: null,
-          stderr: null,
-          compile_output: 'SyntaxError: Unexpected token',
-          message: null,
-          time: null,
-          memory: null
-        })
+        json: () =>
+          Promise.resolve({
+            token: mockToken,
+            status: { id: 6, description: 'Compilation Error' },
+            stdout: null,
+            stderr: null,
+            compile_output: 'SyntaxError: Unexpected token',
+            message: null,
+            time: null,
+            memory: null
+          })
       } as Response);
 
       const result = await client.getExecutionResult(mockToken);
-      
+
       expect(result.status.description).toBe('Compilation Error');
       expect(result.compile_output).toContain('SyntaxError');
     });
@@ -303,12 +304,12 @@ describe('Judge0 Client', () => {
         } as Response);
 
       const tokenPromise = client.submitExecution(mockSubmission);
-      
+
       // Run all pending timers
       await vi.runAllTimersAsync();
-      
+
       const token = await tokenPromise;
-      
+
       expect(token).toBe('retry-success-token');
       expect(fetch).toHaveBeenCalledTimes(3);
     });
@@ -337,7 +338,7 @@ describe('Judge0 Client', () => {
       if (submitResult.status === 'rejected') {
         expect(submitResult.reason.message).toContain('Judge0 service unavailable after 3 retries');
       }
-      
+
       expect(fetch).toHaveBeenCalledTimes(3);
     });
 
@@ -350,15 +351,17 @@ describe('Judge0 Client', () => {
         headers: new Headers({ 'Retry-After': '60' })
       } as Response);
 
-      await expect(client.submitExecution({
-        sourceCode: 'test',
-        languageId: 63,
-        stdin: '',
-        expectedOutput: '',
-        cpuTimeLimit: 2,
-        memoryLimit: 128000,
-        wallTimeLimit: 5
-      })).rejects.toThrow('Rate limit exceeded. Retry after 60 seconds');
+      await expect(
+        client.submitExecution({
+          sourceCode: 'test',
+          languageId: 63,
+          stdin: '',
+          expectedOutput: '',
+          cpuTimeLimit: 2,
+          memoryLimit: 128000,
+          wallTimeLimit: 5
+        })
+      ).rejects.toThrow('Rate limit exceeded. Retry after 60 seconds');
     });
   });
 
@@ -371,14 +374,14 @@ describe('Judge0 Client', () => {
         enablePolling: true,
         pollingInterval: 1000
       };
-      
+
       const dockerClient = new Judge0Client(dockerConfig);
       expect(dockerClient).toBeInstanceOf(Judge0Client);
     });
 
     it('should provide container health check endpoint info', () => {
       const healthInfo = client.getHealthCheckInfo();
-      
+
       expect(healthInfo).toEqual({
         endpoint: '/system_info',
         method: 'GET',
@@ -407,7 +410,7 @@ describe('Judge0 Client', () => {
         JUDGE0_TIMEOUT: '8000',
         JUDGE0_MAX_RETRIES: '5'
       });
-      
+
       expect(envConfig).toEqual({
         baseUrl: 'http://judge0:2358',
         authToken: 'env-token-123',
@@ -423,7 +426,7 @@ describe('Judge0 Client', () => {
         JUDGE0_URL: 'http://localhost:2358'
         // Missing other env vars
       });
-      
+
       expect(envConfig).toEqual({
         baseUrl: 'http://localhost:2358',
         authToken: undefined,
@@ -448,27 +451,28 @@ describe('Judge0 Client', () => {
     it('should track execution metrics', async () => {
       const mockToken = 'metrics-test-token';
       const startTime = Date.now();
-      
+
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          token: mockToken,
-          status: { id: 3, description: 'Accepted' },
-          stdout: 'result',
-          time: '0.045',
-          memory: 15360
-        })
+        json: () =>
+          Promise.resolve({
+            token: mockToken,
+            status: { id: 3, description: 'Accepted' },
+            stdout: 'result',
+            time: '0.045',
+            memory: 15360
+          })
       } as Response);
 
       const result = await client.getExecutionResult(mockToken);
-      
+
       expect(result.time).toBe('0.045');
       expect(result.memory).toBe(15360);
     });
 
     it('should provide client statistics', () => {
       const stats = client.getStats();
-      
+
       expect(stats).toEqual({
         totalRequests: 0,
         successfulRequests: 0,

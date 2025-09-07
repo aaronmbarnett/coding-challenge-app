@@ -28,7 +28,9 @@ describe('ChallengeSidebar', () => {
 
       const editLink = page.getByRole('link', { name: 'Edit Challenge' });
       await expect.element(editLink).toBeVisible();
-      await expect.element(editLink).toHaveAttribute('href', '/admin/challenges/challenge-123/edit');
+      await expect
+        .element(editLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-123/edit');
     });
 
     it('should render manage test cases link', async () => {
@@ -36,7 +38,9 @@ describe('ChallengeSidebar', () => {
 
       const testCasesLink = page.getByRole('link', { name: 'Manage Test Cases' });
       await expect.element(testCasesLink).toBeVisible();
-      await expect.element(testCasesLink).toHaveAttribute('href', '/admin/challenges/challenge-123/tests');
+      await expect
+        .element(testCasesLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-123/tests');
     });
 
     it('should render test solution link', async () => {
@@ -44,7 +48,9 @@ describe('ChallengeSidebar', () => {
 
       const testRunnerLink = page.getByRole('link', { name: '🏃 Test Solution' });
       await expect.element(testRunnerLink).toBeVisible();
-      await expect.element(testRunnerLink).toHaveAttribute('href', '/admin/challenges/challenge-123/test-runner');
+      await expect
+        .element(testRunnerLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-123/test-runner');
     });
 
     it('should adapt links to different challenge IDs', async () => {
@@ -55,9 +61,15 @@ describe('ChallengeSidebar', () => {
       const testCasesLink = page.getByRole('link', { name: 'Manage Test Cases' });
       const testRunnerLink = page.getByRole('link', { name: '🏃 Test Solution' });
 
-      await expect.element(editLink).toHaveAttribute('href', '/admin/challenges/challenge-456/edit');
-      await expect.element(testCasesLink).toHaveAttribute('href', '/admin/challenges/challenge-456/tests');
-      await expect.element(testRunnerLink).toHaveAttribute('href', '/admin/challenges/challenge-456/test-runner');
+      await expect
+        .element(editLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-456/edit');
+      await expect
+        .element(testCasesLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-456/tests');
+      await expect
+        .element(testRunnerLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-456/test-runner');
     });
   });
 
@@ -118,8 +130,8 @@ describe('ChallengeSidebar', () => {
     });
 
     it('should handle different language configurations', async () => {
-      const singleLangChallenge = createMockChallenge({ 
-        languagesCsv: 'rust' 
+      const singleLangChallenge = createMockChallenge({
+        languagesCsv: 'rust'
       });
       render(ChallengeSidebar, { props: { challenge: singleLangChallenge } });
 
@@ -128,8 +140,8 @@ describe('ChallengeSidebar', () => {
     });
 
     it('should handle languages with spaces', async () => {
-      const spaceLanguagesChallenge = createMockChallenge({ 
-        languagesCsv: 'c++, go , typescript ' 
+      const spaceLanguagesChallenge = createMockChallenge({
+        languagesCsv: 'c++, go , typescript '
       });
       render(ChallengeSidebar, { props: { challenge: spaceLanguagesChallenge } });
 
@@ -166,8 +178,8 @@ describe('ChallengeSidebar', () => {
       // Check for specific statistic values by using DOM structure
       // Statistics are in the third section with dd elements containing font-medium class
       const statsValues = container.querySelectorAll('.font-medium');
-      const statsText = Array.from(statsValues).map(el => el.textContent?.trim());
-      
+      const statsText = Array.from(statsValues).map((el) => el.textContent?.trim());
+
       expect(statsText).toContain('0'); // Total Attempts
       expect(statsText).toContain('N/A'); // Success Rate and Avg Time
     });
@@ -272,7 +284,7 @@ describe('ChallengeSidebar', () => {
 
       const languagesLabel = page.getByText('Languages');
       const createdLabel = page.getByText('Created');
-      
+
       await expect.element(languagesLabel).toBeVisible();
       await expect.element(createdLabel).toBeVisible();
     });
@@ -284,28 +296,28 @@ describe('ChallengeSidebar', () => {
       // Other sections should still be visible
       const languagesLabel = page.getByText('Languages');
       const createdLabel = page.getByText('Created');
-      
+
       await expect.element(languagesLabel).toBeVisible();
       await expect.element(createdLabel).toBeVisible();
     });
 
     it('should handle different date formats', async () => {
-      const recentChallenge = createMockChallenge({ 
-        createdAt: new Date('2024-12-01T15:30:00Z') 
+      const recentChallenge = createMockChallenge({
+        createdAt: new Date('2024-12-01T15:30:00Z')
       });
       render(ChallengeSidebar, { props: { challenge: recentChallenge } });
 
       const createdLabel = page.getByText('Created');
       await expect.element(createdLabel).toBeVisible();
-      
+
       // Check for some form of date - could be various formats
       const datePattern = page.getByText(/12\/1\/2024|1\/12\/2024|2024/);
       await expect.element(datePattern).toBeVisible();
     });
 
     it('should handle many programming languages', async () => {
-      const manyLanguagesChallenge = createMockChallenge({ 
-        languagesCsv: 'javascript,python,java,c++,rust,go,typescript,kotlin' 
+      const manyLanguagesChallenge = createMockChallenge({
+        languagesCsv: 'javascript,python,java,c++,rust,go,typescript,kotlin'
       });
       render(ChallengeSidebar, { props: { challenge: manyLanguagesChallenge } });
 
@@ -315,7 +327,7 @@ describe('ChallengeSidebar', () => {
       // At least some languages should be visible
       const jsBadge = page.getByText('javascript');
       const pythonBadge = page.getByText('python');
-      
+
       await expect.element(jsBadge).toBeVisible();
       await expect.element(pythonBadge).toBeVisible();
     });

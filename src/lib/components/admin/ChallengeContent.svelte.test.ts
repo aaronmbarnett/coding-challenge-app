@@ -6,7 +6,8 @@ import { createMockChallenge } from '$lib/test-fixtures';
 
 describe('ChallengeContent', () => {
   const mockChallenge = createMockChallenge({
-    descriptionMd: '# Two Sum Problem\n\nGiven an array of integers, return indices of the two numbers such that they add up to a specific target.\n\n## Example\n\nInput: [2,7,11,15], target = 9\nOutput: [0,1]',
+    descriptionMd:
+      '# Two Sum Problem\n\nGiven an array of integers, return indices of the two numbers such that they add up to a specific target.\n\n## Example\n\nInput: [2,7,11,15], target = 9\nOutput: [0,1]',
     starterCode: 'function twoSum(nums, target) {\n  // Your code here\n  return [];\n}'
   });
 
@@ -35,7 +36,7 @@ describe('ChallengeContent', () => {
       const mainDescription = page.getByText('Given an array of integers');
       const inputText = page.getByText('Input:');
       const outputText = page.getByText('Output:');
-      
+
       await expect.element(mainDescription).toBeVisible();
       await expect.element(inputText).toBeVisible();
       await expect.element(outputText).toBeVisible();
@@ -43,7 +44,8 @@ describe('ChallengeContent', () => {
 
     it('should handle different description content', async () => {
       const differentChallenge = createMockChallenge({
-        descriptionMd: '# Binary Search\n\nImplement binary search algorithm.\n\nTime complexity: O(log n)'
+        descriptionMd:
+          '# Binary Search\n\nImplement binary search algorithm.\n\nTime complexity: O(log n)'
       });
 
       render(ChallengeContent, { props: { challenge: differentChallenge } });
@@ -89,7 +91,7 @@ describe('ChallengeContent', () => {
       // Only description and test cases sections should be visible
       const descriptionHeading = page.getByRole('heading', { name: 'Description' });
       const testCasesHeading = page.getByRole('heading', { name: 'Test Cases' });
-      
+
       await expect.element(descriptionHeading).toBeVisible();
       await expect.element(testCasesHeading).toBeVisible();
     });
@@ -101,7 +103,7 @@ describe('ChallengeContent', () => {
       // Only description and test cases sections should be visible
       const descriptionHeading = page.getByRole('heading', { name: 'Description' });
       const testCasesHeading = page.getByRole('heading', { name: 'Test Cases' });
-      
+
       await expect.element(descriptionHeading).toBeVisible();
       await expect.element(testCasesHeading).toBeVisible();
     });
@@ -119,7 +121,8 @@ describe('ChallengeContent', () => {
 
     it('should preserve code formatting and indentation', async () => {
       const indentedCodeChallenge = createMockChallenge({
-        starterCode: 'class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // Implementation\n        return new int[]{};\n    }\n}'
+        starterCode:
+          'class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // Implementation\n        return new int[]{};\n    }\n}'
       });
 
       render(ChallengeContent, { props: { challenge: indentedCodeChallenge } });
@@ -145,7 +148,9 @@ describe('ChallengeContent', () => {
 
       const manageLink = page.getByRole('link', { name: 'Manage Test Cases →' });
       await expect.element(manageLink).toBeVisible();
-      await expect.element(manageLink).toHaveAttribute('href', `/admin/challenges/${mockChallenge.id}/tests`);
+      await expect
+        .element(manageLink)
+        .toHaveAttribute('href', `/admin/challenges/${mockChallenge.id}/tests`);
     });
 
     it('should adapt manage link to different challenge IDs', async () => {
@@ -153,17 +158,19 @@ describe('ChallengeContent', () => {
       render(ChallengeContent, { props: { challenge: differentChallenge } });
 
       const manageLink = page.getByRole('link', { name: 'Manage Test Cases →' });
-      await expect.element(manageLink).toHaveAttribute('href', '/admin/challenges/challenge-456/tests');
+      await expect
+        .element(manageLink)
+        .toHaveAttribute('href', '/admin/challenges/challenge-456/tests');
     });
 
     it('should have slot for test cases content', async () => {
-      render(ChallengeContent, { 
+      render(ChallengeContent, {
         props: { challenge: mockChallenge }
       });
 
       const testCasesHeading = page.getByRole('heading', { name: 'Test Cases' });
       await expect.element(testCasesHeading).toBeVisible();
-      
+
       // Test cases section structure should be present for slot content
       const manageLink = page.getByRole('link', { name: 'Manage Test Cases →' });
       await expect.element(manageLink).toBeVisible();
@@ -226,7 +233,9 @@ describe('ChallengeContent', () => {
 
       const manageLink = page.getByRole('link', { name: 'Manage Test Cases →' });
       await expect.element(manageLink).toBeVisible();
-      await expect.element(manageLink).toHaveAttribute('href', `/admin/challenges/${mockChallenge.id}/tests`);
+      await expect
+        .element(manageLink)
+        .toHaveAttribute('href', `/admin/challenges/${mockChallenge.id}/tests`);
     });
 
     it('should provide semantic structure for code blocks', async () => {
@@ -235,7 +244,7 @@ describe('ChallengeContent', () => {
       // Starter code section should contain code content
       const starterCodeHeading = page.getByRole('heading', { name: 'Starter Code' });
       await expect.element(starterCodeHeading).toBeVisible();
-      
+
       const codeContent = page.getByText(/function twoSum/);
       await expect.element(codeContent).toBeVisible();
     });
@@ -244,7 +253,8 @@ describe('ChallengeContent', () => {
   describe('content variations and edge cases', () => {
     it('should handle markdown with special characters', async () => {
       const specialCharChallenge = createMockChallenge({
-        descriptionMd: '# Test & Validation\n\nSpecial chars: @#$%^&*()\n\n<script>alert("test")</script>'
+        descriptionMd:
+          '# Test & Validation\n\nSpecial chars: @#$%^&*()\n\n<script>alert("test")</script>'
       });
 
       render(ChallengeContent, { props: { challenge: specialCharChallenge } });

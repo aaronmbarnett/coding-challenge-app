@@ -1,14 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { 
-  mockCandidates, 
+import {
+  mockCandidates,
   mockChallenges,
   TEN_MINUTES_SECONDS,
-  FIFTEEN_MINUTES_SECONDS,
   THIRTY_MINUTES_SECONDS,
   TWO_HOURS_SECONDS
 } from '$lib/test-fixtures';
 import { load } from './+page.server';
-import * as table from '$lib/server/db/schema';
 
 // Type for the expected return value
 interface SessionNewLoadResult {
@@ -26,7 +24,8 @@ interface SessionNewLoadResult {
 // Create mock db for form data loading
 const createMockDbForNewSession = (mockCandidates: any, mockChallenges: any) => {
   return {
-    select: vi.fn()
+    select: vi
+      .fn()
       .mockReturnValueOnce({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
@@ -55,8 +54,8 @@ describe('/admin/sessions/new +page.server.ts', () => {
 
       const mockDb = createMockDbForNewSession(testCandidates, testChallenges);
       const locals = { db: mockDb };
-      
-      const result = await load({ locals } as any) as SessionNewLoadResult;
+
+      const result = (await load({ locals } as any)) as SessionNewLoadResult;
 
       expect(result).toEqual({
         candidates: testCandidates,
@@ -79,8 +78,8 @@ describe('/admin/sessions/new +page.server.ts', () => {
 
       const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
       const locals = { db: mockDb };
-      
-      const result = await load({ locals } as any) as SessionNewLoadResult;
+
+      const result = (await load({ locals } as any)) as SessionNewLoadResult;
 
       expect(result).toEqual({
         candidates: [],
@@ -94,8 +93,8 @@ describe('/admin/sessions/new +page.server.ts', () => {
 
       const mockDb = createMockDbForNewSession(testCandidates, testChallenges);
       const locals = { db: mockDb };
-      
-      const result = await load({ locals } as any) as SessionNewLoadResult;
+
+      const result = (await load({ locals } as any)) as SessionNewLoadResult;
 
       expect(result).toEqual({
         candidates: testCandidates,
@@ -106,7 +105,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
     it('should filter candidates by role', async () => {
       const mockDb = createMockDbForNewSession([], []);
       const locals = { db: mockDb };
-      
+
       await load({ locals } as any);
 
       // Verify database was called
@@ -116,7 +115,7 @@ describe('/admin/sessions/new +page.server.ts', () => {
     it('should order candidates by email and challenges by title', async () => {
       const mockDb = createMockDbForNewSession([], []);
       const locals = { db: mockDb };
-      
+
       await load({ locals } as any);
 
       // Verify database was called for both queries
@@ -144,8 +143,8 @@ describe('/admin/sessions/new +page.server.ts', () => {
 
       const mockDb = createMockDbForNewSession([], mockChallenges);
       const locals = { db: mockDb };
-      
-      const result = await load({ locals } as any) as SessionNewLoadResult;
+
+      const result = (await load({ locals } as any)) as SessionNewLoadResult;
 
       expect(result.challenges).toEqual(mockChallenges);
       expect(result.challenges[0].timeLimitSec).toBe(TEN_MINUTES_SECONDS);
@@ -160,8 +159,8 @@ describe('/admin/sessions/new +page.server.ts', () => {
 
       const mockDb = createMockDbForNewSession(testCandidates, testChallenges);
       const locals = { db: mockDb };
-      
-      const result = await load({ locals } as any) as SessionNewLoadResult;
+
+      const result = (await load({ locals } as any)) as SessionNewLoadResult;
 
       // Verify ordering is preserved as returned by database
       expect(result.candidates[0].email).toBe('alice@example.com');

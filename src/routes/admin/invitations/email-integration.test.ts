@@ -66,15 +66,15 @@ describe('/admin/invitations email integration', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
 
-      const result = await actions.default({ 
-        request: mockRequest, 
+      const result = await actions.default({
+        request: mockRequest,
         locals,
         url: mockUrl
       } as any);
@@ -131,16 +131,16 @@ describe('/admin/invitations email integration', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       // Test with production-like URL
       const mockUrl = new URL('https://mycompany.com/admin/invitations');
 
-      await actions.default({ 
-        request: mockRequest, 
+      await actions.default({
+        request: mockRequest,
         locals,
         url: mockUrl
       } as any);
@@ -183,15 +183,15 @@ describe('/admin/invitations email integration', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
 
-      const result = await actions.default({ 
-        request: mockRequest, 
+      const result = await actions.default({
+        request: mockRequest,
         locals,
         url: mockUrl
       } as any);
@@ -233,15 +233,15 @@ describe('/admin/invitations email integration', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
 
-      const result = await actions.default({ 
-        request: mockRequest, 
+      const result = await actions.default({
+        request: mockRequest,
         locals,
         url: mockUrl
       } as any);
@@ -269,15 +269,15 @@ describe('/admin/invitations email integration', () => {
         formData: vi.fn().mockResolvedValue(mockFormData)
       };
 
-      const locals = { 
-        db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+      const locals = {
+        db: mockDb,
+        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
 
-      const result = await actions.default({ 
-        request: mockRequest, 
+      const result = await actions.default({
+        request: mockRequest,
         locals,
         url: mockUrl
       } as any);
@@ -312,15 +312,15 @@ describe('/admin/invitations email integration', () => {
       });
 
       const testCases = [
-        { 
+        {
           inputUrl: 'http://localhost:5173/admin/invitations',
           expectedVerifyUrl: 'http://localhost:5173/auth/verify'
         },
-        { 
+        {
           inputUrl: 'https://staging.company.com/admin/invitations',
           expectedVerifyUrl: 'https://staging.company.com/auth/verify'
         },
-        { 
+        {
           inputUrl: 'https://company.com:8080/admin/invitations',
           expectedVerifyUrl: 'https://company.com:8080/auth/verify'
         }
@@ -336,13 +336,13 @@ describe('/admin/invitations email integration', () => {
           formData: vi.fn().mockResolvedValue(mockFormData)
         };
 
-        const locals = { 
-          db: mockDb, 
-          user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+        const locals = {
+          db: mockDb,
+          user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const }
         };
 
-        await actions.default({ 
-          request: mockRequest, 
+        await actions.default({
+          request: mockRequest,
           locals,
           url: new URL(inputUrl)
         } as any);

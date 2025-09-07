@@ -1,7 +1,6 @@
 import type { Handle } from '@sveltejs/kit';
-import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db';
-import { getDevSession, getSessionUserFromRequest } from '$lib/server/auth/session';
+import { getDevSession } from '$lib/server/auth/session';
 import { seedDatabase } from '$lib/server/db/seed';
 
 // Track if seeding has been attempted to avoid multiple attempts
@@ -11,11 +10,11 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.db = db;
   event.locals.user = getDevSession(event);
   event.locals.session = null;
-  
+
   // Auto-seed database in development if SEED_DB=true
   if (
-    process.env.SEED_DB === 'true' && 
-    !seedingAttempted && 
+    process.env.SEED_DB === 'true' &&
+    !seedingAttempted &&
     process.env.NODE_ENV !== 'production'
   ) {
     seedingAttempted = true;
@@ -27,7 +26,7 @@ export const handle: Handle = async ({ event, resolve }) => {
       console.error('❌ Failed to seed database:', error);
     }
   }
-  
+
   return resolve(event);
 };
 // const handleAuth: Handle = async ({ event, resolve }) => {

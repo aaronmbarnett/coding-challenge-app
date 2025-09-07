@@ -135,7 +135,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ params, locals });
-      const result = await load(event) as SessionDetailLoadResult;
+      const result = (await load(event)) as SessionDetailLoadResult;
 
       expect(result).toEqual({
         session: mockSessionData.session,
@@ -175,7 +175,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ params, locals });
-      const result = await load(event) as SessionDetailLoadResult;
+      const result = (await load(event)) as SessionDetailLoadResult;
 
       expect(result.candidate).toBeNull();
       expect(result.session).toEqual(mockSessionData.session);
@@ -203,7 +203,7 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ params, locals });
-      const result = await load(event) as SessionDetailLoadResult;
+      const result = (await load(event)) as SessionDetailLoadResult;
 
       expect(result.attempts).toEqual([]);
       expect(result.session).toEqual(mockSessionData.session);
@@ -233,11 +233,10 @@ describe('/admin/sessions/[id] +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ params, locals });
-      const result = await load(event) as SessionDetailLoadResult;
+      const result = (await load(event)) as SessionDetailLoadResult;
 
       expect(result.attempts[0].challenge).toBeNull();
       expect(result.attempts[0].attempt).toEqual(mockAttempts[0].attempt);
     });
   });
 });
-

@@ -14,8 +14,8 @@
     emptyActionText?: string;
   }
 
-  let { 
-    challenges, 
+  let {
+    challenges,
     selectedChallengeIds = $bindable([]),
     name = 'challengeIds',
     emptyMessage = 'No challenges available',
@@ -73,7 +73,9 @@
     </div>
 
     <p class="mt-2 text-sm text-gray-600">
-      Selected: {selectedChallengeIds.length} challenge{selectedChallengeIds.length === 1 ? '' : 's'}
+      Selected: {selectedChallengeIds.length} challenge{selectedChallengeIds.length === 1
+        ? ''
+        : 's'}
     </p>
   {/if}
 </div>

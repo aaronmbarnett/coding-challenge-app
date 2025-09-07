@@ -5,7 +5,6 @@ import ChallengeHeader from './ChallengeHeader.svelte';
 import { mockChallenge, createMockChallenge } from '$lib/test-fixtures';
 
 describe('ChallengeHeader', () => {
-
   it('should render challenge title', async () => {
     render(ChallengeHeader, {
       props: {
@@ -38,7 +37,9 @@ describe('ChallengeHeader', () => {
 
     const editLink = page.getByText('Edit Challenge');
     await expect.element(editLink).toBeInTheDocument();
-    await expect.element(editLink).toHaveAttribute('href', `/admin/challenges/${mockChallenge.id}/edit`);
+    await expect
+      .element(editLink)
+      .toHaveAttribute('href', `/admin/challenges/${mockChallenge.id}/edit`);
   });
 
   it('should render delete button', async () => {
@@ -69,7 +70,7 @@ describe('ChallengeHeader', () => {
     // Should still render other elements correctly
     const title = page.getByText('Different Challenge');
     await expect.element(title).toBeInTheDocument();
-    
+
     const backLink = page.getByText('← Back to Challenges');
     await expect.element(backLink).toBeInTheDocument();
   });

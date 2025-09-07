@@ -6,7 +6,7 @@
     cancelText?: string;
   }
 
-  let { 
+  let {
     submitText = 'Submit',
     submitDisabled = false,
     cancelHref,
@@ -22,12 +22,9 @@
   >
     {submitText}
   </button>
-  
+
   {#if cancelHref}
-    <a
-      href={cancelHref}
-      class="rounded-md bg-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-400"
-    >
+    <a href={cancelHref} class="rounded-md bg-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-400">
       {cancelText}
     </a>
   {/if}

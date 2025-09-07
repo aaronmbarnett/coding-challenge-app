@@ -48,7 +48,7 @@ export async function createSession(
     .returning();
 
   // Create attempts for each challenge
-  const attemptValues = data.challengeIds.map(challengeId => ({
+  const attemptValues = data.challengeIds.map((challengeId) => ({
     sessionId: session.id,
     challengeId: challengeId,
     status: 'locked' as const
@@ -70,14 +70,8 @@ export async function createSession(
  *
  * @remarks Only pending sessions can be started. Calculates end time based on duration.
  */
-export async function startSession(
-  db: BetterSQLite3Database<typeof table>,
-  sessionId: string
-) {
-  const [session] = await db
-    .select()
-    .from(table.sessions)
-    .where(eq(table.sessions.id, sessionId));
+export async function startSession(db: BetterSQLite3Database<typeof table>, sessionId: string) {
+  const [session] = await db.select().from(table.sessions).where(eq(table.sessions.id, sessionId));
 
   if (!session) {
     throw new Error('Session not found');
@@ -109,14 +103,8 @@ export async function startSession(
  *
  * @remarks Only active sessions can be stopped. Sets final end time.
  */
-export async function stopSession(
-  db: BetterSQLite3Database<typeof table>,
-  sessionId: string
-) {
-  const [session] = await db
-    .select()
-    .from(table.sessions)
-    .where(eq(table.sessions.id, sessionId));
+export async function stopSession(db: BetterSQLite3Database<typeof table>, sessionId: string) {
+  const [session] = await db.select().from(table.sessions).where(eq(table.sessions.id, sessionId));
 
   if (!session) {
     throw new Error('Session not found');

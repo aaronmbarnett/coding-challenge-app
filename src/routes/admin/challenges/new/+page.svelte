@@ -4,28 +4,23 @@
   import FormField from '$lib/components/ui/FormField.svelte';
   import PageHeader from '$lib/components/ui/PageHeader.svelte';
   import FormActions from '$lib/components/ui/FormActions.svelte';
-  
+
   let { form } = $props();
-  
+
   function handleSubmit() {
     console.log('Form submit triggered');
   }
 </script>
 
 <div class="mx-auto max-w-2xl space-y-6">
-  <PageHeader 
-    title="Create New Challenge" 
-    backHref="/admin/challenges" 
-    backText="← Back to Challenges" 
+  <PageHeader
+    title="Create New Challenge"
+    backHref="/admin/challenges"
+    backText="← Back to Challenges"
   />
 
   <form method="POST" use:enhance class="space-y-6" onsubmit={handleSubmit}>
-    <FormField
-      label="Challenge Title"
-      name="title"
-      placeholder="e.g., Two Sum Problem"
-      required
-    />
+    <FormField label="Challenge Title" name="title" placeholder="e.g., Two Sum Problem" required />
 
     <FormField
       label="Description (Markdown)"
@@ -60,9 +55,6 @@
 
     <ErrorMessage message={form?.message} />
 
-    <FormActions 
-      submitText="Create Challenge"
-      cancelHref="/admin/challenges"
-    />
+    <FormActions submitText="Create Challenge" cancelHref="/admin/challenges" />
   </form>
 </div>

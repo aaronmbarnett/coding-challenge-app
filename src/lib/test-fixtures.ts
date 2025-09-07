@@ -95,19 +95,19 @@ export const mockCandidates = [
 export const mockCandidate = mockCandidates[0];
 
 export function createMockCandidate(overrides: Partial<User> = {}): User {
-  return { 
+  return {
     id: 'candidate-123',
     email: 'candidate@example.com',
     role: 'candidate',
     createdAt: new Date('2024-01-01T00:00:00Z'),
-    ...overrides 
+    ...overrides
   };
 }
 
 // ===== CHALLENGE COLLECTION FIXTURES =====
 export const mockChallenges = [
   {
-    id: 'challenge-1', 
+    id: 'challenge-1',
     title: 'Two Sum',
     descriptionMd: '# Two Sum\n\nFind two numbers that add up to target.',
     languagesCsv: 'javascript,python,java',
@@ -116,7 +116,7 @@ export const mockChallenges = [
     createdAt: new Date('2024-01-15T10:00:00Z')
   },
   {
-    id: 'challenge-2', 
+    id: 'challenge-2',
     title: 'Valid Palindrome',
     descriptionMd: '# Valid Palindrome\n\nCheck if a string is a palindrome.',
     languagesCsv: 'javascript,python',
@@ -147,10 +147,11 @@ export const mockChallenges = [
 // ===== INVITATION FIXTURES =====
 export const createMockInvitation = (overrides: Partial<Invitation> = {}): Invitation => {
   // Use TextEncoder for browser-compatible Buffer alternative
-  const tokenHash = typeof Buffer !== 'undefined' 
-    ? Buffer.from('mock-token-hash') 
-    : new Uint8Array(new TextEncoder().encode('mock-token-hash'));
-  
+  const tokenHash =
+    typeof Buffer !== 'undefined'
+      ? Buffer.from('mock-token-hash')
+      : new Uint8Array(new TextEncoder().encode('mock-token-hash'));
+
   return {
     id: 'invitation-123',
     email: 'candidate@example.com',
@@ -170,7 +171,7 @@ export const mockInvitations = {
     consumedAt: null
   }),
   consumed: createMockInvitation({
-    id: 'consumed-invitation', 
+    id: 'consumed-invitation',
     email: 'consumed@example.com',
     consumedAt: new Date(Date.now() - TIME_MS.THIRTY_MINUTES)
   }),

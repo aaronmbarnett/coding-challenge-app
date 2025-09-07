@@ -199,7 +199,7 @@ describe('ChallengeSelector', () => {
     it('should format minutes correctly', async () => {
       const challengesWithMinutes = [
         { id: 'test-1', title: 'Test 1', timeLimitSec: 900 }, // 15 minutes
-        { id: 'test-2', title: 'Test 2', timeLimitSec: 600 }  // 10 minutes
+        { id: 'test-2', title: 'Test 2', timeLimitSec: 600 } // 10 minutes
       ];
 
       render(ChallengeSelector, {
@@ -219,7 +219,7 @@ describe('ChallengeSelector', () => {
     it('should format hours and minutes correctly', async () => {
       const challengesWithHours = [
         { id: 'test-1', title: 'Test 1', timeLimitSec: 5400 }, // 1h 30m
-        { id: 'test-2', title: 'Test 2', timeLimitSec: 2 * ONE_HOUR_SECONDS }  // 2h 0m
+        { id: 'test-2', title: 'Test 2', timeLimitSec: 2 * ONE_HOUR_SECONDS } // 2h 0m
       ];
 
       render(ChallengeSelector, {
@@ -307,11 +307,14 @@ describe('ChallengeSelector', () => {
     it('should handle very long challenge titles', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: [{
-            id: 'long-title',
-            title: 'This is a very long challenge title that might wrap to multiple lines and should be handled gracefully',
-            timeLimitSec: THIRTY_MINUTES_SECONDS
-          }],
+          challenges: [
+            {
+              id: 'long-title',
+              title:
+                'This is a very long challenge title that might wrap to multiple lines and should be handled gracefully',
+              timeLimitSec: THIRTY_MINUTES_SECONDS
+            }
+          ],
           selectedChallengeIds: []
         }
       });
@@ -476,7 +479,7 @@ describe('ChallengeSelector', () => {
       // Component should handle all props gracefully
       const heading = page.getByText('Select Challenges');
       await expect.element(heading).toBeVisible();
-      
+
       const selectionCount = page.getByText('Selected: 2 challenges');
       await expect.element(selectionCount).toBeVisible();
     });
@@ -493,7 +496,7 @@ describe('ChallengeSelector', () => {
       // Simulate clicking on a challenge checkbox
       const challengeLabel = page.getByText('Two Sum');
       const parentLabel = challengeLabel.locator('..').locator('..');
-      
+
       // Should not throw errors even if internal state operations fail
       expect(async () => {
         await parentLabel.click();
@@ -506,11 +509,11 @@ describe('ChallengeSelector', () => {
       const largeChallengeList = Array.from({ length: 500 }, (_, i) => ({
         id: `challenge-${i}`,
         title: `Challenge ${i}: Algorithm Problem`,
-        timeLimitSec: 1800 + (i * 60)
+        timeLimitSec: 1800 + i * 60
       }));
 
       const startTime = performance.now();
-      
+
       render(ChallengeSelector, {
         props: {
           challenges: largeChallengeList,
@@ -527,7 +530,7 @@ describe('ChallengeSelector', () => {
       // Should still be functional
       const title = page.getByText('Select Challenges');
       await expect.element(title).toBeInTheDocument();
-      
+
       const count = page.getByText('Selected: 0 challenges');
       await expect.element(count).toBeInTheDocument();
     });
@@ -561,7 +564,7 @@ describe('ChallengeSelector', () => {
       }));
 
       const startTime = performance.now();
-      
+
       render(ChallengeSelector, {
         props: {
           challenges: manyTimeFormats,
@@ -594,11 +597,11 @@ describe('ChallengeSelector', () => {
             selectedChallengeIds: testCase.selection
           }
         });
-        
+
         const count = page.getByText(`Selected: ${testCase.expected}`);
         await expect.element(count).toBeVisible();
       }
-      
+
       // Verify the component successfully rendered all test cases without errors
       const selector = page.getByText('Select Challenges').first();
       await expect.element(selector).toBeInTheDocument();
@@ -646,7 +649,7 @@ describe('ChallengeSelector', () => {
       // Focus should work on valid elements
       const validChallenge = page.getByText('Valid Challenge');
       await expect.element(validChallenge).toBeVisible();
-      
+
       // Component should maintain accessibility even with edge cases
       const checkbox = page.getByRole('checkbox', { name: /Valid Challenge/ });
       await expect.element(checkbox).toBeVisible();

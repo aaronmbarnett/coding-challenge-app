@@ -22,11 +22,13 @@ const mockReturning = vi.fn().mockResolvedValue([{ id: 'test-id' }]);
 const mockDb = {
   select: vi.fn().mockReturnValue({
     from: vi.fn().mockReturnValue({
-      where: vi.fn().mockResolvedValue([{
-        id: 'challenge-1',
-        title: 'Sum Array',
-        languagesCsv: 'javascript,python'
-      }])
+      where: vi.fn().mockResolvedValue([
+        {
+          id: 'challenge-1',
+          title: 'Sum Array',
+          languagesCsv: 'javascript,python'
+        }
+      ])
     })
   }),
   insert: vi.fn().mockReturnValue({
@@ -39,19 +41,26 @@ const mockDb = {
   })
 };
 
-const mockExecuteChallenge = vi.mocked(await import('$lib/server/execution/challenge-executor')).executeChallenge;
+const mockExecuteChallenge = vi.mocked(
+  await import('$lib/server/execution/challenge-executor')
+).executeChallenge;
 
 describe('/admin/challenges/[id]/test-runner form actions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Reset database mock chain to return challenge data by default
-    mockDb.select().from().where.mockResolvedValue([{
-      id: 'challenge-1',
-      title: 'Sum Array',
-      languagesCsv: 'javascript,python'
-    }]);
-    
+    mockDb
+      .select()
+      .from()
+      .where.mockResolvedValue([
+        {
+          id: 'challenge-1',
+          title: 'Sum Array',
+          languagesCsv: 'javascript,python'
+        }
+      ]);
+
     mockReturning.mockResolvedValue([{ id: 'test-id' }]);
   });
 
@@ -235,7 +244,8 @@ describe('/admin/challenges/[id]/test-runner form actions', () => {
       expect(result).toEqual({
         status: 400,
         data: {
-          message: 'Language c++ is not supported for this challenge. Supported languages: javascript, python',
+          message:
+            'Language c++ is not supported for this challenge. Supported languages: javascript, python',
           data: {
             code: 'int main() { return 0; }',
             language: 'c++'

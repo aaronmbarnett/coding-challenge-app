@@ -4,7 +4,7 @@
   import PageHeader from '$lib/components/ui/PageHeader.svelte';
   import DataTable from '$lib/components/ui/DataTable.svelte';
   import { formatDuration, formatDateTime } from '$lib/utils/datetime';
-  
+
   let { data } = $props();
 
   const tableColumns = [
@@ -17,12 +17,12 @@
 </script>
 
 <div class="space-y-6">
-  <PageHeader 
-    title="Exam Sessions" 
-    backHref="/admin" 
+  <PageHeader
+    title="Exam Sessions"
+    backHref="/admin"
     backText="← Back to Dashboard"
-    actionHref="/admin/sessions/new" 
-    actionText="Create Session" 
+    actionHref="/admin/sessions/new"
+    actionText="Create Session"
   />
 
   <!-- stats -->
@@ -33,8 +33,8 @@
   </div>
 
   <!-- sessions list -->
-  <DataTable 
-    columns={tableColumns} 
+  <DataTable
+    columns={tableColumns}
     data={data.sessions}
     emptyMessage="No exam sessions yet."
     emptyActionHref="/admin/sessions/new"
@@ -66,10 +66,7 @@
           <a href="/admin/sessions/{session.id}" class="text-blue-600 hover:text-blue-500">
             View
           </a>
-          <a
-            href="/admin/sessions/{session.id}/edit"
-            class="text-green-600 hover:text-green-500"
-          >
+          <a href="/admin/sessions/{session.id}/edit" class="text-green-600 hover:text-green-500">
             Edit
           </a>
         </td>

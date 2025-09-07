@@ -62,7 +62,7 @@ export const actions: Actions = {
       }
 
       // Check if language is supported for this challenge
-      const supportedLanguages = challenge.languagesCsv.split(',').map(lang => lang.trim());
+      const supportedLanguages = challenge.languagesCsv.split(',').map((lang) => lang.trim());
       if (!supportedLanguages.includes(language)) {
         return fail(400, {
           message: `Language ${language} is not supported for this challenge. Supported languages: ${supportedLanguages.join(', ')}`,
@@ -123,7 +123,7 @@ export const actions: Actions = {
       };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      
+
       return fail(500, {
         message: `Code execution failed: ${errorMessage}`
       });

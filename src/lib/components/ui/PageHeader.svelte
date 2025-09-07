@@ -8,14 +8,7 @@
     subtitle?: string;
   }
 
-  let { 
-    title, 
-    backHref, 
-    backText = '← Back', 
-    actionHref, 
-    actionText,
-    subtitle 
-  }: Props = $props();
+  let { title, backHref, backText = '← Back', actionHref, actionText, subtitle }: Props = $props();
 </script>
 
 <div class="flex items-center justify-between">
@@ -32,10 +25,7 @@
   </div>
 
   {#if actionHref && actionText}
-    <a
-      href={actionHref}
-      class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-    >
+    <a href={actionHref} class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
       {actionText}
     </a>
   {/if}

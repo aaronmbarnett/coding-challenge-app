@@ -41,7 +41,7 @@ export const actions: Actions = {
             role: 'candidate'
           })
           .returning();
-        
+
         user = newUser;
       }
 
@@ -61,7 +61,6 @@ export const actions: Actions = {
       // Redirect based on user role
       const redirectPath = user.role === 'admin' ? '/admin' : '/candidate';
       throw redirect(302, redirectPath);
-
     } catch (error: unknown) {
       if (error instanceof Error && 'status' in error) {
         // Re-throw redirect errors
@@ -71,7 +70,7 @@ export const actions: Actions = {
       if (error instanceof Error) {
         return fail(500, { message: 'Failed to authenticate user' });
       }
-      
+
       console.error('Authentication error:', error);
       return fail(500, { message: 'Failed to authenticate user' });
     }

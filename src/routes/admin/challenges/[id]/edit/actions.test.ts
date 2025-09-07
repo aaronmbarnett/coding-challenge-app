@@ -55,13 +55,13 @@ describe('/admin/challenges/[id]/edit form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.update({ request: mockRequest, params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1');
+      await expect(actions.update({ request: mockRequest, params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1'
+      );
 
       // Verify correct table was targeted
       expect(mockDb.update).toHaveBeenCalledWith(table.challenges);
-      
+
       // Focus on business logic: verify the update operation was called
       // (The actual data validation is handled by the implementation)
       const updateChain = mockDb.update.mock.results[0].value;
@@ -84,9 +84,9 @@ describe('/admin/challenges/[id]/edit form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.update({ request: mockRequest, params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1');
+      await expect(actions.update({ request: mockRequest, params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1'
+      );
 
       // Verify update operation was called (business logic handled by implementation)
       expect(mockDb.update).toHaveBeenCalledWith(table.challenges);
@@ -106,9 +106,9 @@ describe('/admin/challenges/[id]/edit form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.update({ request: mockRequest, params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1');
+      await expect(actions.update({ request: mockRequest, params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1'
+      );
 
       // Verify update was attempted
       expect(mockDb.update).toHaveBeenCalledWith(table.challenges);
@@ -204,7 +204,7 @@ describe('/admin/challenges/[id]/edit form actions', () => {
 
       expect(result).toEqual({
         status: 500,
-        data: { 
+        data: {
           message: 'Failed to update challenge',
           data: {
             title: 'Test Challenge',
@@ -224,9 +224,9 @@ describe('/admin/challenges/[id]/edit form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.delete({ params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges');
+      await expect(actions.delete({ params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges'
+      );
 
       // Should delete test cases first
       expect(mockDb.delete).toHaveBeenCalledWith(table.challengeTests);

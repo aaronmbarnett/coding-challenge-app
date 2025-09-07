@@ -16,12 +16,7 @@
   </div>
 
   <form method="POST" action="?/update" use:enhance class="space-y-6">
-    <FormField
-      label="Challenge Title"
-      name="title"
-      value={data.challenge.title}
-      required
-    />
+    <FormField label="Challenge Title" name="title" value={data.challenge.title} required />
 
     <FormField
       label="Description (Markdown)"
@@ -71,13 +66,12 @@
           Cancel
         </a>
       </div>
-
     </div>
   </form>
 
   <!-- Delete Section (separate from main form) -->
-  <div class="rounded-lg bg-white p-6 shadow border-l-4 border-red-400">
-    <h3 class="text-lg font-semibold text-red-800 mb-4">Danger Zone</h3>
+  <div class="rounded-lg border-l-4 border-red-400 bg-white p-6 shadow">
+    <h3 class="mb-4 text-lg font-semibold text-red-800">Danger Zone</h3>
     {#if !showDeleteConfirm}
       <button
         type="button"

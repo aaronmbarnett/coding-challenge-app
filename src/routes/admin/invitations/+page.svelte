@@ -47,8 +47,8 @@
 
     {#if form?.success}
       <div class="mt-4">
-        <Alert 
-          type="success" 
+        <Alert
+          type="success"
           message="{form.message} - Invitation sent to {form.invitation?.email}"
         />
       </div>
@@ -101,9 +101,13 @@
                   {invitation.email}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge 
-                    status={invitation.consumedAt ? 'used' : (new Date() > invitation.expiresAt ? 'expired' : 'pending')}
-                    type="invitation" 
+                  <StatusBadge
+                    status={invitation.consumedAt
+                      ? 'used'
+                      : new Date() > invitation.expiresAt
+                        ? 'expired'
+                        : 'pending'}
+                    type="invitation"
                   />
                 </td>
                 <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
@@ -120,4 +124,3 @@
     {/if}
   </div>
 </div>
-

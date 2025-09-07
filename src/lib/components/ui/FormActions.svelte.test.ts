@@ -16,10 +16,10 @@ describe('FormActions', () => {
     });
 
     it('should render submit button with custom text', async () => {
-      render(FormActions, { 
-        props: { 
-          submitText: 'Create Challenge' 
-        } 
+      render(FormActions, {
+        props: {
+          submitText: 'Create Challenge'
+        }
       });
 
       const submitButton = page.getByText('Create Challenge');
@@ -37,10 +37,10 @@ describe('FormActions', () => {
     });
 
     it('should render disabled submit button when submitDisabled is true', async () => {
-      render(FormActions, { 
-        props: { 
-          submitDisabled: true 
-        } 
+      render(FormActions, {
+        props: {
+          submitDisabled: true
+        }
       });
 
       const submitButton = page.getByText('Submit');
@@ -63,10 +63,10 @@ describe('FormActions', () => {
 
   describe('cancel link', () => {
     it('should render cancel link when cancelHref provided', async () => {
-      render(FormActions, { 
-        props: { 
-          cancelHref: '/admin/challenges' 
-        } 
+      render(FormActions, {
+        props: {
+          cancelHref: '/admin/challenges'
+        }
       });
 
       const cancelLink = page.getByText('Cancel');
@@ -77,11 +77,11 @@ describe('FormActions', () => {
     });
 
     it('should render cancel link with custom text', async () => {
-      render(FormActions, { 
-        props: { 
+      render(FormActions, {
+        props: {
           cancelHref: '/admin/challenges',
           cancelText: 'Back to List'
-        } 
+        }
       });
 
       const cancelLink = page.getByText('Back to List');
@@ -98,10 +98,10 @@ describe('FormActions', () => {
     });
 
     it('should render cancel link with hover styles', async () => {
-      render(FormActions, { 
-        props: { 
-          cancelHref: '/admin/challenges' 
-        } 
+      render(FormActions, {
+        props: {
+          cancelHref: '/admin/challenges'
+        }
       });
 
       const cancelLink = page.getByText('Cancel');
@@ -112,10 +112,10 @@ describe('FormActions', () => {
 
   describe('layout and structure', () => {
     it('should have correct flex layout', async () => {
-      render(FormActions, { 
-        props: { 
-          cancelHref: '/admin/challenges' 
-        } 
+      render(FormActions, {
+        props: {
+          cancelHref: '/admin/challenges'
+        }
       });
 
       const submitButton = page.getByText('Submit');
@@ -135,13 +135,13 @@ describe('FormActions', () => {
 
   describe('all props combinations', () => {
     it('should render with all props provided', async () => {
-      render(FormActions, { 
-        props: { 
+      render(FormActions, {
+        props: {
           submitText: 'Save Changes',
           submitDisabled: false,
           cancelHref: '/admin',
           cancelText: 'Discard Changes'
-        } 
+        }
       });
 
       const submitButton = page.getByText('Save Changes');
@@ -154,13 +154,13 @@ describe('FormActions', () => {
     });
 
     it('should render with disabled submit and cancel link', async () => {
-      render(FormActions, { 
-        props: { 
+      render(FormActions, {
+        props: {
           submitText: 'Processing...',
           submitDisabled: true,
           cancelHref: '/admin',
           cancelText: 'Cancel'
-        } 
+        }
       });
 
       const submitButton = page.getByText('Processing...');
@@ -182,10 +182,10 @@ describe('FormActions', () => {
     });
 
     it('should have disabled attributes when disabled', async () => {
-      render(FormActions, { 
-        props: { 
-          submitDisabled: true 
-        } 
+      render(FormActions, {
+        props: {
+          submitDisabled: true
+        }
       });
 
       const submitButton = page.getByText('Submit');

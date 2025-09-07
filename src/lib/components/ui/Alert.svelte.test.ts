@@ -7,19 +7,19 @@ describe('Alert Component', () => {
   describe('content display', () => {
     it('should display message to users', async () => {
       render(Alert, { props: { message: 'Operation completed successfully' } });
-      
+
       await expect.element(page.getByText('Operation completed successfully')).toBeVisible();
     });
 
     it('should display both title and message when provided', async () => {
-      render(Alert, { 
-        props: { 
+      render(Alert, {
+        props: {
           title: 'Success',
-          message: 'Your changes have been saved', 
-          type: 'success' 
-        } 
+          message: 'Your changes have been saved',
+          type: 'success'
+        }
       });
-      
+
       const alert = page.getByRole('alert');
       await expect.element(alert).toHaveTextContent(/Success/);
       await expect.element(alert).toHaveTextContent(/Your changes have been saved/);
@@ -29,7 +29,7 @@ describe('Alert Component', () => {
   describe('accessibility', () => {
     it('should be announced to screen readers as an alert', async () => {
       render(Alert, { props: { message: 'Form validation failed', type: 'error' } });
-      
+
       const alert = page.getByRole('alert');
       await expect.element(alert).toBeVisible();
       await expect.element(alert).toHaveTextContent(/Form validation failed/);
@@ -51,7 +51,7 @@ describe('Alert Component', () => {
 
     it('should default to info styling when type not specified', async () => {
       render(Alert, { props: { message: 'Default alert' } });
-      
+
       const alert = page.getByRole('alert');
       await expect.element(alert).toHaveAttribute('class', expect.stringMatching(/blue/));
     });
@@ -60,7 +60,7 @@ describe('Alert Component', () => {
   describe('edge cases', () => {
     it('should handle invalid alert type gracefully', async () => {
       render(Alert, { props: { message: 'Test message', type: 'invalid' as any } });
-      
+
       const alert = page.getByRole('alert');
       await expect.element(alert).toBeVisible();
       await expect.element(alert).toHaveTextContent(/Test message/);
@@ -68,7 +68,7 @@ describe('Alert Component', () => {
 
     it('should render with empty message', async () => {
       render(Alert, { props: { message: '' } });
-      
+
       await expect.element(page.getByRole('alert')).toBeVisible();
     });
   });

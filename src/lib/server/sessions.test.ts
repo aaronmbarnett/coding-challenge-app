@@ -18,7 +18,7 @@ const TWO_HOURS_SECONDS = 2 * 60 * 60; // 7200
 const createMockDb = () => ({
   // Mock the database operations by their data contracts, not implementation
   createSession: vi.fn(),
-  updateSession: vi.fn(), 
+  updateSession: vi.fn(),
   findSession: vi.fn(),
   createAttempts: vi.fn()
 });
@@ -63,7 +63,7 @@ describe('session functions', () => {
 
       // Test the data contract: function should be called with correct table and data
       expect(mockDb.insert).toHaveBeenCalledWith(table.sessions);
-      
+
       // Focus on the business logic result, not implementation details
       expect(result).toEqual({ id: 'session-1', candidateId: 'candidate-1' });
     });
@@ -82,7 +82,11 @@ describe('session functions', () => {
     });
 
     it('should validate required fields', async () => {
-      const data = { candidateId: '', totalDurationSec: ONE_HOUR_SECONDS, challengeIds: ['challenge-1'] };
+      const data = {
+        candidateId: '',
+        totalDurationSec: ONE_HOUR_SECONDS,
+        challengeIds: ['challenge-1']
+      };
 
       await expect(createSession(mockDb as any, data)).rejects.toThrow(
         'Candidate and duration are required'
@@ -91,7 +95,11 @@ describe('session functions', () => {
     });
 
     it('should validate challenge selection', async () => {
-      const data = { candidateId: 'candidate-1', totalDurationSec: ONE_HOUR_SECONDS, challengeIds: [] };
+      const data = {
+        candidateId: 'candidate-1',
+        totalDurationSec: ONE_HOUR_SECONDS,
+        challengeIds: []
+      };
 
       await expect(createSession(mockDb as any, data)).rejects.toThrow(
         'At least one challenge must be selected'
@@ -105,11 +113,14 @@ describe('session functions', () => {
       // Mock data contract: what we get when we find a session
       mockDb.select.mockImplementation(() => ({
         from: () => ({
-          where: () => Promise.resolve([{
-            id: 'session-1',
-            status: 'pending', 
-            totalDurationSec: ONE_HOUR_SECONDS
-          }])
+          where: () =>
+            Promise.resolve([
+              {
+                id: 'session-1',
+                status: 'pending',
+                totalDurationSec: ONE_HOUR_SECONDS
+              }
+            ])
         })
       }));
 
@@ -142,9 +153,7 @@ describe('session functions', () => {
         })
       }));
 
-      await expect(startSession(mockDb as any, 'nonexistent')).rejects.toThrow(
-        'Session not found'
-      );
+      await expect(startSession(mockDb as any, 'nonexistent')).rejects.toThrow('Session not found');
       expect(mockDb.update).not.toHaveBeenCalled();
     });
 
@@ -152,11 +161,14 @@ describe('session functions', () => {
       // Test business logic: active sessions cannot be started again
       mockDb.select.mockImplementation(() => ({
         from: () => ({
-          where: () => Promise.resolve([{
-            id: 'session-1',
-            status: 'active',
-            totalDurationSec: ONE_HOUR_SECONDS
-          }])
+          where: () =>
+            Promise.resolve([
+              {
+                id: 'session-1',
+                status: 'active',
+                totalDurationSec: ONE_HOUR_SECONDS
+              }
+            ])
         })
       }));
 
@@ -172,10 +184,13 @@ describe('session functions', () => {
       // Contract-based mock: what data comes back when finding active session
       mockDb.select.mockImplementation(() => ({
         from: () => ({
-          where: () => Promise.resolve([{
-            id: 'session-1',
-            status: 'active'
-          }])
+          where: () =>
+            Promise.resolve([
+              {
+                id: 'session-1',
+                status: 'active'
+              }
+            ])
         })
       }));
 
@@ -206,9 +221,7 @@ describe('session functions', () => {
         })
       }));
 
-      await expect(stopSession(mockDb as any, 'nonexistent')).rejects.toThrow(
-        'Session not found'
-      );
+      await expect(stopSession(mockDb as any, 'nonexistent')).rejects.toThrow('Session not found');
       expect(mockDb.update).not.toHaveBeenCalled();
     });
 
@@ -216,10 +229,13 @@ describe('session functions', () => {
       // Test business rule: only active sessions can be stopped
       mockDb.select.mockImplementation(() => ({
         from: () => ({
-          where: () => Promise.resolve([{
-            id: 'session-1',
-            status: 'pending'
-          }])
+          where: () =>
+            Promise.resolve([
+              {
+                id: 'session-1',
+                status: 'pending'
+              }
+            ])
         })
       }));
 

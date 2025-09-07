@@ -2,10 +2,14 @@ import { page } from '@vitest/browser/context';
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import TestCaseItem from './TestCaseItem.svelte';
-import { mockChallengeId, mockIOTestCase, mockHarnessTestCase, createMockTestCase } from '$lib/test-fixtures';
+import {
+  mockChallengeId,
+  mockIOTestCase,
+  mockHarnessTestCase,
+  createMockTestCase
+} from '$lib/test-fixtures';
 
 describe('TestCaseItem', () => {
-
   it('should render IO test case correctly', async () => {
     render(TestCaseItem, {
       props: {
@@ -86,7 +90,7 @@ describe('TestCaseItem', () => {
     // Test that hidden badge is not present by checking the page content doesn't contain it
     const weight = page.getByText('Weight: 1');
     await expect.element(weight).toBeInTheDocument();
-    
+
     // Since we verified the component renders, and we know this test case is not hidden,
     // we can assume the hidden badge is correctly not shown
   });

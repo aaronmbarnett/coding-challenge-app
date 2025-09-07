@@ -76,7 +76,7 @@ describe('TestCaseManager', () => {
       // Check that add button is back to original state and form header is gone
       const addButtonAfterCancel = page.getByRole('button', { name: '+ Add Test Case' });
       await expect.element(addButtonAfterCancel).toBeVisible();
-      
+
       // Form header should not exist in DOM anymore
       const formHeaders = page.getByText('Add New Test Case');
       await expect.element(formHeaders).not.toBeInTheDocument();
@@ -138,11 +138,11 @@ describe('TestCaseManager', () => {
         id: 'challenge-456'
       };
 
-      render(TestCaseManager, { 
-        props: { 
-          ...baseProps, 
-          challenge: differentChallenge 
-        } 
+      render(TestCaseManager, {
+        props: {
+          ...baseProps,
+          challenge: differentChallenge
+        }
       });
 
       const heading = page.getByRole('heading', { name: /Test Cases: Binary Search Algorithm/ });
@@ -153,14 +153,16 @@ describe('TestCaseManager', () => {
     });
 
     it('should handle empty test cases', async () => {
-      render(TestCaseManager, { 
-        props: { 
-          ...baseProps, 
-          testCases: [] 
-        } 
+      render(TestCaseManager, {
+        props: {
+          ...baseProps,
+          testCases: []
+        }
       });
 
-      const emptyMessage = page.getByText('No test cases yet. Add some to validate candidate solutions.');
+      const emptyMessage = page.getByText(
+        'No test cases yet. Add some to validate candidate solutions.'
+      );
       await expect.element(emptyMessage).toBeVisible();
 
       const addButton = page.getByRole('button', { name: '+ Add Test Case' });
@@ -168,11 +170,11 @@ describe('TestCaseManager', () => {
     });
 
     it('should handle single test case', async () => {
-      render(TestCaseManager, { 
-        props: { 
-          ...baseProps, 
-          testCases: [mockTestCases[0]] 
-        } 
+      render(TestCaseManager, {
+        props: {
+          ...baseProps,
+          testCases: [mockTestCases[0]]
+        }
       });
 
       const listHeader = page.getByText('Test Cases (1)');

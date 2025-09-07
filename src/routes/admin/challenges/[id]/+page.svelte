@@ -15,8 +15,9 @@
     {#snippet testCasesSlot()}
       <TestCasesPreview testCases={data.testCases} challengeId={data.challenge.id} />
     {/snippet}
-    
-    <ChallengeContent challenge={data.challenge} testCasesContent={testCasesSlot}></ChallengeContent>
+
+    <ChallengeContent challenge={data.challenge} testCasesContent={testCasesSlot}
+    ></ChallengeContent>
 
     <ChallengeSidebar challenge={data.challenge} />
   </div>

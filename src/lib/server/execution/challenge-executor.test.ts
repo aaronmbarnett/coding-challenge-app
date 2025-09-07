@@ -10,7 +10,9 @@ const ONE_HOUR_SECONDS = 60 * 60; // 3600
 // We'll mock the database module to use our test database
 let mockDb: any;
 vi.mock('../db', () => ({
-  get db() { return mockDb; }
+  get db() {
+    return mockDb;
+  }
 }));
 
 describe('Challenge Execution Service', () => {
@@ -69,10 +71,10 @@ describe('Challenge Execution Service', () => {
     const testDb = setupTestDb();
     db = testDb.db;
     cleanup = testDb.cleanup;
-    
+
     // Set the mock to use our test database
     mockDb = db;
-    
+
     // Reset variables
     challengeId = '';
     attemptId = '';
@@ -348,4 +350,3 @@ describe('Challenge Execution Service', () => {
     });
   });
 });
-

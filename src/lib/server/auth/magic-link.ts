@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import * as table from '../db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 const THIRTY_MINUTES_MS = 30 * 60 * 1000;
 

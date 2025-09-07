@@ -42,7 +42,7 @@ describe('/admin/invitations page server load', () => {
           createdAt: new Date('2024-01-01T10:00:00Z')
         }),
         createMockInvitation({
-          id: 'inv-2', 
+          id: 'inv-2',
           email: 'bob@example.com',
           expiresAt: new Date(Date.now() + TIME_MS.ONE_HOUR),
           consumedAt: new Date('2024-01-02T11:00:00Z'),
@@ -78,24 +78,24 @@ describe('/admin/invitations page server load', () => {
     it('should handle invitations with different statuses', async () => {
       const testInvitations = [
         mockInvitations.pending,
-        mockInvitations.consumed, 
+        mockInvitations.consumed,
         mockInvitations.expired
       ];
 
       const mockDb = createMockDb(testInvitations);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as InvitationsLoadResult;
+      const result = (await load({ locals } as any)) as InvitationsLoadResult;
 
       expect(result.invitations).toHaveLength(3);
-      
+
       // Verify pending invitation
       expect(result.invitations[0].consumedAt).toBeNull();
       expect(result.invitations[0].expiresAt.getTime()).toBeGreaterThan(Date.now());
-      
+
       // Verify consumed invitation
       expect(result.invitations[1].consumedAt).toBeInstanceOf(Date);
-      
+
       // Verify expired invitation
       expect(result.invitations[2].consumedAt).toBeNull();
       expect(result.invitations[2].expiresAt.getTime()).toBeLessThan(Date.now());
@@ -126,7 +126,7 @@ describe('/admin/invitations page server load', () => {
       const mockDb = createMockDb(mockInvitations);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as InvitationsLoadResult;
+      const result = (await load({ locals } as any)) as InvitationsLoadResult;
 
       expect(result.invitations).toHaveLength(2);
       expect(result.invitations[0].createdBy).toBe('admin-1');
@@ -149,7 +149,7 @@ describe('/admin/invitations page server load', () => {
       const mockDb = createMockDb(mockInvitations);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as InvitationsLoadResult;
+      const result = (await load({ locals } as any)) as InvitationsLoadResult;
 
       expect(result).toHaveProperty('invitations');
       expect(Array.isArray(result.invitations)).toBe(true);
@@ -187,7 +187,7 @@ describe('/admin/invitations page server load', () => {
       const mockDb = createMockDb(mockInvitations);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as InvitationsLoadResult;
+      const result = (await load({ locals } as any)) as InvitationsLoadResult;
 
       expect(result.invitations).toHaveLength(2);
       expect(result.invitations[0].email).toBe('candidate@example.com');
@@ -218,7 +218,7 @@ describe('/admin/invitations page server load', () => {
       const mockDb = createMockDb(mockInvitations);
       const locals = { db: mockDb };
 
-      const result = await load({ locals } as any) as InvitationsLoadResult;
+      const result = (await load({ locals } as any)) as InvitationsLoadResult;
 
       // Verify ordering is preserved as returned by database
       expect(result.invitations[0].id).toBe('inv-earliest');

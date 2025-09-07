@@ -3,7 +3,6 @@ import { actions } from './+page.server';
 import { fail, redirect } from '@sveltejs/kit';
 import * as magicLink from '$lib/server/auth/magic-link';
 import { setSessionUser } from '$lib/server/auth/session';
-import * as table from '$lib/server/db/schema';
 
 // Semantic time constants
 const THIRTY_MINUTES_MS = 30 * 60 * 1000; // 1800000
@@ -34,7 +33,11 @@ vi.mock('$lib/server/auth/session', () => ({
 }));
 
 // Contract-based database mock
-const createMockDb = (existingUser: any = null, userCreationResult: any = null, shouldFailUserCreation: boolean = false) => {
+const createMockDb = (
+  existingUser: any = null,
+  userCreationResult: any = null,
+  shouldFailUserCreation: boolean = false
+) => {
   return {
     select: vi.fn().mockImplementation(() => ({
       from: vi.fn().mockImplementation(() => ({
@@ -99,9 +102,9 @@ describe('/auth/verify form actions', () => {
       const locals = { db: mockDb };
 
       await expect(
-        actions.default({ 
-          request: mockRequest, 
-          locals, 
+        actions.default({
+          request: mockRequest,
+          locals,
           setHeaders: (headers: Record<string, string>) => {
             Object.entries(headers).forEach(([key, value]) => {
               mockHeaders.append(key, value);
@@ -157,9 +160,9 @@ describe('/auth/verify form actions', () => {
       const locals = { db: mockDb };
 
       await expect(
-        actions.default({ 
-          request: mockRequest, 
-          locals, 
+        actions.default({
+          request: mockRequest,
+          locals,
           setHeaders: (headers: Record<string, string>) => {
             Object.entries(headers).forEach(([key, value]) => {
               mockHeaders.append(key, value);
@@ -174,7 +177,7 @@ describe('/auth/verify form actions', () => {
 
     it('should return validation error for missing token', async () => {
       const mockDb = createMockDb();
-      
+
       const mockFormData = new FormData();
       mockFormData.set('email', 'candidate@example.com');
       // No token provided
@@ -197,7 +200,7 @@ describe('/auth/verify form actions', () => {
 
     it('should return validation error for missing email', async () => {
       const mockDb = createMockDb();
-      
+
       const mockFormData = new FormData();
       mockFormData.set('token', 'valid-token-64chars-long-enough-for-security-requirements');
       // No email provided
@@ -219,7 +222,7 @@ describe('/auth/verify form actions', () => {
 
     it('should return error for invalid token', async () => {
       const mockDb = createMockDb();
-      
+
       vi.mocked(magicLink.validateMagicLinkToken).mockResolvedValue({
         valid: false,
         invitation: null,
@@ -248,7 +251,7 @@ describe('/auth/verify form actions', () => {
 
     it('should return error for expired token', async () => {
       const mockDb = createMockDb();
-      
+
       vi.mocked(magicLink.validateMagicLinkToken).mockResolvedValue({
         valid: false,
         invitation: null,
@@ -275,7 +278,7 @@ describe('/auth/verify form actions', () => {
 
     it('should return error for already consumed token', async () => {
       const mockDb = createMockDb();
-      
+
       vi.mocked(magicLink.validateMagicLinkToken).mockResolvedValue({
         valid: false,
         invitation: null,
@@ -404,9 +407,9 @@ describe('/auth/verify form actions', () => {
       const locals = { db: mockDb };
 
       await expect(
-        actions.default({ 
-          request: mockRequest, 
-          locals, 
+        actions.default({
+          request: mockRequest,
+          locals,
           setHeaders: (headers: Record<string, string>) => {
             Object.entries(headers).forEach(([key, value]) => {
               mockHeaders.append(key, value);

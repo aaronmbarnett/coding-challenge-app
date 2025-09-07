@@ -51,11 +51,7 @@ export const actions: Actions = {
 
       // Send magic link email
       try {
-        const emailResult = await emailService.sendMagicLinkEmail(
-          email,
-          token,
-          verifyUrl
-        );
+        const emailResult = await emailService.sendMagicLinkEmail(email, token, verifyUrl);
 
         if (emailResult.success) {
           return {
@@ -75,7 +71,8 @@ export const actions: Actions = {
           };
         }
       } catch (emailError: unknown) {
-        const errorMessage = emailError instanceof Error ? emailError.message : 'Unknown email error';
+        const errorMessage =
+          emailError instanceof Error ? emailError.message : 'Unknown email error';
         return {
           success: false,
           invitation,
@@ -84,7 +81,6 @@ export const actions: Actions = {
           message: `Invitation created but failed to send email: ${errorMessage}`
         };
       }
-
     } catch (error: unknown) {
       if (error instanceof Error) {
         return fail(500, { message: 'Failed to create invitation' });

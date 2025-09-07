@@ -2,7 +2,7 @@
   import PageHeader from '$lib/components/ui/PageHeader.svelte';
   import DataTable from '$lib/components/ui/DataTable.svelte';
   import { formatDate } from '$lib/utils/datetime';
-  
+
   let { data } = $props();
 
   const tableColumns = [
@@ -14,16 +14,16 @@
 </script>
 
 <div class="space-y-6">
-  <PageHeader 
-    title="Challenges" 
-    backHref="/admin" 
+  <PageHeader
+    title="Challenges"
+    backHref="/admin"
     backText="← Back to Dashboard"
-    actionHref="/admin/challenges/new" 
-    actionText="Create Challenge" 
+    actionHref="/admin/challenges/new"
+    actionText="Create Challenge"
   />
 
-  <DataTable 
-    columns={tableColumns} 
+  <DataTable
+    columns={tableColumns}
     data={data.challenges}
     emptyMessage="No challenges yet. Create your first one!"
   >
@@ -33,14 +33,11 @@
           <div class="font-medium text-gray-900">{challenge.title}</div>
         </td>
         <td class="px-6 py-4 text-sm text-gray-500">{challenge.languagesCsv}</td>
-        <td class="text-sm text-gray-500 px-6 py-4">
+        <td class="px-6 py-4 text-sm text-gray-500">
           {formatDate(challenge.createdAt)}
         </td>
         <td class="space-x-2 px-6 py-4 text-sm">
-          <a
-            href="/admin/challenges/{challenge.id}"
-            class="text-blue-600 hover:text-blue-500"
-          >
+          <a href="/admin/challenges/{challenge.id}" class="text-blue-600 hover:text-blue-500">
             View
           </a>
           <a

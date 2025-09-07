@@ -51,13 +51,22 @@
 <div class="mb-4 border-l-4 {config.borderColor} {config.bgColor} p-4">
   <div class="flex">
     <div class="flex-shrink-0">
-      <svg class="h-5 w-5 {config.iconColor}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+      <svg
+        class="h-5 w-5 {config.iconColor}"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
         {@html config.icon}
       </svg>
     </div>
     <div class="ml-3">
       <h3 class="text-sm font-medium {config.textColor}">{config.title}</h3>
-      <div class="mt-2 text-xs {type === 'timeout' ? config.descColor : 'font-mono ' + config.descColor}">
+      <div
+        class="mt-2 text-xs {type === 'timeout'
+          ? config.descColor
+          : 'font-mono ' + config.descColor}"
+      >
         {#if type === 'timeout'}
           Your code took too long to execute
         {:else}

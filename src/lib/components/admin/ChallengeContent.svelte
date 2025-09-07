@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { Challenge } from '$lib/server/db/schema';
   import type { Snippet } from 'svelte';
-  
-  let { 
+
+  let {
     challenge,
     testCasesContent
-  }: { 
+  }: {
     challenge: Challenge;
     testCasesContent?: Snippet;
   } = $props();

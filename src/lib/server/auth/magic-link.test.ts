@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { 
-  generateMagicLinkToken, 
-  hashToken, 
+import {
+  generateMagicLinkToken,
+  hashToken,
   verifyToken,
   createMagicLinkInvitation,
   validateMagicLinkToken
@@ -32,7 +32,7 @@ describe('Magic Link Authentication', () => {
     it('should generate a secure random token', () => {
       const token1 = generateMagicLinkToken();
       const token2 = generateMagicLinkToken();
-      
+
       expect(token1).toHaveLength(64); // 32 bytes as hex = 64 chars
       expect(token2).toHaveLength(64);
       expect(token1).not.toBe(token2); // Should be unique
@@ -43,7 +43,7 @@ describe('Magic Link Authentication', () => {
       const token = 'test-token-12345';
       const hash1 = hashToken(token);
       const hash2 = hashToken(token);
-      
+
       expect(hash1).toEqual(hash2);
       expect(hash1).toBeInstanceOf(Buffer);
       expect(hash1.length).toBe(32); // SHA-256 = 32 bytes
@@ -52,7 +52,7 @@ describe('Magic Link Authentication', () => {
     it('should verify tokens against hashes', () => {
       const token = generateMagicLinkToken();
       const hash = hashToken(token);
-      
+
       expect(verifyToken(token, hash)).toBe(true);
       expect(verifyToken('wrong-token', hash)).toBe(false);
       expect(verifyToken(token + 'extra', hash)).toBe(false);
@@ -88,10 +88,10 @@ describe('Magic Link Authentication', () => {
       expect(stored).toBeDefined();
       expect(stored.tokenHash).toBeInstanceOf(Buffer);
       expect(stored.consumedAt).toBeNull();
-      
+
       // Verify token is not stored directly
       expect(stored.tokenHash).not.toEqual(Buffer.from(result.token));
-      
+
       // Verify expiry is ~30 minutes from now
       const expiryDiff = stored.expiresAt.getTime() - Date.now();
       expect(expiryDiff).toBeGreaterThan(THIRTY_MINUTES_MS - 1000);
@@ -100,26 +100,26 @@ describe('Magic Link Authentication', () => {
 
     it('should handle duplicate email invitations', async () => {
       const adminUser = await testFactories.createUser(db, {
-        email: 'admin@example.com', 
+        email: 'admin@example.com',
         role: 'admin'
       });
 
       const email = 'candidate@example.com';
-      
+
       // Create first invitation
       await createMagicLinkInvitation(db, email, adminUser.id);
-      
+
       // Creating second invitation should succeed (new token)
       const result2 = await createMagicLinkInvitation(db, email, adminUser.id);
-      
+
       expect(result2.token).toMatch(/^[a-f0-9]{64}$/);
-      
+
       // Should have 2 invitations for same email
       const invitations = await db
         .select()
         .from(table.invitation)
         .where(eq(table.invitation.email, email));
-        
+
       expect(invitations).toHaveLength(2);
     });
   });
@@ -148,7 +148,7 @@ describe('Magic Link Authentication', () => {
 
     it('should reject invalid token', async () => {
       const result = await validateMagicLinkToken(db, 'invalid-token', 'test@example.com');
-      
+
       expect(result.valid).toBe(false);
       expect(result.error).toBe('Invalid or expired magic link');
       expect(result.invitation).toBeNull();
@@ -163,7 +163,7 @@ describe('Magic Link Authentication', () => {
       // Create invitation that expires in the past
       const email = 'candidate@example.com';
       const { token, invitation } = await createMagicLinkInvitation(db, email, adminUser.id);
-      
+
       // Manually set expiry to past
       await db
         .update(table.invitation)
@@ -184,7 +184,7 @@ describe('Magic Link Authentication', () => {
 
       const email = 'candidate@example.com';
       const { token, invitation } = await createMagicLinkInvitation(db, email, adminUser.id);
-      
+
       // Mark as consumed
       await db
         .update(table.invitation)

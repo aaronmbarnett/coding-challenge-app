@@ -24,7 +24,7 @@ describe('Test Runner Page', () => {
       hidden: 0
     },
     {
-      id: 'test-2', 
+      id: 'test-2',
       challengeId: 'challenge-1',
       kind: 'io' as const,
       input: '[3,2,4], 6',
@@ -45,9 +45,11 @@ describe('Test Runner Page', () => {
 
       await expect.element(page.getByRole('heading', { name: 'Two Sum Problem' })).toBeVisible();
       await expect.element(page.getByText('Test Runner')).toBeVisible();
-      
+
       // Breadcrumb navigation
-      await expect.element(page.getByRole('link', { name: 'Challenges', exact: true })).toBeVisible();
+      await expect
+        .element(page.getByRole('link', { name: 'Challenges', exact: true }))
+        .toBeVisible();
       await expect.element(page.getByRole('link', { name: 'Two Sum Problem' })).toBeVisible();
     });
 
@@ -59,7 +61,9 @@ describe('Test Runner Page', () => {
         }
       });
 
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
       await expect.element(page.getByRole('heading', { name: 'Test Cases' })).toBeVisible();
       await expect.element(page.getByText('Find two numbers that add up to target.')).toBeVisible();
     });
@@ -76,7 +80,9 @@ describe('Test Runner Page', () => {
 
       // CodeEditor component should receive the default code
       // We verify this by checking the component is rendered (detailed behavior tested in CodeEditor tests)
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
     });
 
     it('should handle challenge with custom starter code', async () => {
@@ -93,7 +99,9 @@ describe('Test Runner Page', () => {
       });
 
       // Component should initialize with custom starter code
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
     });
 
     it('should handle challenge with multiple supported languages', async () => {
@@ -105,7 +113,9 @@ describe('Test Runner Page', () => {
       });
 
       // CodeEditor should receive the parsed supported languages
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
     });
 
     it('should handle challenge with no starter code', async () => {
@@ -122,7 +132,9 @@ describe('Test Runner Page', () => {
       });
 
       // Should still render editor with default fallback
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
     });
   });
 
@@ -153,7 +165,7 @@ describe('Test Runner Page', () => {
               error: null
             },
             {
-              testCaseId: 'test-2', 
+              testCaseId: 'test-2',
               passed: false,
               weight: 1,
               executionTime: 250,
@@ -269,7 +281,7 @@ describe('Test Runner Page', () => {
             },
             {
               testCaseId: 'test-2',
-              passed: true, 
+              passed: true,
               weight: 1,
               executionTime: 200,
               expectedOutput: '[1,2]',
@@ -418,7 +430,9 @@ describe('Test Runner Page', () => {
         }
       });
 
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
     });
 
     it('should handle empty test cases list', async () => {
@@ -510,12 +524,14 @@ describe('Test Runner Page', () => {
       // Verify components are rendered (their detailed behavior tested separately)
       // ChallengeHeader
       await expect.element(page.getByRole('heading', { name: 'Two Sum Problem' })).toBeVisible();
-      
+
       // TestCasesPreview section
       await expect.element(page.getByRole('heading', { name: 'Test Cases' })).toBeVisible();
-      
+
       // CodeEditor area - verify page structure is rendered
-      await expect.element(page.getByRole('heading', { name: 'Challenge Description' })).toBeVisible();
+      await expect
+        .element(page.getByRole('heading', { name: 'Challenge Description' }))
+        .toBeVisible();
     });
   });
 });

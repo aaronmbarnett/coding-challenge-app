@@ -10,15 +10,15 @@ import { sql } from 'drizzle-orm';
 export function createTestDatabase() {
   // Create in-memory SQLite database
   const client = new Database(':memory:');
-  
+
   // Enable foreign keys by default
   client.pragma('foreign_keys = ON');
-  
+
   const db = drizzle(client, { schema });
-  
+
   // Use Drizzle's built-in schema generation instead of manual SQL
   setupTestSchema(client);
-  
+
   return { db, client };
 }
 
@@ -28,7 +28,7 @@ export function createTestDatabase() {
 function setupTestSchema(client: Database.Database) {
   // Create tables using the exact same schema as defined in schema.ts
   // This matches the actual schema structure
-  
+
   client.exec(`
     CREATE TABLE user (
       id TEXT PRIMARY KEY,
@@ -119,7 +119,7 @@ function setupTestSchema(client: Database.Database) {
  */
 export function setupTestDb() {
   const { db, client } = createTestDatabase();
-  
+
   const cleanup = () => {
     try {
       client.close();
@@ -127,7 +127,7 @@ export function setupTestDb() {
       // Database might already be closed, ignore
     }
   };
-  
+
   return { db, cleanup };
 }
 
@@ -135,7 +135,10 @@ export function setupTestDb() {
  * Test data factory functions
  */
 export const testFactories = {
-  async createUser(db: ReturnType<typeof createTestDatabase>['db'], overrides: Partial<typeof schema.user.$inferInsert> = {}) {
+  async createUser(
+    db: ReturnType<typeof createTestDatabase>['db'],
+    overrides: Partial<typeof schema.user.$inferInsert> = {}
+  ) {
     const [user] = await db
       .insert(schema.user)
       .values({
@@ -147,7 +150,10 @@ export const testFactories = {
     return user;
   },
 
-  async createChallenge(db: ReturnType<typeof createTestDatabase>['db'], overrides: Partial<typeof schema.challenges.$inferInsert> = {}) {
+  async createChallenge(
+    db: ReturnType<typeof createTestDatabase>['db'],
+    overrides: Partial<typeof schema.challenges.$inferInsert> = {}
+  ) {
     const [challenge] = await db
       .insert(schema.challenges)
       .values({
@@ -160,7 +166,11 @@ export const testFactories = {
     return challenge;
   },
 
-  async createSession(db: ReturnType<typeof createTestDatabase>['db'], candidateId: string, overrides: Partial<typeof schema.sessions.$inferInsert> = {}) {
+  async createSession(
+    db: ReturnType<typeof createTestDatabase>['db'],
+    candidateId: string,
+    overrides: Partial<typeof schema.sessions.$inferInsert> = {}
+  ) {
     const [session] = await db
       .insert(schema.sessions)
       .values({
@@ -173,7 +183,12 @@ export const testFactories = {
     return session;
   },
 
-  async createAttempt(db: ReturnType<typeof createTestDatabase>['db'], sessionId: string, challengeId: string, overrides: Partial<typeof schema.attempts.$inferInsert> = {}) {
+  async createAttempt(
+    db: ReturnType<typeof createTestDatabase>['db'],
+    sessionId: string,
+    challengeId: string,
+    overrides: Partial<typeof schema.attempts.$inferInsert> = {}
+  ) {
     const [attempt] = await db
       .insert(schema.attempts)
       .values({
@@ -186,7 +201,11 @@ export const testFactories = {
     return attempt;
   },
 
-  async createTestCase(db: ReturnType<typeof createTestDatabase>['db'], challengeId: string, overrides: Partial<typeof schema.challengeTests.$inferInsert> = {}) {
+  async createTestCase(
+    db: ReturnType<typeof createTestDatabase>['db'],
+    challengeId: string,
+    overrides: Partial<typeof schema.challengeTests.$inferInsert> = {}
+  ) {
     const [testCase] = await db
       .insert(schema.challengeTests)
       .values({

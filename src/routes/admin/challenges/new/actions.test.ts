@@ -64,9 +64,7 @@ describe('/admin/challenges/new form actions', () => {
       const locals = { db: mockDb };
 
       const event = createMockActionEvent({ request: mockRequest, locals });
-      await expect(actions.default(event)).rejects.toThrow(
-        'Redirect to /admin/challenges'
-      );
+      await expect(actions.default(event)).rejects.toThrow('Redirect to /admin/challenges');
 
       expect(challengesModule.parseFormDataToChallenge).toHaveBeenCalledWith(mockFormData);
       expect(challengesModule.createChallenge).toHaveBeenCalledWith(mockDb, mockChallengeData);
@@ -144,4 +142,3 @@ describe('/admin/challenges/new form actions', () => {
     });
   });
 });
-

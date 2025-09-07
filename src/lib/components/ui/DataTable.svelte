@@ -14,9 +14,9 @@
     children?: import('svelte').Snippet;
   }
 
-  let { 
-    columns, 
-    data, 
+  let {
+    columns,
+    data,
     emptyMessage = 'No data available',
     emptyActionHref,
     emptyActionText,
@@ -39,7 +39,10 @@
       <thead class="bg-gray-50">
         <tr>
           {#each columns as column}
-            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase {column.class || ''}">
+            <th
+              class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase {column.class ||
+                ''}"
+            >
               {column.label}
             </th>
           {/each}

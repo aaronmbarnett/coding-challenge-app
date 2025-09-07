@@ -28,12 +28,12 @@ describe('TestCaseHeader', () => {
     });
 
     it('should adapt to different challenge titles and IDs', async () => {
-      render(TestCaseHeader, { 
-        props: { 
-          ...mockProps, 
+      render(TestCaseHeader, {
+        props: {
+          ...mockProps,
           challengeTitle: 'Binary Search Tree',
           challengeId: 'challenge-456'
-        } 
+        }
       });
 
       const heading = page.getByRole('heading', { name: /Test Cases: Binary Search Tree/ });
@@ -65,7 +65,7 @@ describe('TestCaseHeader', () => {
 
       const button = page.getByRole('button', { name: '+ Add Test Case' });
       await button.click();
-      
+
       expect(onToggleForm).toHaveBeenCalledOnce();
     });
 
@@ -75,7 +75,7 @@ describe('TestCaseHeader', () => {
 
       const cancelButton = page.getByRole('button', { name: 'Cancel' });
       await cancelButton.click();
-      
+
       expect(onToggleForm).toHaveBeenCalledOnce();
     });
   });
@@ -115,8 +115,8 @@ describe('TestCaseHeader', () => {
 
     it('should handle special characters in challenge title', async () => {
       const titleWithSpecialChars = 'Test & Validate <Components>';
-      render(TestCaseHeader, { 
-        props: { ...mockProps, challengeTitle: titleWithSpecialChars } 
+      render(TestCaseHeader, {
+        props: { ...mockProps, challengeTitle: titleWithSpecialChars }
       });
 
       const heading = page.getByRole('heading', { name: new RegExp(titleWithSpecialChars) });
@@ -124,18 +124,18 @@ describe('TestCaseHeader', () => {
     });
 
     it('should work without onToggleForm callback', async () => {
-      render(TestCaseHeader, { 
-        props: { 
+      render(TestCaseHeader, {
+        props: {
           challengeTitle: 'Test',
           challengeId: 'test-123',
           showForm: false,
           onToggleForm: () => {}
-        } 
+        }
       });
 
       const button = page.getByRole('button', { name: '+ Add Test Case' });
       await expect.element(button).toBeVisible();
-      
+
       // Should not throw when clicked
       await button.click();
     });
@@ -147,7 +147,7 @@ describe('TestCaseHeader', () => {
       render(TestCaseHeader, { props: { ...mockProps, showForm: false } });
       const addButton = page.getByRole('button', { name: '+ Add Test Case' });
       await expect.element(addButton).toBeVisible();
-      
+
       // Test showForm: true state
       render(TestCaseHeader, { props: { ...mockProps, showForm: true } });
       const cancelButton = page.getByRole('button', { name: 'Cancel' });
@@ -159,10 +159,10 @@ describe('TestCaseHeader', () => {
 
       const backLink = page.getByRole('link', { name: '← Back to Challenge' });
       const heading = page.getByRole('heading');
-      
+
       await expect.element(backLink).toBeVisible();
       await expect.element(heading).toBeVisible();
-      
+
       // Both should be present regardless of form state
     });
   });

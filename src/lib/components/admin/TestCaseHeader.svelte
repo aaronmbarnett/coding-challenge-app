@@ -1,14 +1,14 @@
 <script lang="ts">
-  let { 
-    challengeTitle, 
-    challengeId, 
-    showForm, 
-    onToggleForm 
-  }: { 
-    challengeTitle: string; 
-    challengeId: string; 
-    showForm: boolean; 
-    onToggleForm: () => void; 
+  let {
+    challengeTitle,
+    challengeId,
+    showForm,
+    onToggleForm
+  }: {
+    challengeTitle: string;
+    challengeId: string;
+    showForm: boolean;
+    onToggleForm: () => void;
   } = $props();
 </script>
 
@@ -20,10 +20,7 @@
     <h1 class="text-3xl font-bold">Test Cases: {challengeTitle}</h1>
   </div>
 
-  <button
-    onclick={onToggleForm}
-    class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-  >
+  <button onclick={onToggleForm} class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
     {showForm ? 'Cancel' : '+ Add Test Case'}
   </button>
 </div>

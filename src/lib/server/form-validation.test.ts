@@ -12,7 +12,10 @@ describe('Form validation and parsing', () => {
     it('should parse complete form data correctly', () => {
       const formData = new FormData();
       formData.set('title', 'Array Sum Challenge');
-      formData.set('description', '# Calculate the sum of an array\n\nImplement a function that calculates the sum.');
+      formData.set(
+        'description',
+        '# Calculate the sum of an array\n\nImplement a function that calculates the sum.'
+      );
       formData.set('languages', 'javascript,python,go');
       formData.set('starterCode', 'function sum(arr) {\n  // Your code here\n}');
       formData.set('timeLimit', THIRTY_MINUTES_SECONDS.toString());
@@ -21,7 +24,8 @@ describe('Form validation and parsing', () => {
 
       expect(result).toEqual({
         title: 'Array Sum Challenge',
-        description: '# Calculate the sum of an array\n\nImplement a function that calculates the sum.',
+        description:
+          '# Calculate the sum of an array\n\nImplement a function that calculates the sum.',
         languages: 'javascript,python,go',
         starterCode: 'function sum(arr) {\n  // Your code here\n}',
         timeLimitSec: THIRTY_MINUTES_SECONDS
@@ -105,12 +109,17 @@ describe('Form validation and parsing', () => {
       formData.set('title', 'Whitespace Test');
       formData.set('description', '# Test\n\n  Indented content\n    More indentation');
       formData.set('languages', 'javascript');
-      formData.set('starterCode', 'function test() {\n    // Indented comment\n    return null;\n}');
+      formData.set(
+        'starterCode',
+        'function test() {\n    // Indented comment\n    return null;\n}'
+      );
 
       const result = parseFormDataToChallenge(formData);
 
       expect(result.description).toBe('# Test\n\n  Indented content\n    More indentation');
-      expect(result.starterCode).toBe('function test() {\n    // Indented comment\n    return null;\n}');
+      expect(result.starterCode).toBe(
+        'function test() {\n    // Indented comment\n    return null;\n}'
+      );
     });
   });
 

@@ -4,14 +4,14 @@
   import TestCaseList from './TestCaseList.svelte';
   import type { Challenge, TestCase } from '$lib/server/db/schema';
 
-  let { 
-    challenge, 
-    testCases, 
-    form = null 
-  }: { 
-    challenge: Challenge; 
-    testCases: TestCase[]; 
-    form?: { message?: string } | null; 
+  let {
+    challenge,
+    testCases,
+    form = null
+  }: {
+    challenge: Challenge;
+    testCases: TestCase[];
+    form?: { message?: string } | null;
   } = $props();
 
   let showForm = $state(false);

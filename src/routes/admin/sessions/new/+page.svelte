@@ -12,11 +12,7 @@
 </script>
 
 <div class="mx-auto max-w-2xl space-y-6">
-  <PageHeader 
-    title="Create New Session" 
-    backHref="/admin/sessions" 
-    backText="← Back to Sessions" 
-  />
+  <PageHeader title="Create New Session" backHref="/admin/sessions" backText="← Back to Sessions" />
 
   <form method="POST" use:enhance class="space-y-6">
     <!-- Candidate Selection -->
@@ -48,7 +44,7 @@
     />
 
     <!-- Challenge Selection -->
-    <ChallengeSelector 
+    <ChallengeSelector
       challenges={data.challenges}
       bind:selectedChallengeIds={selectedChallenges}
       emptyMessage="No challenges available."
@@ -58,7 +54,7 @@
 
     <ErrorMessage message={form?.message} />
 
-    <FormActions 
+    <FormActions
       submitText="Create Session"
       submitDisabled={data.challenges.length === 0}
       cancelHref="/admin/sessions"

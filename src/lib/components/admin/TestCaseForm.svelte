@@ -3,14 +3,14 @@
   import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
   import FormField from '$lib/components/ui/FormField.svelte';
 
-  let { 
-    challengeId, 
-    form = null, 
-    onCancel 
-  }: { 
-    challengeId: string; 
-    form?: { message?: string } | null; 
-    onCancel: () => void; 
+  let {
+    challengeId,
+    form = null,
+    onCancel
+  }: {
+    challengeId: string;
+    form?: { message?: string } | null;
+    onCancel: () => void;
   } = $props();
 
   let testKind = $state<'io' | 'harness'>('io');
@@ -66,12 +66,7 @@
     {/if}
 
     <div class="grid grid-cols-2 gap-4">
-      <FormField
-        label="Weight"
-        name="weight"
-        type="number"
-        value="1"
-      />
+      <FormField label="Weight" name="weight" type="number" value="1" />
 
       <div class="flex items-center">
         <input type="checkbox" id="hidden" name="hidden" class="mr-2" />

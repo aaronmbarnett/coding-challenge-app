@@ -16,4 +16,3 @@ function createEmailService() {
 export const emailService = createEmailService();
 
 export type { EmailSendResult };
-

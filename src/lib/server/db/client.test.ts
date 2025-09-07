@@ -6,4 +6,3 @@ describe('db', () => {
     expect(db).toBeTruthy();
   });
 });
-

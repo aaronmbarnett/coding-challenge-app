@@ -46,7 +46,7 @@ describe('challenge functions', () => {
 
       // Verify correct table and successful operation
       expect(mockDb.insert).toHaveBeenCalledWith(table.challenges);
-      
+
       // Focus on business logic: function returns created challenge
       expect(result).toEqual({ id: 'test-id', title: 'Test Challenge' });
     });

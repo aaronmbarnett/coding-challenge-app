@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { load } from './+page.server';
-import * as table from '$lib/server/db/schema';
 import { createMockLoadEvent } from '$lib/test-utils/sveltekit-mocks';
 
 // Semantic time constants for sessions page tests
@@ -29,9 +28,14 @@ interface SessionsLoadResult {
 }
 
 // Create mock db functions for different query patterns
-const createMockDbForSessions = (mockSessions: any, challengeCount: number, candidateCount: number) => {
+const createMockDbForSessions = (
+  mockSessions: any,
+  challengeCount: number,
+  candidateCount: number
+) => {
   return {
-    select: vi.fn()
+    select: vi
+      .fn()
       .mockReturnValueOnce({
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -78,7 +82,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ locals });
-      const result = await load(event) as SessionsLoadResult;
+      const result = (await load(event)) as SessionsLoadResult;
 
       expect(result).toEqual({
         sessions: mockSessions,
@@ -99,7 +103,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ locals });
-      const result = await load(event) as SessionsLoadResult;
+      const result = (await load(event)) as SessionsLoadResult;
 
       expect(result).toEqual({
         sessions: [],
@@ -129,7 +133,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ locals });
-      const result = await load(event) as SessionsLoadResult;
+      const result = (await load(event)) as SessionsLoadResult;
 
       expect(result.sessions).toEqual(mockSessions);
       expect(result.sessions[0].candidate).toBeNull();
@@ -140,7 +144,7 @@ describe('/admin/sessions +page.server.ts', () => {
       const locals = { db: mockDb };
 
       const event = createMockLoadEvent({ locals });
-      const result = await load(event) as SessionsLoadResult;
+      const result = (await load(event)) as SessionsLoadResult;
 
       expect(result.stats).toEqual({
         totalChallenges: 42,
@@ -149,4 +153,3 @@ describe('/admin/sessions +page.server.ts', () => {
     });
   });
 });
-

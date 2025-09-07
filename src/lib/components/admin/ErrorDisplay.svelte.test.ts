@@ -17,7 +17,7 @@ describe('ErrorDisplay', () => {
       const errorContainer = container.querySelector('.border-red-400');
       expect(errorContainer).toBeTruthy();
       expect(errorContainer?.classList.contains('bg-red-50')).toBe(true);
-      
+
       const errorMessage = page.getByText('Syntax error: missing semicolon');
       await expect.element(errorMessage).toBeVisible();
       await expect.element(errorMessage).toHaveClass(/font-mono/);
@@ -53,7 +53,7 @@ describe('ErrorDisplay', () => {
 
       const title = page.getByRole('heading', { name: 'Service Issue' });
       await expect.element(title).toHaveClass(/text-yellow-800/);
-      
+
       const errorMessage = page.getByText('Judge0 service unavailable');
       await expect.element(errorMessage).toBeVisible();
     });
@@ -74,7 +74,7 @@ describe('ErrorDisplay', () => {
 
       const timeoutMessage = page.getByText('Your code took too long to execute');
       await expect.element(timeoutMessage).toBeVisible();
-      
+
       // Should not show the provided error message for timeout type
       // (The component should show predefined message instead of the error prop)
       const { container } = render(ErrorDisplay, {
@@ -83,9 +83,11 @@ describe('ErrorDisplay', () => {
           error: 'ignored for timeout type'
         }
       });
-      
+
       // Verify the predefined message is shown, not the error prop
-      const predefinedMessage = container.textContent?.includes('Your code took too long to execute');
+      const predefinedMessage = container.textContent?.includes(
+        'Your code took too long to execute'
+      );
       const errorProp = container.textContent?.includes('ignored for timeout type');
       expect(predefinedMessage).toBe(true);
       expect(errorProp).toBe(false);
@@ -162,11 +164,11 @@ describe('ErrorDisplay', () => {
 
       const compilationIcon = compilationContainer.querySelector('svg');
       const serviceIcon = serviceContainer.querySelector('svg');
-      
+
       // Icons should exist
       expect(compilationIcon).toBeTruthy();
       expect(serviceIcon).toBeTruthy();
-      
+
       // Icons should have different colors
       expect(compilationIcon?.classList.contains('text-red-400')).toBe(true);
       expect(serviceIcon?.classList.contains('text-yellow-400')).toBe(true);

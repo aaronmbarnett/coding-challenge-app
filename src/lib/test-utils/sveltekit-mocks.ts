@@ -47,10 +47,12 @@ export function createMockActionEvent(overrides: {
   locals?: { db?: any; user?: any; session?: any };
   request?: Request;
 }): any {
-  const mockRequest = overrides.request || new Request('http://localhost', {
-    method: 'POST',
-    body: new FormData()
-  });
+  const mockRequest =
+    overrides.request ||
+    new Request('http://localhost', {
+      method: 'POST',
+      body: new FormData()
+    });
 
   return {
     params: overrides.params || {},
@@ -76,21 +78,24 @@ export function createMockActionEvent(overrides: {
 /**
  * Create a mock request with FormData for testing
  */
-export function createMockRequest(formData: FormData, options?: {
-  method?: string;
-  url?: string;
-}): Request {
+export function createMockRequest(
+  formData: FormData,
+  options?: {
+    method?: string;
+    url?: string;
+  }
+): Request {
   const baseRequest = new Request(options?.url || 'http://localhost', {
     method: options?.method || 'POST',
     body: formData
   });
-  
+
   // Override formData method to return our mock data
   Object.defineProperty(baseRequest, 'formData', {
     value: () => Promise.resolve(formData),
     writable: false
   });
-  
+
   return baseRequest;
 }
 

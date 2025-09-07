@@ -67,15 +67,21 @@ describe('Database Schema and Relationships', () => {
     });
 
     it('should accept valid role enum values', async () => {
-      const [adminUser] = await db.insert(table.user).values({
-        email: 'admin-role@example.com',
-        role: 'admin'
-      }).returning();
+      const [adminUser] = await db
+        .insert(table.user)
+        .values({
+          email: 'admin-role@example.com',
+          role: 'admin'
+        })
+        .returning();
 
-      const [candidateUser] = await db.insert(table.user).values({
-        email: 'candidate-role@example.com',
-        role: 'candidate'
-      }).returning();
+      const [candidateUser] = await db
+        .insert(table.user)
+        .values({
+          email: 'candidate-role@example.com',
+          role: 'candidate'
+        })
+        .returning();
 
       expect(adminUser.role).toBe('admin');
       expect(candidateUser.role).toBe('candidate');
@@ -270,7 +276,7 @@ describe('Database Schema and Relationships', () => {
 
       // Test each status value
       const statuses = ['pending', 'active', 'submitted', 'expired'] as const;
-      
+
       for (const status of statuses) {
         const [session] = await db
           .insert(table.sessions)
@@ -392,7 +398,7 @@ describe('Database Schema and Relationships', () => {
         .returning();
 
       const statuses = ['locked', 'in_progress', 'submitted'] as const;
-      
+
       for (const status of statuses) {
         const [attempt] = await db
           .insert(table.attempts)
@@ -753,13 +759,11 @@ describe('Database Schema and Relationships', () => {
         })
         .returning();
 
-      await db
-        .insert(table.submissions)
-        .values({
-          attemptId: attempt.id,
-          code: 'package main',
-          language: 'go'
-        });
+      await db.insert(table.submissions).values({
+        attemptId: attempt.id,
+        code: 'package main',
+        language: 'go'
+      });
 
       // Delete in proper order (children first)
       await db.delete(table.submissions).where(eq(table.submissions.attemptId, attempt.id));
@@ -771,7 +775,7 @@ describe('Database Schema and Relationships', () => {
         .select()
         .from(table.sessions)
         .where(eq(table.sessions.id, session.id));
-      
+
       expect(remainingSessions).toHaveLength(0);
     });
   });
@@ -793,7 +797,7 @@ describe('Database Schema and Relationships', () => {
 
     it('should handle timestamp fields correctly', async () => {
       const before = Date.now();
-      
+
       const [user] = await db
         .insert(table.user)
         .values({

@@ -49,13 +49,13 @@ describe('/admin/challenges/[id]/tests form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.create({ request: mockRequest, params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1/tests');
+      await expect(actions.create({ request: mockRequest, params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1/tests'
+      );
 
       // Verify correct table was used for test case creation
       expect(mockDb.insert).toHaveBeenCalledWith(table.challengeTests);
-      
+
       // Business logic handles data transformation and validation
       const insertCall = mockDb.insert.mock.results[0].value;
       expect(insertCall.values).toHaveBeenCalled();
@@ -75,13 +75,13 @@ describe('/admin/challenges/[id]/tests form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.create({ request: mockRequest, params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1/tests');
+      await expect(actions.create({ request: mockRequest, params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1/tests'
+      );
 
       // Verify harness test case was created
       expect(mockDb.insert).toHaveBeenCalledWith(table.challengeTests);
-      
+
       const insertCall = mockDb.insert.mock.results[0].value;
       expect(insertCall.values).toHaveBeenCalled();
     });
@@ -100,13 +100,13 @@ describe('/admin/challenges/[id]/tests form actions', () => {
       const params = { id: 'challenge-1' };
       const locals = { db: mockDb };
 
-      await expect(
-        actions.create({ request: mockRequest, params, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1/tests');
+      await expect(actions.create({ request: mockRequest, params, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1/tests'
+      );
 
       // Verify default values are handled correctly
       expect(mockDb.insert).toHaveBeenCalledWith(table.challengeTests);
-      
+
       const insertCall = mockDb.insert.mock.results[0].value;
       expect(insertCall.values).toHaveBeenCalled();
     });
@@ -256,9 +256,9 @@ describe('/admin/challenges/[id]/tests form actions', () => {
 
       const locals = { db: mockDb };
 
-      await expect(
-        actions.delete({ request: mockRequest, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/challenges/challenge-1/tests');
+      await expect(actions.delete({ request: mockRequest, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/challenges/challenge-1/tests'
+      );
 
       expect(mockDb.delete).toHaveBeenCalledWith(table.challengeTests);
       expect(mockDb.delete().where).toHaveBeenCalled();

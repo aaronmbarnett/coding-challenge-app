@@ -143,7 +143,9 @@ describe('TestCaseForm', () => {
       await harnessRadio.click();
 
       const harnessField = page.getByLabelText('Test Harness Code');
-      await expect.element(harnessField).toHaveAttribute('placeholder', 'assert solution([1,2,3]) == 6');
+      await expect
+        .element(harnessField)
+        .toHaveAttribute('placeholder', 'assert solution([1,2,3]) == 6');
     });
 
     it('should handle user input in fields', async () => {
@@ -279,11 +281,11 @@ describe('TestCaseForm', () => {
 
   describe('integration scenarios', () => {
     it('should handle different challenge IDs', async () => {
-      render(TestCaseForm, { 
-        props: { 
-          ...baseProps, 
-          challengeId: 'challenge-456' 
-        } 
+      render(TestCaseForm, {
+        props: {
+          ...baseProps,
+          challengeId: 'challenge-456'
+        }
       });
 
       const formHeading = page.getByRole('heading', { name: 'Add New Test Case' });
@@ -325,7 +327,9 @@ describe('TestCaseForm', () => {
       await harnessField.fill('assert transpose([[1,2],[3,4]]) == [[1,3],[2,4]]');
       await weightField.fill('2');
 
-      await expect.element(harnessField).toHaveValue('assert transpose([[1,2],[3,4]]) == [[1,3],[2,4]]');
+      await expect
+        .element(harnessField)
+        .toHaveValue('assert transpose([[1,2],[3,4]]) == [[1,3],[2,4]]');
       await expect.element(weightField).toHaveValue(2);
     });
   });

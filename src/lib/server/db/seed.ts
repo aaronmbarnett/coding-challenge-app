@@ -13,7 +13,7 @@ export async function seedDatabase() {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Seeding is not allowed in production environment');
   }
-  
+
   console.log('🌱 Starting database seeding...');
 
   try {
@@ -26,80 +26,93 @@ export async function seedDatabase() {
     await db.delete(table.invitation);
     await db.delete(table.session);
     await db.delete(table.user);
-    
+
     console.log('🗑️  Cleared existing data');
 
     // Create admin user
-    const [admin] = await db.insert(table.user).values({
-      email: 'admin@example.com',
-      role: 'admin'
-    }).returning();
+    const [admin] = await db
+      .insert(table.user)
+      .values({
+        email: 'admin@example.com',
+        role: 'admin'
+      })
+      .returning();
 
     // Create candidate users
-    const candidates = await db.insert(table.user).values([
-      {
-        email: 'alice.johnson@example.com',
-        role: 'candidate'
-      },
-      {
-        email: 'bob.smith@example.com', 
-        role: 'candidate'
-      },
-      {
-        email: 'carol.white@example.com',
-        role: 'candidate'
-      },
-      {
-        email: 'david.brown@example.com',
-        role: 'candidate'
-      }
-    ]).returning();
+    const candidates = await db
+      .insert(table.user)
+      .values([
+        {
+          email: 'alice.johnson@example.com',
+          role: 'candidate'
+        },
+        {
+          email: 'bob.smith@example.com',
+          role: 'candidate'
+        },
+        {
+          email: 'carol.white@example.com',
+          role: 'candidate'
+        },
+        {
+          email: 'david.brown@example.com',
+          role: 'candidate'
+        }
+      ])
+      .returning();
 
-    console.log(`👥 Created ${candidates.length + 1} users (1 admin, ${candidates.length} candidates)`);
+    console.log(
+      `👥 Created ${candidates.length + 1} users (1 admin, ${candidates.length} candidates)`
+    );
 
     // Create sample invitations showing different states
     const sampleToken1 = 'pending-token-64chars-long-enough-for-security-requirements-abc123';
     const sampleToken2 = 'consumed-token-64chars-long-enough-for-security-requirements-def456';
     const sampleToken3 = 'expired-token-64chars-long-enough-for-security-requirements-ghi789';
-    
-    const invitations = await db.insert(table.invitation).values([
-      {
-        email: 'pending.invite@example.com',
-        tokenHash: hashToken(sampleToken1),
-        expiresAt: new Date(Date.now() + 1800000), // Expires in 30 minutes
-        consumedAt: null,
-        createdBy: admin.id
-      },
-      {
-        email: candidates[0].email, // Alice's email
-        tokenHash: hashToken(sampleToken2),
-        expiresAt: new Date(Date.now() + 1800000),
-        consumedAt: new Date(Date.now() - 3600000 * 24), // Consumed yesterday
-        createdBy: admin.id
-      },
-      {
-        email: 'expired.invite@example.com',
-        tokenHash: hashToken(sampleToken3),
-        expiresAt: new Date(Date.now() - 3600000), // Expired 1 hour ago
-        consumedAt: null,
-        createdBy: admin.id
-      },
-      {
-        email: 'recent.invite@example.com',
-        tokenHash: hashToken('recent-token-64chars-long-enough-for-security-requirements-jkl012'),
-        expiresAt: new Date(Date.now() + 3600000 * 2), // Expires in 2 hours
-        consumedAt: null,
-        createdBy: admin.id
-      }
-    ]).returning();
+
+    const invitations = await db
+      .insert(table.invitation)
+      .values([
+        {
+          email: 'pending.invite@example.com',
+          tokenHash: hashToken(sampleToken1),
+          expiresAt: new Date(Date.now() + 1800000), // Expires in 30 minutes
+          consumedAt: null,
+          createdBy: admin.id
+        },
+        {
+          email: candidates[0].email, // Alice's email
+          tokenHash: hashToken(sampleToken2),
+          expiresAt: new Date(Date.now() + 1800000),
+          consumedAt: new Date(Date.now() - 3600000 * 24), // Consumed yesterday
+          createdBy: admin.id
+        },
+        {
+          email: 'expired.invite@example.com',
+          tokenHash: hashToken(sampleToken3),
+          expiresAt: new Date(Date.now() - 3600000), // Expired 1 hour ago
+          consumedAt: null,
+          createdBy: admin.id
+        },
+        {
+          email: 'recent.invite@example.com',
+          tokenHash: hashToken('recent-token-64chars-long-enough-for-security-requirements-jkl012'),
+          expiresAt: new Date(Date.now() + 3600000 * 2), // Expires in 2 hours
+          consumedAt: null,
+          createdBy: admin.id
+        }
+      ])
+      .returning();
 
     console.log(`📧 Created ${invitations.length} sample invitations (pending, consumed, expired)`);
 
     // Create challenges
-    const challenges = await db.insert(table.challenges).values([
-      {
-        title: 'Two Sum',
-        descriptionMd: `# Two Sum
+    const challenges = await db
+      .insert(table.challenges)
+      .values([
+        {
+          title: 'Two Sum',
+          descriptionMd: `# Two Sum
 
 Given an array of integers \`nums\` and an integer \`target\`, return indices of the two numbers such that they add up to \`target\`.
 
@@ -111,15 +124,15 @@ Input: nums = [2,7,11,15], target = 9
 Output: [0,1]
 Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
 \`\`\``,
-        languagesCsv: 'javascript,python,java',
-        starterCode: `function twoSum(nums, target) {
+          languagesCsv: 'javascript,python,java',
+          starterCode: `function twoSum(nums, target) {
     // Your solution here
 }`,
-        timeLimitSec: 1800 // 30 minutes
-      },
-      {
-        title: 'Reverse String',
-        descriptionMd: `# Reverse String
+          timeLimitSec: 1800 // 30 minutes
+        },
+        {
+          title: 'Reverse String',
+          descriptionMd: `# Reverse String
 
 Write a function that reverses a string. The input string is given as an array of characters \`s\`.
 
@@ -130,15 +143,15 @@ You must do this by modifying the input array in-place with O(1) extra memory.
 Input: s = ["h","e","l","l","o"]
 Output: ["o","l","l","e","h"]
 \`\`\``,
-        languagesCsv: 'javascript,python,java,go',
-        starterCode: `function reverseString(s) {
+          languagesCsv: 'javascript,python,java,go',
+          starterCode: `function reverseString(s) {
     // Your solution here
 }`,
-        timeLimitSec: 900 // 15 minutes
-      },
-      {
-        title: 'Valid Palindrome',
-        descriptionMd: `# Valid Palindrome
+          timeLimitSec: 900 // 15 minutes
+        },
+        {
+          title: 'Valid Palindrome',
+          descriptionMd: `# Valid Palindrome
 
 A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.
 
@@ -150,15 +163,15 @@ Input: s = "A man, a plan, a canal: Panama"
 Output: true
 Explanation: "amanaplanacanalpanama" is a palindrome.
 \`\`\``,
-        languagesCsv: 'javascript,python',
-        starterCode: `function isPalindrome(s) {
+          languagesCsv: 'javascript,python',
+          starterCode: `function isPalindrome(s) {
     // Your solution here
 }`,
-        timeLimitSec: 1200 // 20 minutes
-      },
-      {
-        title: 'Binary Tree Traversal',
-        descriptionMd: `# Binary Tree Inorder Traversal
+          timeLimitSec: 1200 // 20 minutes
+        },
+        {
+          title: 'Binary Tree Traversal',
+          descriptionMd: `# Binary Tree Inorder Traversal
 
 Given the \`root\` of a binary tree, return the inorder traversal of its nodes' values.
 
@@ -167,11 +180,12 @@ Given the \`root\` of a binary tree, return the inorder traversal of its nodes' 
 Input: root = [1,null,2,3]
 Output: [1,3,2]
 \`\`\``,
-        languagesCsv: 'javascript,python,java',
-        starterCode: null,
-        timeLimitSec: 2700 // 45 minutes
-      }
-    ]).returning();
+          languagesCsv: 'javascript,python,java',
+          starterCode: null,
+          timeLimitSec: 2700 // 45 minutes
+        }
+      ])
+      .returning();
 
     console.log(`🧩 Created ${challenges.length} challenges`);
 
@@ -202,7 +216,7 @@ Output: [1,3,2]
         weight: 1,
         hidden: 1
       },
-      
+
       // Reverse String test cases
       {
         challengeId: challenges[1].id,
@@ -220,7 +234,7 @@ Output: [1,3,2]
         weight: 1,
         hidden: 1
       },
-      
+
       // Valid Palindrome test cases
       {
         challengeId: challenges[2].id,
@@ -297,7 +311,7 @@ Output: [1,3,2]
         testRunCount: 2,
         lastTestRunAt: new Date(Date.now() - 3600000 * 24)
       },
-      
+
       // Bob's active session attempts
       {
         sessionId: sessions[1].id,
@@ -313,7 +327,7 @@ Output: [1,3,2]
         status: 'locked' as const,
         testRunCount: 0
       },
-      
+
       // David's expired session attempts
       {
         sessionId: sessions[3].id,
@@ -405,7 +419,6 @@ Output: [1,3,2]
     console.log(`   Submissions: ${submissionsData.length}`);
     console.log('');
     console.log('🚀 You can now explore the app with realistic test data!');
-    
   } catch (error) {
     console.error('❌ Error seeding database:', error);
     throw error;

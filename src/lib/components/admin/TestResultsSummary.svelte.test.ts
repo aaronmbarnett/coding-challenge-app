@@ -146,7 +146,7 @@ describe('TestResultsSummary', () => {
       // Should have proper label-value pairs
       const labels = container.querySelectorAll('.text-gray-600');
       const values = container.querySelectorAll('.font-bold');
-      
+
       expect(labels.length).toBe(3);
       expect(values.length).toBe(3);
     });

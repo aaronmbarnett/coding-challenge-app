@@ -166,4 +166,3 @@ If you weren't expecting this invitation, you can safely ignore this email.
 `.trim();
   }
 }
-

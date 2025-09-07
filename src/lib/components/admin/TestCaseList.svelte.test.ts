@@ -5,7 +5,6 @@ import TestCaseList from './TestCaseList.svelte';
 import { mockChallengeId, mockTestCases } from '$lib/test-fixtures';
 
 describe('TestCaseList', () => {
-
   it('should render empty state when no test cases', async () => {
     render(TestCaseList, {
       props: {
@@ -14,7 +13,9 @@ describe('TestCaseList', () => {
       }
     });
 
-    const emptyMessage = page.getByText('No test cases yet. Add some to validate candidate solutions.');
+    const emptyMessage = page.getByText(
+      'No test cases yet. Add some to validate candidate solutions.'
+    );
     await expect.element(emptyMessage).toBeInTheDocument();
   });
 
@@ -38,7 +39,7 @@ describe('TestCaseList', () => {
 
   it('should display correct count in header', async () => {
     const singleTestCase = [mockTestCases[0]];
-    
+
     render(TestCaseList, {
       props: {
         testCases: singleTestCase,
@@ -65,7 +66,7 @@ describe('TestCaseList', () => {
     const outputLabel = page.getByText('Expected Output:');
     await expect.element(outputLabel).toBeInTheDocument();
 
-    // Check for harness test case elements  
+    // Check for harness test case elements
     const harnessLabel = page.getByText('Test Harness:');
     await expect.element(harnessLabel).toBeInTheDocument();
   });

@@ -49,8 +49,8 @@ describe('/admin/sessions/new form actions', () => {
       mockFormData.set('challenge-2', 'on');
 
       vi.mocked(sessionsModule.parseSessionFormData).mockReturnValue(mockSessionData);
-      vi.mocked(sessionsModule.createSession).mockResolvedValue({ 
-        id: 'session-1', 
+      vi.mocked(sessionsModule.createSession).mockResolvedValue({
+        id: 'session-1',
         candidateId: 'candidate-1',
         totalDurationSec: TWO_HOURS_SECONDS,
         status: 'pending' as const,
@@ -64,9 +64,9 @@ describe('/admin/sessions/new form actions', () => {
 
       const locals = { db: mockDb };
 
-      await expect(
-        actions.default({ request: mockRequest, locals } as any)
-      ).rejects.toThrow('Redirect to /admin/sessions');
+      await expect(actions.default({ request: mockRequest, locals } as any)).rejects.toThrow(
+        'Redirect to /admin/sessions'
+      );
 
       expect(sessionsModule.parseSessionFormData).toHaveBeenCalledWith(mockFormData);
       expect(sessionsModule.createSession).toHaveBeenCalledWith(mockDb, mockSessionData);
@@ -116,7 +116,9 @@ describe('/admin/sessions/new form actions', () => {
         status: 400,
         data: { message: 'At least one challenge must be selected' }
       });
-      expect(fail).toHaveBeenCalledWith(400, { message: 'At least one challenge must be selected' });
+      expect(fail).toHaveBeenCalledWith(400, {
+        message: 'At least one challenge must be selected'
+      });
     });
 
     it('should return database error for database failures', async () => {
@@ -132,7 +134,9 @@ describe('/admin/sessions/new form actions', () => {
       };
 
       vi.mocked(sessionsModule.parseSessionFormData).mockReturnValue(mockSessionData);
-      vi.mocked(sessionsModule.createSession).mockRejectedValue(new Error('Foreign key constraint failed'));
+      vi.mocked(sessionsModule.createSession).mockRejectedValue(
+        new Error('Foreign key constraint failed')
+      );
 
       const locals = { db: mockDb };
 

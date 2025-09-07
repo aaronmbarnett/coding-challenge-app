@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { TestCase } from '$lib/server/db/schema';
-  
-  let { 
-    testCases, 
-    challengeId 
-  }: { 
-    testCases: TestCase[]; 
-    challengeId: string; 
+
+  let {
+    testCases,
+    challengeId
+  }: {
+    testCases: TestCase[];
+    challengeId: string;
   } = $props();
 </script>
 

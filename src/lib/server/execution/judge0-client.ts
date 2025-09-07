@@ -1,8 +1,8 @@
-import type { 
-  Judge0Config, 
-  Judge0ExecutionRequest, 
-  Judge0Response, 
-  Judge0Language, 
+import type {
+  Judge0Config,
+  Judge0ExecutionRequest,
+  Judge0Response,
+  Judge0Language,
   Judge0Stats,
   HealthCheckInfo
 } from './types';
@@ -37,8 +37,9 @@ export class Judge0Client {
       timeout: env.JUDGE0_TIMEOUT ? parseInt(env.JUDGE0_TIMEOUT, 10) : 10000,
       maxRetries: env.JUDGE0_MAX_RETRIES ? parseInt(env.JUDGE0_MAX_RETRIES, 10) : 3,
       enablePolling: true,
-      pollingInterval: env.JUDGE0_POLLING_INTERVAL ? 
-        parseInt(env.JUDGE0_POLLING_INTERVAL, 10) : 1000
+      pollingInterval: env.JUDGE0_POLLING_INTERVAL
+        ? parseInt(env.JUDGE0_POLLING_INTERVAL, 10)
+        : 1000
     };
   }
 
@@ -128,15 +129,16 @@ export class Judge0Client {
 
       // Check if execution is complete
       const status = result.status.id;
-      if (status > 2) { // Status > 2 means completed (success or error)
+      if (status > 2) {
+        // Status > 2 means completed (success or error)
         return result;
       }
 
       // Wait before next poll
       if (this.config.enablePolling) {
-        await new Promise(resolve => setTimeout(resolve, this.config.pollingInterval));
+        await new Promise((resolve) => setTimeout(resolve, this.config.pollingInterval));
       }
-      
+
       attempts++;
     }
 
@@ -167,22 +169,18 @@ export class Judge0Client {
   /**
    * Make HTTP request with retry logic and statistics tracking
    */
-  private async makeRequest(
-    method: string,
-    endpoint: string,
-    body?: unknown
-  ): Promise<Response> {
+  private async makeRequest(method: string, endpoint: string, body?: unknown): Promise<Response> {
     const startTime = Date.now();
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt < this.config.maxRetries; attempt++) {
       this.stats.totalRequests++;
-      
+
       if (attempt > 0) {
         this.stats.retryCount++;
         // Exponential backoff for retries
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
 
       try {
@@ -215,7 +213,7 @@ export class Judge0Client {
         return response;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        
+
         // Don't retry on certain errors
         if (this.isNonRetryableError(lastError)) {
           break;
@@ -226,7 +224,9 @@ export class Judge0Client {
     // Update failure statistics
     this.updateStats(false, Date.now() - startTime);
 
-    throw new Error(`Judge0 service unavailable after ${this.config.maxRetries} retries: ${lastError?.message}`);
+    throw new Error(
+      `Judge0 service unavailable after ${this.config.maxRetries} retries: ${lastError?.message}`
+    );
   }
 
   /**
@@ -255,9 +255,7 @@ export class Judge0Client {
       'Bad Request'
     ];
 
-    return nonRetryableMessages.some(message => 
-      error.message.includes(message)
-    );
+    return nonRetryableMessages.some((message) => error.message.includes(message));
   }
 
   /**
@@ -272,7 +270,7 @@ export class Judge0Client {
 
     // Update rolling average response time
     const totalResponses = this.stats.successfulRequests + this.stats.failedRequests;
-    this.stats.averageResponseTime = 
+    this.stats.averageResponseTime =
       (this.stats.averageResponseTime * (totalResponses - 1) + responseTime) / totalResponses;
   }
 }

@@ -2,15 +2,15 @@
   import { enhance } from '$app/forms';
   import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
   import type { TestCase } from '$lib/server/db/schema';
-  
-  let { 
-    testCase, 
-    index, 
-    challengeId 
-  }: { 
-    testCase: TestCase; 
-    index: number; 
-    challengeId: string; 
+
+  let {
+    testCase,
+    index,
+    challengeId
+  }: {
+    testCase: TestCase;
+    index: number;
+    challengeId: string;
   } = $props();
 
   function confirmDelete() {
@@ -36,11 +36,7 @@
     <form method="POST" action="?/delete" use:enhance class="inline">
       <input type="hidden" name="testId" value={testCase.id} />
       <input type="hidden" name="challengeId" value={challengeId} />
-      <button
-        type="submit"
-        class="text-sm text-red-600 hover:text-red-800"
-        onclick={confirmDelete}
-      >
+      <button type="submit" class="text-sm text-red-600 hover:text-red-800" onclick={confirmDelete}>
         Delete
       </button>
     </form>

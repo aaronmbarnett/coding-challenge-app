@@ -78,7 +78,7 @@
             };
           }}
         >
-          <button class="hover:bg-red-700 rounded bg-red-600 px-4 py-2 text-white">
+          <button class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
             Stop Session
           </button>
         </form>
@@ -91,19 +91,15 @@
 
   <!-- session info -->
   <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-    <StatCard 
-      title="Total Duration" 
-      value={formatDuration(data.session.totalDurationSec)} 
-    />
-    
-    <StatCard 
-      title="Started At" 
-      value={formatDateTime(data.session.startedAt)} 
-    />
-    
-    <StatCard 
+    <StatCard title="Total Duration" value={formatDuration(data.session.totalDurationSec)} />
+
+    <StatCard title="Started At" value={formatDateTime(data.session.startedAt)} />
+
+    <StatCard
       title={remainingSeconds !== null ? 'Time Remaining' : 'Ends At'}
-      value={remainingSeconds !== null ? formatDuration(remainingSeconds) : formatDateTime(data.session.endsAt)}
+      value={remainingSeconds !== null
+        ? formatDuration(remainingSeconds)
+        : formatDateTime(data.session.endsAt)}
     />
   </div>
 

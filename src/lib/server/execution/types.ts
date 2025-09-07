@@ -4,10 +4,10 @@
 export interface CodeSubmission {
   /** ID of the attempt this submission belongs to */
   attemptId: string;
-  
+
   /** The source code to execute */
   code: string;
-  
+
   /** Programming language of the code */
   language: string;
 }
@@ -18,25 +18,25 @@ export interface CodeSubmission {
 export interface TestCaseResult {
   /** ID of the test case that was executed */
   testCaseId: string;
-  
+
   /** Whether the test case passed */
   passed: boolean;
-  
+
   /** Expected output from test case */
   expectedOutput: string;
-  
+
   /** Actual output from code execution */
   actualOutput: string;
-  
+
   /** Execution time in milliseconds */
   executionTime: number;
-  
+
   /** Weight/points for this test case */
   weight: number;
-  
+
   /** Error message if execution failed */
   error?: string;
-  
+
   /** Judge0 token for this execution (if using real execution) */
   judge0Token?: string;
 }
@@ -47,31 +47,31 @@ export interface TestCaseResult {
 export interface ExecutionResult {
   /** ID of the created submission record */
   submissionId: string;
-  
+
   /** Total number of test cases */
   totalTests: number;
-  
+
   /** Number of test cases that passed */
   passedTests: number;
-  
+
   /** Results for each individual test case */
   testResults: TestCaseResult[];
-  
+
   /** Weighted score achieved (sum of passed test weights) */
   score: number;
-  
+
   /** Maximum possible weighted score */
   maxScore: number;
-  
+
   /** Total execution time across all tests */
   totalExecutionTime: number;
-  
+
   /** Compilation error message if code failed to compile */
   compilationError?: string;
-  
+
   /** Whether execution timed out */
   executionTimeout?: boolean;
-  
+
   /** Service error if execution system is unavailable */
   serviceError?: string;
 }
@@ -82,10 +82,10 @@ export interface ExecutionResult {
 export interface ExecutionConfig {
   /** Maximum execution time per test case in seconds */
   timeLimit: number;
-  
+
   /** Maximum memory usage in MB */
   memoryLimit: number;
-  
+
   /** CPU time limit in seconds */
   cpuTimeLimit: number;
 }
@@ -147,19 +147,19 @@ export interface ExecutionStats {
 export interface Judge0Config {
   /** Base URL for Judge0 API (e.g., http://localhost:2358 or http://judge0:2358) */
   baseUrl: string;
-  
+
   /** Authentication token (optional for self-hosted, required for cloud) */
   authToken?: string;
-  
+
   /** Request timeout in milliseconds */
   timeout: number;
-  
+
   /** Maximum retry attempts for failed requests */
   maxRetries: number;
-  
+
   /** Whether to enable result polling */
   enablePolling: boolean;
-  
+
   /** Polling interval in milliseconds */
   pollingInterval: number;
 }

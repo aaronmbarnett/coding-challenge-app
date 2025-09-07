@@ -114,7 +114,7 @@ describe('DataTable', () => {
       // Should show headers when data is present
       const nameHeader = page.getByText('Name');
       await expect.element(nameHeader).toBeInTheDocument();
-      
+
       const emailHeader = page.getByText('Email');
       await expect.element(emailHeader).toBeInTheDocument();
     });
@@ -131,7 +131,7 @@ describe('DataTable', () => {
       const nameHeader = page.getByText('Name');
       const emailHeader = page.getByText('Email');
       const statusHeader = page.getByText('Status');
-      
+
       await expect.element(nameHeader).toBeVisible();
       await expect.element(emailHeader).toBeVisible();
       await expect.element(statusHeader).toBeVisible();
@@ -148,7 +148,9 @@ describe('DataTable', () => {
       const statusHeader = page.getByText('Status');
       await expect.element(statusHeader).toBeVisible();
       // Custom column styling should be applied when specified
-      await expect.element(statusHeader).toHaveAttribute('class', expect.stringContaining('text-center'));
+      await expect
+        .element(statusHeader)
+        .toHaveAttribute('class', expect.stringContaining('text-center'));
     });
 
     it('should have correct table structure and styling', async () => {
@@ -167,7 +169,7 @@ describe('DataTable', () => {
   describe('column configuration', () => {
     it('should handle single column', async () => {
       const singleColumn = [{ key: 'title', label: 'Title' }];
-      
+
       render(DataTable, {
         props: {
           columns: singleColumn,
@@ -184,7 +186,7 @@ describe('DataTable', () => {
         { key: 'name', label: 'Name' },
         { key: 'email', label: 'Email' }
       ];
-      
+
       render(DataTable, {
         props: {
           columns: columnsWithoutClasses,
@@ -194,7 +196,7 @@ describe('DataTable', () => {
 
       const nameHeader = page.getByText('Name');
       const emailHeader = page.getByText('Email');
-      
+
       await expect.element(nameHeader).toBeInTheDocument();
       await expect.element(emailHeader).toBeInTheDocument();
     });
@@ -207,7 +209,7 @@ describe('DataTable', () => {
         { key: 'col4', label: 'Column 4' },
         { key: 'col5', label: 'Column 5' }
       ];
-      
+
       render(DataTable, {
         props: {
           columns: manyColumns,
@@ -240,7 +242,7 @@ describe('DataTable', () => {
     it('should transition from empty to populated', async () => {
       // This test would require a way to update props, which is complex in this testing framework
       // For now, we'll just ensure both states work independently
-      
+
       // Test empty state
       render(DataTable, {
         props: {
@@ -254,10 +256,8 @@ describe('DataTable', () => {
     });
 
     it('should handle special characters in labels', async () => {
-      const specialColumns = [
-        { key: 'test', label: 'Test & Special <Characters>' }
-      ];
-      
+      const specialColumns = [{ key: 'test', label: 'Test & Special <Characters>' }];
+
       render(DataTable, {
         props: {
           columns: specialColumns,

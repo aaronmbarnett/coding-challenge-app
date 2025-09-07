@@ -5,7 +5,6 @@ import TestCasesPreview from './TestCasesPreview.svelte';
 import { mockChallengeId, mockTestCases } from '$lib/test-fixtures';
 
 describe('TestCasesPreview', () => {
-
   it('should render empty state when no test cases', async () => {
     render(TestCasesPreview, {
       props: {
@@ -19,7 +18,9 @@ describe('TestCasesPreview', () => {
 
     const addLink = page.getByText('Add some');
     await expect.element(addLink).toBeInTheDocument();
-    await expect.element(addLink).toHaveAttribute('href', `/admin/challenges/${mockChallengeId}/tests`);
+    await expect
+      .element(addLink)
+      .toHaveAttribute('href', `/admin/challenges/${mockChallengeId}/tests`);
   });
 
   it('should render preview of test cases', async () => {
@@ -113,12 +114,14 @@ describe('TestCasesPreview', () => {
 
     const manageLink = page.getByText('Manage all test cases →');
     await expect.element(manageLink).toBeInTheDocument();
-    await expect.element(manageLink).toHaveAttribute('href', `/admin/challenges/${mockChallengeId}/tests`);
+    await expect
+      .element(manageLink)
+      .toHaveAttribute('href', `/admin/challenges/${mockChallengeId}/tests`);
   });
 
   it('should handle singular vs plural correctly', async () => {
     const singleTestCase = [mockTestCases[0]];
-    
+
     render(TestCasesPreview, {
       props: {
         testCases: singleTestCase,

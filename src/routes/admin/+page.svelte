@@ -4,24 +4,33 @@
     <div class="flex items-center space-x-4">
       <a href="/" class="text-blue-600 hover:text-blue-500">← Back to Site</a>
       <span class="text-gray-300">|</span>
-      <a href="/admin/challenges/new" class="text-sm text-blue-600 hover:text-blue-500">New Challenge</a>
-      <a href="/admin/sessions/new" class="text-sm text-blue-600 hover:text-blue-500">New Session</a>
+      <a href="/admin/challenges/new" class="text-sm text-blue-600 hover:text-blue-500"
+        >New Challenge</a
+      >
+      <a href="/admin/sessions/new" class="text-sm text-blue-600 hover:text-blue-500">New Session</a
+      >
     </div>
   </div>
-  
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <a href="/admin/challenges" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-      <h2 class="text-xl font-semibold mb-2">Challenges</h2>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <a
+      href="/admin/challenges"
+      class="rounded-lg bg-white p-6 shadow transition-shadow hover:shadow-md"
+    >
+      <h2 class="mb-2 text-xl font-semibold">Challenges</h2>
       <p class="text-gray-600">Manage coding challenges</p>
     </a>
 
-    <a href="/admin/sessions" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-      <h2 class="text-xl font-semibold mb-2">Sessions</h2>
+    <a
+      href="/admin/sessions"
+      class="rounded-lg bg-white p-6 shadow transition-shadow hover:shadow-md"
+    >
+      <h2 class="mb-2 text-xl font-semibold">Sessions</h2>
       <p class="text-gray-600">View exam sessions</p>
     </a>
 
-    <div class="bg-white p-6 rounded-lg shadow">
-      <h2 class="text-xl font-semibold mb-2">Users</h2>
+    <div class="rounded-lg bg-white p-6 shadow">
+      <h2 class="mb-2 text-xl font-semibold">Users</h2>
       <p class="text-gray-600">Manage candidates (coming soon)</p>
     </div>
   </div>
