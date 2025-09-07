@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { PageData, ActionData } from './$types';
   import { enhance } from '$app/forms';
+  import StatusBadge from '$lib/components/ui/StatusBadge.svelte';
+  import Alert from '$lib/components/ui/Alert.svelte';
 
   export let data: PageData;
   export let form: ActionData;
@@ -44,15 +46,15 @@
     </form>
 
     {#if form?.success}
-      <div class="mt-4 rounded-md border border-green-200 bg-green-50 p-4">
-        <p class="text-green-800">{form.message}</p>
-        <p class="mt-1 text-sm text-green-600">
-          Invitation sent to {form.invitation?.email}
-        </p>
+      <div class="mt-4">
+        <Alert 
+          type="success" 
+          message="{form.message} - Invitation sent to {form.invitation?.email}"
+        />
       </div>
     {:else if form?.message}
-      <div class="mt-4 rounded-md border border-red-200 bg-red-50 p-4">
-        <p class="text-red-800">{form.message}</p>
+      <div class="mt-4">
+        <Alert type="error" message={form.message} />
       </div>
     {/if}
   </div>
@@ -99,25 +101,10 @@
                   {invitation.email}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  {#if invitation.consumedAt}
-                    <span
-                      class="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800"
-                    >
-                      Used
-                    </span>
-                  {:else if new Date() > invitation.expiresAt}
-                    <span
-                      class="inline-flex rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-800"
-                    >
-                      Expired
-                    </span>
-                  {:else}
-                    <span
-                      class="inline-flex rounded-full bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-800"
-                    >
-                      Pending
-                    </span>
-                  {/if}
+                  <StatusBadge 
+                    status={invitation.consumedAt ? 'used' : (new Date() > invitation.expiresAt ? 'expired' : 'pending')}
+                    type="invitation" 
+                  />
                 </td>
                 <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                   {new Date(invitation.createdAt).toLocaleDateString()}

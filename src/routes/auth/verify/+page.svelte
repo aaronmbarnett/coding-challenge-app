@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
+	import Alert from '$lib/components/ui/Alert.svelte';
 
 	export let form: ActionData;
 
@@ -64,18 +65,11 @@
 			{:else}
 				<!-- Manual form for missing parameters -->
 				<div class="text-center mb-6">
-					<div class="rounded-md bg-yellow-50 p-4 mb-4">
-						<div class="flex">
-							<div class="ml-3">
-								<h3 class="text-sm font-medium text-yellow-800">
-									Missing Information
-								</h3>
-								<div class="mt-2 text-sm text-yellow-700">
-									<p>Your magic link appears to be incomplete. Please enter the details manually:</p>
-								</div>
-							</div>
-						</div>
-					</div>
+					<Alert 
+						type="warning" 
+						title="Missing Information"
+						message="Your magic link appears to be incomplete. Please enter the details manually:"
+					/>
 				</div>
 
 				<form method="POST" use:enhance class="space-y-6">
@@ -125,17 +119,12 @@
 			{/if}
 
 			{#if form?.message}
-				<div class="mt-4 rounded-md bg-red-50 p-4">
-					<div class="flex">
-						<div class="ml-3">
-							<h3 class="text-sm font-medium text-red-800">
-								Verification Failed
-							</h3>
-							<div class="mt-2 text-sm text-red-700">
-								<p>{form.message}</p>
-							</div>
-						</div>
-					</div>
+				<div class="mt-4">
+					<Alert 
+						type="error" 
+						title="Verification Failed"
+						message={form.message}
+					/>
 				</div>
 			{/if}
 		</div>

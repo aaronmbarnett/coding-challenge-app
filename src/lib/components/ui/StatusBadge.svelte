@@ -4,7 +4,7 @@
     type = 'session'
   }: {
     status: string;
-    type?: 'session' | 'attempt' | 'testcase';
+    type?: 'session' | 'attempt' | 'testcase' | 'invitation';
   } = $props();
 
   function getStatusColor(status: string, type: string) {
@@ -42,6 +42,19 @@
           return 'bg-blue-100 text-blue-800';
         case 'harness':
           return 'bg-purple-100 text-purple-800';
+        default:
+          return 'bg-gray-100 text-gray-800';
+      }
+    }
+
+    if (type === 'invitation') {
+      switch (status) {
+        case 'pending':
+          return 'bg-yellow-100 text-yellow-800';
+        case 'used':
+          return 'bg-green-100 text-green-800';
+        case 'expired':
+          return 'bg-red-100 text-red-800';
         default:
           return 'bg-gray-100 text-gray-800';
       }

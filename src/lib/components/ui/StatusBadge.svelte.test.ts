@@ -97,6 +97,44 @@ describe('StatusBadge', () => {
     });
   });
 
+  describe('invitation status rendering', () => {
+    it('should render pending invitation status as awaiting action', async () => {
+      render(StatusBadge, { props: { status: 'pending', type: 'invitation' } });
+      
+      const badge = page.getByText('PENDING');
+      await expect.element(badge).toBeVisible();
+      // Pending invitations should appear as awaiting action
+      await expect.element(badge).toHaveAttribute('class', expect.stringContaining('bg-yellow-100'));
+    });
+
+    it('should render used invitation status as completed', async () => {
+      render(StatusBadge, { props: { status: 'used', type: 'invitation' } });
+      
+      const badge = page.getByText('USED');
+      await expect.element(badge).toBeVisible();
+      // Used invitations should appear as successfully completed
+      await expect.element(badge).toHaveAttribute('class', expect.stringContaining('bg-green-100'));
+    });
+
+    it('should render expired invitation status as alert', async () => {
+      render(StatusBadge, { props: { status: 'expired', type: 'invitation' } });
+      
+      const badge = page.getByText('EXPIRED');
+      await expect.element(badge).toBeVisible();
+      // Expired invitations should have alert/error styling
+      await expect.element(badge).toHaveAttribute('class', expect.stringContaining('bg-red-100'));
+    });
+
+    it('should handle unknown invitation status gracefully', async () => {
+      render(StatusBadge, { props: { status: 'unknown', type: 'invitation' } });
+      
+      const badge = page.getByText('UNKNOWN');
+      await expect.element(badge).toBeVisible();
+      // Unknown invitation status should fall back to neutral styling
+      await expect.element(badge).toHaveAttribute('class', expect.stringContaining('bg-gray-100'));
+    });
+  });
+
   describe('default behavior', () => {
     it('should default to session type when type is not specified', async () => {
       render(StatusBadge, { props: { status: 'pending' } });
