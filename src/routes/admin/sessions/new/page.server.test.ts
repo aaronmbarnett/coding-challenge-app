@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { 
+  mockCandidates, 
+  mockChallenges,
+  TEN_MINUTES_SECONDS,
+  FIFTEEN_MINUTES_SECONDS,
+  THIRTY_MINUTES_SECONDS,
+  TWO_HOURS_SECONDS
+} from '$lib/test-fixtures';
 import { load } from './+page.server';
 import * as table from '$lib/server/db/schema';
-
-// Semantic time constants for challenge time limits
-const TEN_MINUTES_SECONDS = 10 * 60; // 600
-const FIFTEEN_MINUTES_SECONDS = 15 * 60; // 900
-const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
-const ONE_HOUR_SECONDS = 60 * 60; // 3600
-const TWO_HOURS_SECONDS = 2 * 60 * 60; // 7200
 
 // Type for the expected return value
 interface SessionNewLoadResult {
@@ -48,38 +49,18 @@ describe('/admin/sessions/new +page.server.ts', () => {
 
   describe('load function', () => {
     it('should load candidates and challenges for form options', async () => {
-      const mockCandidates = [
-        {
-          id: 'candidate-1',
-          email: 'alice@example.com'
-        },
-        {
-          id: 'candidate-2',
-          email: 'bob@example.com'
-        }
-      ];
+      // Use first two candidates and challenges from fixtures
+      const testCandidates = mockCandidates.slice(0, 2);
+      const testChallenges = mockChallenges.slice(0, 2);
 
-      const mockChallenges = [
-        {
-          id: 'challenge-1',
-          title: 'Array Sum',
-          timeLimitSec: THIRTY_MINUTES_SECONDS
-        },
-        {
-          id: 'challenge-2',
-          title: 'String Reverse',
-          timeLimitSec: FIFTEEN_MINUTES_SECONDS
-        }
-      ];
-
-      const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
+      const mockDb = createMockDbForNewSession(testCandidates, testChallenges);
       const locals = { db: mockDb };
       
       const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result).toEqual({
-        candidates: mockCandidates,
-        challenges: mockChallenges
+        candidates: testCandidates,
+        challenges: testChallenges
       });
 
       // Verify database was called
@@ -108,21 +89,16 @@ describe('/admin/sessions/new +page.server.ts', () => {
     });
 
     it('should handle empty challenges list', async () => {
-      const mockCandidates = [
-        {
-          id: 'candidate-1',
-          email: 'test@example.com'
-        }
-      ];
-      const mockChallenges: any[] = [];
+      const testCandidates = mockCandidates.slice(0, 1);
+      const testChallenges: any[] = [];
 
-      const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
+      const mockDb = createMockDbForNewSession(testCandidates, testChallenges);
       const locals = { db: mockDb };
       
       const result = await load({ locals } as any) as SessionNewLoadResult;
 
       expect(result).toEqual({
-        candidates: mockCandidates,
+        candidates: testCandidates,
         challenges: []
       });
     });
@@ -178,19 +154,11 @@ describe('/admin/sessions/new +page.server.ts', () => {
     });
 
     it('should preserve email and title ordering', async () => {
-      const mockCandidates = [
-        { id: 'candidate-1', email: 'alice@example.com' },
-        { id: 'candidate-2', email: 'bob@example.com' },
-        { id: 'candidate-3', email: 'charlie@example.com' }
-      ];
+      // Use all candidates and challenges from fixtures for ordering test
+      const testCandidates = [...mockCandidates];
+      const testChallenges = [...mockChallenges];
 
-      const mockChallenges = [
-        { id: 'challenge-1', title: 'A Challenge', timeLimitSec: 1800 },
-        { id: 'challenge-2', title: 'B Challenge', timeLimitSec: 900 },
-        { id: 'challenge-3', title: 'C Challenge', timeLimitSec: ONE_HOUR_SECONDS }
-      ];
-
-      const mockDb = createMockDbForNewSession(mockCandidates, mockChallenges);
+      const mockDb = createMockDbForNewSession(testCandidates, testChallenges);
       const locals = { db: mockDb };
       
       const result = await load({ locals } as any) as SessionNewLoadResult;
@@ -200,9 +168,9 @@ describe('/admin/sessions/new +page.server.ts', () => {
       expect(result.candidates[1].email).toBe('bob@example.com');
       expect(result.candidates[2].email).toBe('charlie@example.com');
 
-      expect(result.challenges[0].title).toBe('A Challenge');
-      expect(result.challenges[1].title).toBe('B Challenge');
-      expect(result.challenges[2].title).toBe('C Challenge');
+      expect(result.challenges[0].title).toBe('Two Sum');
+      expect(result.challenges[1].title).toBe('Valid Palindrome');
+      expect(result.challenges[2].title).toBe('Algorithm Challenge');
     });
   });
 });

@@ -1,18 +1,12 @@
 import { page } from '@vitest/browser/context';
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
+import { mockChallenges, THIRTY_MINUTES_SECONDS, ONE_HOUR_SECONDS } from '$lib/test-fixtures';
 import ChallengeSelector from './ChallengeSelector.svelte';
 
-// Semantic time constants for challenge time limits
-const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
-const ONE_HOUR_SECONDS = 60 * 60; // 3600
-
 describe('ChallengeSelector', () => {
-  const mockChallenges = [
-    { id: 'challenge-1', title: 'Two Sum Problem', timeLimitSec: THIRTY_MINUTES_SECONDS },
-    { id: 'challenge-2', title: 'Binary Tree Traversal', timeLimitSec: ONE_HOUR_SECONDS },
-    { id: 'challenge-3', title: 'Quick Sort Implementation', timeLimitSec: null }
-  ];
+  // Use first few challenges from fixtures for tests
+  const testChallenges = mockChallenges.slice(0, 3);
 
   describe('basic rendering', () => {
     it('should render the title and empty challenges', async () => {
@@ -63,25 +57,25 @@ describe('ChallengeSelector', () => {
     it('should render all challenges when provided', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: []
         }
       });
 
-      const challenge1 = page.getByText('Two Sum Problem');
+      const challenge1 = page.getByText('Two Sum');
       await expect.element(challenge1).toBeInTheDocument();
 
-      const challenge2 = page.getByText('Binary Tree Traversal');
+      const challenge2 = page.getByText('Valid Palindrome');
       await expect.element(challenge2).toBeInTheDocument();
 
-      const challenge3 = page.getByText('Quick Sort Implementation');
+      const challenge3 = page.getByText('Algorithm Challenge');
       await expect.element(challenge3).toBeInTheDocument();
     });
 
     it('should render time limits correctly', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: []
         }
       });
@@ -111,13 +105,13 @@ describe('ChallengeSelector', () => {
     it('should render checkboxes for each challenge', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: []
         }
       });
 
       // Check that checkboxes are present (by checking input elements)
-      const challenge1Title = page.getByText('Two Sum Problem');
+      const challenge1Title = page.getByText('Two Sum');
       await expect.element(challenge1Title).toBeInTheDocument();
     });
   });
@@ -126,7 +120,7 @@ describe('ChallengeSelector', () => {
     it('should show selected count with no selections', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: []
         }
       });
@@ -138,7 +132,7 @@ describe('ChallengeSelector', () => {
     it('should show selected count with one selection', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: ['challenge-1']
         }
       });
@@ -150,7 +144,7 @@ describe('ChallengeSelector', () => {
     it('should show selected count with multiple selections', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: ['challenge-1', 'challenge-2']
         }
       });
@@ -162,7 +156,7 @@ describe('ChallengeSelector', () => {
     it('should show all challenges as selected when all are selected', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: ['challenge-1', 'challenge-2', 'challenge-3']
         }
       });
@@ -176,27 +170,27 @@ describe('ChallengeSelector', () => {
     it('should use default name attribute', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: []
         }
       });
 
       // Challenge should be rendered (indicating checkboxes are present)
-      const challenge = page.getByText('Two Sum Problem');
+      const challenge = page.getByText('Two Sum');
       await expect.element(challenge).toBeInTheDocument();
     });
 
     it('should use custom name attribute', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: [],
           name: 'selectedChallenges'
         }
       });
 
       // Challenge should be rendered (indicating checkboxes are present)
-      const challenge = page.getByText('Two Sum Problem');
+      const challenge = page.getByText('Two Sum');
       await expect.element(challenge).toBeInTheDocument();
     });
   });
@@ -274,7 +268,7 @@ describe('ChallengeSelector', () => {
         }
       });
 
-      const challenge = page.getByText('Two Sum Problem');
+      const challenge = page.getByText('Two Sum');
       await expect.element(challenge).toBeInTheDocument();
     });
   });
@@ -288,7 +282,7 @@ describe('ChallengeSelector', () => {
         }
       });
 
-      const challenge = page.getByText('Two Sum Problem');
+      const challenge = page.getByText('Two Sum');
       await expect.element(challenge).toBeInTheDocument();
 
       const selectedCount = page.getByText('Selected: 1 challenge');
@@ -342,7 +336,7 @@ describe('ChallengeSelector', () => {
     it('should handle empty selectedChallengeIds', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: [] // Use empty array instead of undefined
         }
       });
@@ -421,7 +415,7 @@ describe('ChallengeSelector', () => {
     it('should handle selectedChallengeIds with non-existent IDs', async () => {
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: ['non-existent-1', 'challenge-1', 'non-existent-2']
         }
       });
@@ -491,13 +485,13 @@ describe('ChallengeSelector', () => {
       // This tests internal function resilience
       render(ChallengeSelector, {
         props: {
-          challenges: mockChallenges,
+          challenges: testChallenges,
           selectedChallengeIds: []
         }
       });
 
       // Simulate clicking on a challenge checkbox
-      const challengeLabel = page.getByText('Two Sum Problem');
+      const challengeLabel = page.getByText('Two Sum');
       const parentLabel = challengeLabel.locator('..').locator('..');
       
       // Should not throw errors even if internal state operations fail

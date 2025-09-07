@@ -1,19 +1,10 @@
 import { page } from '@vitest/browser/context';
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
+import { mockCandidates, mockChallenges } from '$lib/test-fixtures';
 import NewSessionPage from './+page.svelte';
 
 describe('New Session Page', () => {
-  const mockCandidates = [
-    { id: 'candidate-1', email: 'alice@example.com' },
-    { id: 'candidate-2', email: 'bob@example.com' }
-  ];
-
-  const mockChallenges = [
-    { id: 'challenge-1', title: 'Two Sum', timeLimitSec: 1800 },
-    { id: 'challenge-2', title: 'Valid Palindrome', timeLimitSec: 1200 }
-  ];
-
   describe('page structure and navigation', () => {
     it('should display page title and back navigation', async () => {
       render(NewSessionPage, { 

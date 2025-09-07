@@ -1,11 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createMockFormData, createMockRequest, mockAdmin } from '$lib/test-fixtures';
 import { actions } from './+page.server';
 import { fail } from '@sveltejs/kit';
 import * as magicLink from '$lib/server/auth/magic-link';
 import * as emailService from '$lib/server/email/email-service';
-
-// Semantic time constants
-const THIRTY_MINUTES_MS = 30 * 60 * 1000; // 1800000
 
 // Mock SvelteKit functions
 vi.mock('@sveltejs/kit', async () => {
@@ -41,7 +39,7 @@ describe('/admin/invitations form actions', () => {
         id: 'inv-123',
         email: 'candidate@example.com',
         createdBy: 'admin-1',
-        expiresAt: new Date(Date.now() + THIRTY_MINUTES_MS),
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000),
         consumedAt: null,
         tokenHash: Buffer.from('mock-hash'),
         createdAt: new Date()
@@ -57,16 +55,12 @@ describe('/admin/invitations form actions', () => {
         messageId: 'mock-email-123'
       });
 
-      const mockFormData = new FormData();
-      mockFormData.set('email', 'candidate@example.com');
-
-      const mockRequest = {
-        formData: vi.fn().mockResolvedValue(mockFormData)
-      };
+      const formData = createMockFormData({ email: 'candidate@example.com' });
+      const mockRequest = createMockRequest(formData, 'http://localhost:5173/admin/invitations');
 
       const locals = { 
         db: mockDb, 
-        user: { id: 'admin-1', email: 'admin@example.com', role: 'admin' as const } 
+        user: mockAdmin
       };
 
       const mockUrl = new URL('http://localhost:5173/admin/invitations');
@@ -75,7 +69,7 @@ describe('/admin/invitations form actions', () => {
       expect(magicLink.createMagicLinkInvitation).toHaveBeenCalledWith(
         mockDb,
         'candidate@example.com',
-        'admin-1'
+        'admin-123'
       );
 
       expect(result).toEqual({

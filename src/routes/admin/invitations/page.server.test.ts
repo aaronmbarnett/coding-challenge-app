@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TIME_MS, createMockInvitation, mockInvitations } from '$lib/test-fixtures';
 import { load } from './+page.server';
-
-// Semantic time constants for invitation tests
-const THIRTY_MINUTES_MS = 30 * 60 * 1000; // 1800000
-const ONE_HOUR_MS = 60 * 60 * 1000; // 3600000
 
 // Type for the expected return value
 interface InvitationsLoadResult {
@@ -36,34 +33,30 @@ describe('/admin/invitations page server load', () => {
 
   describe('load function', () => {
     it('should load invitations ordered by creation date', async () => {
-      const mockInvitations = [
-        {
+      const testInvitations = [
+        createMockInvitation({
           id: 'inv-1',
           email: 'alice@example.com',
-          tokenHash: Buffer.from('hash-1'),
-          expiresAt: new Date(Date.now() + THIRTY_MINUTES_MS),
+          expiresAt: new Date(Date.now() + TIME_MS.THIRTY_MINUTES),
           consumedAt: null,
-          createdBy: 'admin-1',
           createdAt: new Date('2024-01-01T10:00:00Z')
-        },
-        {
-          id: 'inv-2',
+        }),
+        createMockInvitation({
+          id: 'inv-2', 
           email: 'bob@example.com',
-          tokenHash: Buffer.from('hash-2'),
-          expiresAt: new Date(Date.now() + ONE_HOUR_MS),
+          expiresAt: new Date(Date.now() + TIME_MS.ONE_HOUR),
           consumedAt: new Date('2024-01-02T11:00:00Z'),
-          createdBy: 'admin-1',
           createdAt: new Date('2024-01-02T10:00:00Z')
-        }
+        })
       ];
 
-      const mockDb = createMockDb(mockInvitations);
+      const mockDb = createMockDb(testInvitations);
       const locals = { db: mockDb };
 
       const result = await load({ locals } as any);
 
       expect(result).toEqual({
-        invitations: mockInvitations
+        invitations: testInvitations
       });
 
       // Verify database was called correctly
@@ -83,38 +76,13 @@ describe('/admin/invitations page server load', () => {
     });
 
     it('should handle invitations with different statuses', async () => {
-      const now = new Date();
-      const mockInvitations = [
-        {
-          id: 'inv-pending',
-          email: 'pending@example.com',
-          tokenHash: Buffer.from('hash-pending'),
-          expiresAt: new Date(now.getTime() + THIRTY_MINUTES_MS),
-          consumedAt: null,
-          createdBy: 'admin-1',
-          createdAt: new Date('2024-01-01T10:00:00Z')
-        },
-        {
-          id: 'inv-consumed',
-          email: 'consumed@example.com',
-          tokenHash: Buffer.from('hash-consumed'),
-          expiresAt: new Date(now.getTime() + THIRTY_MINUTES_MS),
-          consumedAt: new Date('2024-01-01T12:00:00Z'),
-          createdBy: 'admin-1',
-          createdAt: new Date('2024-01-01T10:00:00Z')
-        },
-        {
-          id: 'inv-expired',
-          email: 'expired@example.com',
-          tokenHash: Buffer.from('hash-expired'),
-          expiresAt: new Date(now.getTime() - ONE_HOUR_MS), // Expired
-          consumedAt: null,
-          createdBy: 'admin-1',
-          createdAt: new Date('2024-01-01T08:00:00Z')
-        }
+      const testInvitations = [
+        mockInvitations.pending,
+        mockInvitations.consumed, 
+        mockInvitations.expired
       ];
 
-      const mockDb = createMockDb(mockInvitations);
+      const mockDb = createMockDb(testInvitations);
       const locals = { db: mockDb };
 
       const result = await load({ locals } as any) as InvitationsLoadResult;
@@ -123,14 +91,14 @@ describe('/admin/invitations page server load', () => {
       
       // Verify pending invitation
       expect(result.invitations[0].consumedAt).toBeNull();
-      expect(result.invitations[0].expiresAt.getTime()).toBeGreaterThan(now.getTime());
+      expect(result.invitations[0].expiresAt.getTime()).toBeGreaterThan(Date.now());
       
       // Verify consumed invitation
       expect(result.invitations[1].consumedAt).toBeInstanceOf(Date);
       
       // Verify expired invitation
       expect(result.invitations[2].consumedAt).toBeNull();
-      expect(result.invitations[2].expiresAt.getTime()).toBeLessThan(now.getTime());
+      expect(result.invitations[2].expiresAt.getTime()).toBeLessThan(Date.now());
     });
 
     it('should handle invitations from different admins', async () => {
@@ -139,7 +107,7 @@ describe('/admin/invitations page server load', () => {
           id: 'inv-1',
           email: 'candidate1@example.com',
           tokenHash: Buffer.from('hash-1'),
-          expiresAt: new Date(Date.now() + THIRTY_MINUTES_MS),
+          expiresAt: new Date(Date.now() + TIME_MS.THIRTY_MINUTES),
           consumedAt: null,
           createdBy: 'admin-1',
           createdAt: new Date('2024-01-01T10:00:00Z')
@@ -148,7 +116,7 @@ describe('/admin/invitations page server load', () => {
           id: 'inv-2',
           email: 'candidate2@example.com',
           tokenHash: Buffer.from('hash-2'),
-          expiresAt: new Date(Date.now() + THIRTY_MINUTES_MS),
+          expiresAt: new Date(Date.now() + TIME_MS.THIRTY_MINUTES),
           consumedAt: null,
           createdBy: 'admin-2',
           createdAt: new Date('2024-01-02T10:00:00Z')
@@ -171,7 +139,7 @@ describe('/admin/invitations page server load', () => {
           id: 'test-inv',
           email: 'test@example.com',
           tokenHash: Buffer.from('test-hash'),
-          expiresAt: new Date(Date.now() + THIRTY_MINUTES_MS),
+          expiresAt: new Date(Date.now() + TIME_MS.THIRTY_MINUTES),
           consumedAt: null,
           createdBy: 'admin-1',
           createdAt: new Date()
@@ -209,7 +177,7 @@ describe('/admin/invitations page server load', () => {
           id: 'inv-new',
           email: 'candidate@example.com',
           tokenHash: Buffer.from('new-hash'),
-          expiresAt: new Date(Date.now() + THIRTY_MINUTES_MS),
+          expiresAt: new Date(Date.now() + TIME_MS.THIRTY_MINUTES),
           consumedAt: null,
           createdBy: 'admin-1',
           createdAt: new Date('2024-01-02T10:00:00Z')

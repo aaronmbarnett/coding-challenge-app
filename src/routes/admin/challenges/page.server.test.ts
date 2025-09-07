@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { THIRTY_MINUTES_SECONDS, ONE_HOUR_SECONDS } from '$lib/test-fixtures';
 import { load } from './+page.server';
-
-// Semantic time constants for challenges page tests
-const THIRTY_MINUTES_SECONDS = 30 * 60; // 1800
-const ONE_HOUR_SECONDS = 60 * 60; // 3600
 
 // Type for the expected return value
 interface LoadResult {
