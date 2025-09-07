@@ -42,12 +42,14 @@ The application follows a comprehensive challenge management flow:
 - `submissions` - Code submissions with Judge0 integration for execution results
 
 **Authentication System:**
-Currently uses a simplified cookie-based dev authentication (`src/lib/server/auth/session.ts`). The system is designed to be replaced with magic link authentication using the existing invitation schema. All server routes have access to `event.locals.user` and `event.locals.db` via the global handle in `hooks.server.ts`.
+Implements magic link authentication with invitation-based user onboarding (`src/lib/server/auth/magic-link.ts`). Admins create invitations via `/admin/invitations`, sending time-limited magic links to candidates. The verification flow at `/auth/verify` validates tokens, creates user accounts, and establishes sessions. Still retains simplified cookie-based dev authentication (`src/lib/server/auth/session.ts`) for quick admin development iteration. All server routes have access to `event.locals.user` and `event.locals.db` via the global handle in `hooks.server.ts`.
 
 **Route Structure:**
 - `/admin/*` - Protected admin area with layout-level route guards
 - `/admin/challenges` - Challenge CRUD with nested routes for editing and test case management
 - `/admin/challenges/[id]/tests` - Dedicated test case management interface
+- `/admin/invitations` - Magic link invitation management for candidate onboarding
+- `/auth/verify` - Magic link token verification and user authentication
 - `/login` - Simple admin login (dev credentials: admin@example.com / admin123)
 
 **Component Architecture:**
