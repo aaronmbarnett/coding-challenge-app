@@ -6,6 +6,7 @@
 import { db } from './index.js';
 import * as table from './schema.js';
 import { createId } from '@paralleldrive/cuid2';
+import { hashToken } from '../auth/magic-link.js';
 
 export async function seedDatabase() {
   // Only allow seeding in development
@@ -55,6 +56,44 @@ export async function seedDatabase() {
     ]).returning();
 
     console.log(`👥 Created ${candidates.length + 1} users (1 admin, ${candidates.length} candidates)`);
+
+    // Create sample invitations showing different states
+    const sampleToken1 = 'pending-token-64chars-long-enough-for-security-requirements-abc123';
+    const sampleToken2 = 'consumed-token-64chars-long-enough-for-security-requirements-def456';
+    const sampleToken3 = 'expired-token-64chars-long-enough-for-security-requirements-ghi789';
+    
+    const invitations = await db.insert(table.invitation).values([
+      {
+        email: 'pending.invite@example.com',
+        tokenHash: hashToken(sampleToken1),
+        expiresAt: new Date(Date.now() + 1800000), // Expires in 30 minutes
+        consumedAt: null,
+        createdBy: admin.id
+      },
+      {
+        email: candidates[0].email, // Alice's email
+        tokenHash: hashToken(sampleToken2),
+        expiresAt: new Date(Date.now() + 1800000),
+        consumedAt: new Date(Date.now() - 3600000 * 24), // Consumed yesterday
+        createdBy: admin.id
+      },
+      {
+        email: 'expired.invite@example.com',
+        tokenHash: hashToken(sampleToken3),
+        expiresAt: new Date(Date.now() - 3600000), // Expired 1 hour ago
+        consumedAt: null,
+        createdBy: admin.id
+      },
+      {
+        email: 'recent.invite@example.com',
+        tokenHash: hashToken('recent-token-64chars-long-enough-for-security-requirements-jkl012'),
+        expiresAt: new Date(Date.now() + 3600000 * 2), // Expires in 2 hours
+        consumedAt: null,
+        createdBy: admin.id
+      }
+    ]).returning();
+
+    console.log(`📧 Created ${invitations.length} sample invitations (pending, consumed, expired)`);
 
     // Create challenges
     const challenges = await db.insert(table.challenges).values([
@@ -358,6 +397,7 @@ Output: [1,3,2]
     console.log('');
     console.log('📊 Summary:');
     console.log(`   Users: ${candidates.length + 1} (1 admin, ${candidates.length} candidates)`);
+    console.log(`   Invitations: ${invitations.length} (pending, consumed, expired)`);
     console.log(`   Challenges: ${challenges.length}`);
     console.log(`   Test Cases: ${testCasesData.length}`);
     console.log(`   Sessions: ${sessions.length}`);
