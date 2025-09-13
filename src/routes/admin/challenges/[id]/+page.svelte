@@ -3,11 +3,17 @@
   import ChallengeContent from '$lib/components/admin/ChallengeContent.svelte';
   import ChallengeSidebar from '$lib/components/admin/ChallengeSidebar.svelte';
   import TestCasesPreview from '$lib/components/admin/TestCasesPreview.svelte';
+  import Alert from '$lib/components/ui/Alert.svelte';
 
-  let { data } = $props();
+  let { data, form } = $props();
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6">
+  <!-- Error/Success Messages -->
+  {#if form?.message}
+    <Alert message={form.message} type="error" title="Error" />
+  {/if}
+
   <ChallengeHeader challenge={data.challenge} />
 
   <!-- Main Content Grid -->
