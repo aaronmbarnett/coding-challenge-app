@@ -50,11 +50,11 @@ export const actions: Actions = {
         .where(inArray(table.challengeTests.challengeId, challengeIds));
 
       await locals.db.delete(table.challenges).where(inArray(table.challenges.id, challengeIds));
-
-      throw redirect(303, '/admin/challenges');
     } catch (error) {
       console.error('Error in bulk delete:', error);
       return fail(500, { message: 'Failed to delete challenges' });
     }
+
+    throw redirect(303, '/admin/challenges');
   }
 };

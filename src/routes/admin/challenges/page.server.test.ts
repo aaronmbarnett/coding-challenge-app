@@ -1,6 +1,23 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { THIRTY_MINUTES_SECONDS, ONE_HOUR_SECONDS } from '$lib/test-fixtures';
-import { load } from './+page.server';
+import { load, actions } from './+page.server';
+import { fail, redirect } from '@sveltejs/kit';
+import * as table from '$lib/server/db/schema';
+
+// Mock SvelteKit functions
+vi.mock('@sveltejs/kit', async () => {
+  const actual = await vi.importActual('@sveltejs/kit');
+  return {
+    ...actual,
+    fail: vi.fn((status: number, data: any) => ({ status, data })),
+    redirect: vi.fn((status: number, location: string) => {
+      const err = new Error(`Redirect to ${location}`) as any;
+      err.status = status;
+      err.location = location;
+      throw err;
+    })
+  };
+});
 
 // Type for the expected return value
 interface LoadResult {
@@ -149,6 +166,165 @@ describe('/admin/challenges page server load', () => {
       expect(result.challenges[0]).toHaveProperty('id');
       expect(result.challenges[0]).toHaveProperty('title');
       expect(result.challenges[0]).toHaveProperty('languagesCsv');
+    });
+  });
+
+  describe('bulk deletion actions', () => {
+    // Contract-based database mock for bulk operations
+    const createBulkMockDb = () => ({
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn(),
+          innerJoin: vi.fn().mockReturnThis()
+        })
+      }),
+      delete: vi.fn().mockImplementation(() => ({
+        where: vi.fn().mockResolvedValue({})
+      }))
+    });
+
+    let mockDb: ReturnType<typeof createBulkMockDb>;
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+      mockDb = createBulkMockDb();
+    });
+
+    describe('bulkDelete action', () => {
+      it('should successfully delete multiple challenges when no constraints exist', async () => {
+        const challengeIds = ['challenge-1', 'challenge-2', 'challenge-3'];
+
+        const mockFormData = new FormData();
+        challengeIds.forEach(id => mockFormData.append('challengeIds', id));
+
+        const mockRequest = {
+          formData: vi.fn().mockResolvedValue(mockFormData)
+        };
+
+        // Mock no attempts exist for any challenge
+        mockDb.select().from().where.mockResolvedValueOnce([]);
+        // Mock no submissions exist for any challenge
+        mockDb.select().from().innerJoin().where.mockResolvedValueOnce([]);
+
+        const locals = { db: mockDb };
+
+        await expect(actions.bulkDelete({ request: mockRequest, locals } as any)).rejects.toThrow(
+          'Redirect to /admin/challenges'
+        );
+
+        // Should delete test cases for all challenges, then all challenges
+        expect(mockDb.delete).toHaveBeenCalledWith(table.challengeTests);
+        expect(mockDb.delete).toHaveBeenCalledWith(table.challenges);
+        expect(redirect).toHaveBeenCalledWith(303, '/admin/challenges');
+      });
+
+      it('should return error when no challenges are selected', async () => {
+        const mockFormData = new FormData();
+        // No challengeIds added
+
+        const mockRequest = {
+          formData: vi.fn().mockResolvedValue(mockFormData)
+        };
+
+        const locals = { db: mockDb };
+
+        const result = await actions.bulkDelete({ request: mockRequest, locals } as any);
+
+        expect(result).toEqual({
+          status: 400,
+          data: { message: 'No challenges selected for deletion' }
+        });
+        expect(mockDb.select).not.toHaveBeenCalled();
+      });
+
+      it('should return error when challenges have existing attempts', async () => {
+        const challengeIds = ['challenge-1', 'challenge-2'];
+
+        const mockFormData = new FormData();
+        challengeIds.forEach(id => mockFormData.append('challengeIds', id));
+
+        const mockRequest = {
+          formData: vi.fn().mockResolvedValue(mockFormData)
+        };
+
+        // Mock attempts exist for one of the challenges
+        mockDb.select().from().where.mockResolvedValueOnce([
+          { id: 'attempt-1', challengeId: 'challenge-1', sessionId: 'session-1' }
+        ]);
+
+        const locals = { db: mockDb };
+
+        const result = await actions.bulkDelete({ request: mockRequest, locals } as any);
+
+        expect(result).toEqual({
+          status: 400,
+          data: { message: 'Cannot delete challenges with existing attempts.' }
+        });
+        expect(mockDb.delete).not.toHaveBeenCalled();
+      });
+
+      it('should return error when challenges have existing submissions', async () => {
+        const challengeIds = ['challenge-1', 'challenge-2'];
+
+        const mockFormData = new FormData();
+        challengeIds.forEach(id => mockFormData.append('challengeIds', id));
+
+        const mockRequest = {
+          formData: vi.fn().mockResolvedValue(mockFormData)
+        };
+
+        // Mock no attempts
+        mockDb.select().from().where.mockResolvedValueOnce([]);
+        // Mock submissions exist
+        mockDb.select().from().innerJoin().where.mockResolvedValueOnce([
+          { id: 'submission-1', code: 'console.log("test")' }
+        ]);
+
+        const locals = { db: mockDb };
+
+        const result = await actions.bulkDelete({ request: mockRequest, locals } as any);
+
+        expect(result).toEqual({
+          status: 400,
+          data: { message: 'Cannot delete challenge with existing submissions. Data preservation required.' }
+        });
+        expect(mockDb.delete).not.toHaveBeenCalled();
+      });
+
+      it('should handle database errors during bulk deletion', async () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        const challengeIds = ['challenge-1', 'challenge-2'];
+
+        const mockFormData = new FormData();
+        challengeIds.forEach(id => mockFormData.append('challengeIds', id));
+
+        const mockRequest = {
+          formData: vi.fn().mockResolvedValue(mockFormData)
+        };
+
+        // Mock constraint checks pass
+        mockDb.select().from().where
+          .mockResolvedValueOnce([]) // No attempts
+          .mockResolvedValueOnce([]); // No submissions
+
+        // Mock database error on test case deletion
+        mockDb.delete.mockImplementationOnce(() => ({
+          where: vi.fn().mockRejectedValue(new Error('Foreign key constraint violation'))
+        }));
+
+        const locals = { db: mockDb };
+
+        const result = await actions.bulkDelete({ request: mockRequest, locals } as any);
+
+        expect(result).toEqual({
+          status: 500,
+          data: { message: 'Failed to delete challenges' }
+        });
+        expect(consoleSpy).toHaveBeenCalledWith('Error in bulk delete:', expect.any(Error));
+
+        consoleSpy.mockRestore();
+      });
     });
   });
 });

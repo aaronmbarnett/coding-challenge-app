@@ -75,12 +75,12 @@ export const actions: Actions = {
         .where(eq(table.challengeTests.challengeId, challengeId));
 
       await locals.db.delete(table.challenges).where(eq(table.challenges.id, challengeId));
-
-      // Redirect to challenges list after successful deletion
-      throw redirect(303, '/admin/challenges');
     } catch (error) {
       console.error('Error deleting challenge:', error);
       return fail(500, { message: 'Failed to delete challenge' });
     }
+
+    // Redirect to challenges list after successful deletion
+    throw redirect(303, '/admin/challenges');
   }
 };
